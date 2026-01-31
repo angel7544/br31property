@@ -59,7 +59,7 @@ export default function Navbar() {
         return;
       }
 
-      const r = await getUserRoles();
+      const r = await getUserRoles(supabase);
       setRoles(r);
 
       // Try to fetch profile details

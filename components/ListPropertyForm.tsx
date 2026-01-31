@@ -34,12 +34,12 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
   const [canPost, setCanPost] = useState(false);
 
   useEffect(() => {
-    getUserRoles().then((roles) => {
+    getUserRoles(supabase).then((roles) => {
       if (roles.includes("admin") || roles.includes("owner")) {
         setCanPost(true);
       }
     });
-  }, []);
+  }, [supabase]);
 
   const generateSlug = (name: string) => {
     return name

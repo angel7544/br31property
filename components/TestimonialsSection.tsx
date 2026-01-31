@@ -14,7 +14,7 @@ interface Testimonial {
   rooms_rating?: number;
   service_rating?: number;
   location_rating?: number;
-  hotel_highlights?: string;
+  property_highlights?: string;
   walkability?: string;
   food_and_drinks?: string;
   image_url: string | null;
@@ -105,14 +105,14 @@ function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
                 )}
 
                 <div className="space-y-4">
-                  {t.hotel_highlights && (
+                  {t.property_highlights && (
                     <div className="flex gap-3 items-start bg-amber-50/50 p-3 rounded-xl">
                       <div className="mt-0.5 bg-amber-100 p-1.5 rounded-full text-amber-600 shrink-0">
                         <Sparkles size={14} />
                       </div>
                       <div>
                         <span className="font-bold text-gray-900 block text-sm mb-0.5">Highlights</span>
-                        <p className="text-gray-600 text-sm leading-relaxed">{t.hotel_highlights}</p>
+                        <p className="text-gray-600 text-sm leading-relaxed">{t.property_highlights}</p>
                       </div>
                     </div>
                   )}
