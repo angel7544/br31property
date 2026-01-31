@@ -217,6 +217,30 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
         />
       </div>
 
+      {/* Prices */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-1">Min Price (₹)</label>
+          <input
+            type="number"
+            placeholder="Min Price"
+            value={formData.price_min}
+            onChange={(e) => setFormData({ ...formData, price_min: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder-gray-400"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-1">Max Price (₹)</label>
+          <input
+            type="number"
+            placeholder="Max Price"
+            value={formData.price_max}
+            onChange={(e) => setFormData({ ...formData, price_max: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder-gray-400"
+          />
+        </div>
+      </div>
+
       {/* Contact */}
       <div>
         <label className="block text-sm font-semibold text-gray-900 mb-1">Property Contact No. (Optional)</label>

@@ -44,9 +44,22 @@ export default async function PropertyPage({ params }: { params: { city: string;
   }
 
   // Images
-  const imageUrls = property.images && property.images.length > 0 
-    ? property.images.map((img: any) => img.url) 
-    : [property.image_url || "https://images.unsplash.com/photo-1522771753033-6a98d08722aa?auto=format&fit=crop&q=80"];
+  // Handle both relational structure (if it existed) and array column
+  let imageUrls: string[] = [];
+  
+  if (property.images && Array.isArray(property.images)) {
+      // Check if it's an array of strings (from column) or objects (from relation)
+      if (typeof property.images[0] === 'string') {
+          imageUrls = property.images;
+      } else if (typeof property.images[0] === 'object' && property.images[0]?.url) {
+          imageUrls = property.images.map((img: any) => img.url);
+      }
+  }
+  
+  // Fallback to main image
+  if (imageUrls.length === 0) {
+      imageUrls = [property.image_url || "https://images.unsplash.com/photo-1522771753033-6a98d08722aa?auto=format&fit=crop&q=80"];
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);

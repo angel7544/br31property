@@ -5,6 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 type Staff = {
+  joining_date: string;
+  shift_end: string;
+  shift_start: string;
+  department: string;
   id: string;
   name: string;
   role: string;
@@ -161,10 +165,10 @@ export default function StaffAdminPage() {
         image_url: staff.image_url || "",
         property_id: staff.property_id || "",
         password: "", // Password not editable here
-        department: (staff as any).department || "Front Desk",
-        shift_start: (staff as any).shift_start || "09:00",
-        shift_end: (staff as any).shift_end || "18:00",
-        joining_date: (staff as any).joining_date || new Date().toISOString().split('T')[0]
+        department: staff.department || "Front Desk",
+        shift_start: staff.shift_start || "09:00",
+        shift_end: staff.shift_end || "18:00",
+        joining_date: staff.joining_date || new Date().toISOString().split('T')[0]
       });
     } else {
       setEditingStaff(null);
