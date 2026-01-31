@@ -17,7 +17,13 @@ export default function SessionSync() {
       if (user) {
         // Always fetch latest role from DB/Auth to ensure cookie is up-to-date
         const roles = await getUserRoles(supabase, user);
-        const currentRole = roles[0] || "tenant";
+        
+        // Prioritize roles: admin > owner > staff > tenant
+        let currentRole = "tenant";
+        if (roles.includes("admin")) currentRole = "admin";
+        else if (roles.includes("owner")) currentRole = "owner";
+        else if (roles.includes("staff")) currentRole = "staff";
+        else if (roles.length > 0) currentRole = roles[0];
 
         // Check current cookie value
         const cookieRole = document.cookie

@@ -1,7 +1,7 @@
 import { getSupabaseClient } from "./supabaseClient";
 import { SupabaseClient, User } from "@supabase/supabase-js";
 
-export type UserRole = "admin" | "owner" | "tenant";
+export type UserRole = "admin" | "owner" | "tenant" | "staff";
 
 export async function getUserRoles(client?: SupabaseClient, currentUser?: User | null): Promise<UserRole[]> {
   const supabase = client || getSupabaseClient();
@@ -14,6 +14,8 @@ export async function getUserRoles(client?: SupabaseClient, currentUser?: User |
   
   if (!user) return [];
 
+  const roles: UserRole[] = [];
+
   // 1. Check profiles table (Priority over metadata for real-time DB updates)
   const { data: profile } = await supabase
     .from("profiles")
@@ -22,15 +24,35 @@ export async function getUserRoles(client?: SupabaseClient, currentUser?: User |
     .maybeSingle();
 
   if (profile?.role) {
-      return [profile.role as UserRole];
+      roles.push(profile.role as UserRole);
   }
 
-  // 2. Check metadata (JWT) - Fallback
-  const metaRoles = (user.app_metadata?.roles as string[] | undefined) || [];
-  const allowedMeta = metaRoles.filter((r) => r === "admin" || r === "owner" || r === "tenant");
-  if (allowedMeta.length > 0) return allowedMeta as UserRole[];
+  // 2. Check staff table by email (since user_id might not be linked)
+  if (user.email) {
+    const { data: staff } = await supabase
+      .from("staff")
+      .select("id")
+      .eq("email", user.email)
+      .maybeSingle();
+      
+    if (staff) {
+      roles.push("staff");
+    }
+  }
 
-  // Default to tenant if no role found
+  // 3. Check metadata (JWT) - Fallback
+  const metaRoles = (user.app_metadata?.roles as string[] | undefined) || [];
+  const allowedMeta = metaRoles.filter((r) => r === "admin" || r === "owner" || r === "tenant" || r === "staff");
+  
+  if (allowedMeta.length > 0) {
+    allowedMeta.forEach(r => {
+      if (!roles.includes(r as UserRole)) roles.push(r as UserRole);
+    });
+  }
+
+  // Return gathered roles, or default to tenant
+  if (roles.length > 0) return Array.from(new Set(roles));
+  
   return ["tenant"];
 }
 

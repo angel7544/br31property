@@ -35,11 +35,11 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
       if (authUser) {
-        // Try to fetch staff details
+        // Try to fetch staff details by email (since user_id might not be linked in staff table)
         const { data: staff } = await supabase
           .from("staff")
           .select("name, image_url, role")
-          .eq("user_id", authUser.id)
+          .eq("email", authUser.email)
           .maybeSingle();
 
         if (staff) {

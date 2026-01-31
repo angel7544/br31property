@@ -82,7 +82,7 @@ export default function Navbar() {
           name: currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "User",
           email: currentUser.email || "",
           image: currentUser.user_metadata?.avatar_url,
-          role: r.includes("owner") ? "Owner" : r.includes("admin") ? "Admin" : "Tenant"
+          role: r.includes("owner") ? "Owner" : r.includes("admin") ? "Admin" : r.includes("staff") ? "Staff" : "Tenant"
         });
       }
     };
