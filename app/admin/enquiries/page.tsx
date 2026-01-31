@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Calendar, Search, CheckCircle, XCircle, Clock, FileText, Plus, X, Phone, Mail, MessageCircle, BedDouble, Home } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import { Enquiry, Property, Room } from "@/types";
 
@@ -16,7 +16,7 @@ export default function EnquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
   
   // Create Enquiry Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

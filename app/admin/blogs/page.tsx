@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, BookOpen, Eye, EyeOff, ImageIcon } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,7 +23,7 @@ export default function BlogsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchBlogs = async () => {
     setLoading(true);

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, Image as ImageIcon } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import { useSettings } from "@/context/SettingsContext";
 
@@ -48,7 +48,7 @@ export default function PackagesAdminPage() {
     bed_count: 1
   });
   const [files, setFiles] = useState<File[]>([]);
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchPackages = async (silent = false) => {
     if (!silent) setLoading(true);

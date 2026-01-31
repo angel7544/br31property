@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Upload, X, Plus, User } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default function BlogEditorPage({ params }: { params: { id: string } }) {
   const isNew = params.id === "new";
   const router = useRouter();
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
   
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);

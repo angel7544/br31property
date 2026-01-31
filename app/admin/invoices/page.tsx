@@ -2,16 +2,19 @@
 import { useState, useEffect } from "react";
 import { FileText, Download, Plus, Eye, X } from "lucide-react";
 import jsPDF from "jspdf";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 
 type Invoice = {
   id: string;
-  guest_name: string;
+  guest_name?: string; // Fallback if no relation
+  user_id?: string;
+  profiles?: { full_name: string; email: string };
   amount: number;
   status: string;
-  date: string;
-  items: string[];
+  due_date: string;
+  description: string;
+  created_at: string;
 };
 
 export default function InvoicesPage() {
@@ -22,23 +25,24 @@ export default function InvoicesPage() {
     guest_name: "",
     amount: 0,
     status: "Pending",
-    date: new Date().toISOString().split('T')[0],
-    items: ""
+    due_date: new Date().toISOString().split('T')[0],
+    description: ""
   });
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchInvoices = async (silent = false) => {
     if (!silent) setLoading(true);
-    const { data, error } = await supabase.from("invoices").select("*").order("created_at", { ascending: false });
+    // Try to fetch with profiles relation
+    const { data, error } = await supabase
+        .from("invoices")
+        .select("*, profiles(full_name, email)")
+        .order("created_at", { ascending: false });
+
     if (error) {
       console.error(error);
-      // Fallback mock data
-      setInvoices([
-        { id: "INV-001", guest_name: "John Doe", amount: 450, status: "Paid", date: "2024-12-20", items: ["Room 101 (3 Nights)", "Spa Service"] },
-        { id: "INV-002", guest_name: "Jane Smith", amount: 200, status: "Pending", date: "2024-12-22", items: ["Room 201 (1 Night)", "Dinner"] },
-        { id: "INV-003", guest_name: "Mike Ross", amount: 1200, status: "Paid", date: "2024-12-25", items: ["Suite 301 (5 Nights)", "All Inclusive"] },
-      ]);
+      // Fallback or empty
+      setInvoices([]); 
     } else {
       setInvoices(data || []);
     }
@@ -55,15 +59,14 @@ export default function InvoicesPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const itemsArray = formData.items.split('\n').filter(i => i.trim() !== "");
     
     const { error } = await supabase.from("invoices").insert([
       {
-        guest_name: formData.guest_name,
+        // guest_name: formData.guest_name, // Removed in new schema, should link to user_id ideally, but for now we might store description
         amount: formData.amount,
         status: formData.status,
-        date: formData.date,
-        items: itemsArray
+        due_date: formData.due_date,
+        description: formData.description
       }
     ]);
 
@@ -77,8 +80,8 @@ export default function InvoicesPage() {
         guest_name: "",
         amount: 0,
         status: "Pending",
-        date: new Date().toISOString().split('T')[0],
-        items: ""
+        due_date: new Date().toISOString().split('T')[0],
+        description: ""
       });
       fetchInvoices();
     }
@@ -99,8 +102,8 @@ export default function InvoicesPage() {
     // Invoice Details
     doc.setFontSize(12);
     doc.text(`Invoice ID: ${invoice.id}`, 20, 50);
-    doc.text(`Date: ${invoice.date}`, 20, 58);
-    doc.text(`Guest: ${invoice.guest_name}`, 20, 66);
+    doc.text(`Date: ${invoice.due_date}`, 20, 58);
+    doc.text(`Guest: ${invoice.profiles?.full_name || invoice.guest_name || "Guest"}`, 20, 66);
     doc.text(`Status: ${invoice.status}`, 150, 50);
 
     // Line
@@ -111,16 +114,12 @@ export default function InvoicesPage() {
     doc.text("Description", 20, 85);
     doc.text("Amount", 160, 85);
     
-    let y = 95;
-    invoice.items.forEach((item) => {
-      doc.text(item, 20, y);
-      y += 10;
-    });
+    doc.text(invoice.description || "Room Charges", 20, 95);
 
     // Total
-    doc.line(20, y + 5, 190, y + 5);
+    doc.line(20, 105, 190, 105);
     doc.setFont("helvetica", "bold");
-    doc.text(`Total: $${invoice.amount}`, 160, y + 15);
+    doc.text(`Total: ₹${invoice.amount}`, 160, 115);
 
     // Footer
     doc.setFont("helvetica", "normal");
@@ -164,10 +163,10 @@ export default function InvoicesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {invoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{inv.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{inv.guest_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{inv.date}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">${inv.amount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{inv.id.slice(0, 8)}...</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{inv.profiles?.full_name || inv.guest_name || "Unknown"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(inv.due_date).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">₹{inv.amount}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${inv.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                       {inv.status}
@@ -247,19 +246,19 @@ export default function InvoicesPage() {
                       id="date"
                       type="date"
                       required
-                      value={formData.date}
-                      onChange={(e) => setFormData({...formData, date: e.target.value})}
+                      value={formData.due_date}
+                      onChange={(e) => setFormData({...formData, due_date: e.target.value})}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                   <div>
-                    <label htmlFor="items" className="block text-sm font-medium text-gray-700">Items (One per line)</label>
+                    <label htmlFor="items" className="block text-sm font-medium text-gray-700">Description</label>
                     <textarea
                       id="items"
                       rows={4}
-                      value={formData.items}
-                      onChange={(e) => setFormData({...formData, items: e.target.value})}
-                      placeholder="Room 101 - ₹100&#10;Breakfast - ₹20"
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      placeholder="Room Charges, Food, etc."
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>

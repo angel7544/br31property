@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
+  const supabase = createClient();
   
   const [settings, setSettings] = useState({
     siteName: "",
@@ -20,7 +21,6 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const load = async () => {
-      const supabase = getSupabaseClient();
       const { data } = await supabase.from("settings").select("*").eq("id", "default").maybeSingle();
       if (data) {
         setSettings({
@@ -62,7 +62,6 @@ export default function SettingsPage() {
       return;
     }
 
-    const supabase = getSupabaseClient();
     const payload = {
       id: "default",
       site_name: settings.siteName,

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, Image as ImageIcon, BadgeIndianRupee } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import { useSettings } from "@/context/SettingsContext";
 
@@ -25,7 +25,7 @@ export default function ServicesAdminPage() {
 
   const [formData, setFormData] = useState({ name: "", type: "lodging", price: 0, status: "Active", description: "", image_url: "", images: [] as string[] });
   const [files, setFiles] = useState<File[]>([]);
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchServices = async (silent = false) => {
     if (!silent) setLoading(true);

@@ -12,7 +12,11 @@ import {
   Settings, 
   LogOut,
   BookOpen,
-  MessageSquareQuote
+  MessageSquareQuote,
+  Wrench,
+  Package,
+  AlertTriangle,
+  ClipboardList
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { useState } from "react";
@@ -30,12 +34,17 @@ export default function AdminSidebar({ roles }: AdminSidebarProps) {
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard, exact: true },
     { name: "Properties", href: "/admin/properties", icon: Building2 },
     { name: "Rooms & Beds", href: "/admin/rooms", icon: BedDouble },
+    { name: "Reservations", href: "/admin/reservations", icon: ClipboardList },
     { name: "Enquiries", href: "/admin/enquiries", icon: CalendarCheck },
+    { name: "Invoices", href: "/admin/invoices", icon: Receipt },
+    { name: "Maintenance", href: "/admin/maintenance", icon: Wrench },
+    { name: "Inventory", href: "/admin/inventory", icon: Package },
+    { name: "Complaints", href: "/admin/complaints", icon: AlertTriangle },
     { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
     { name: "Blogs", href: "/admin/blogs", icon: BookOpen },
     { name: "Staff/Users", href: "/admin/staff", icon: Users2 },
-    { name: "Settings", href: "/admin/settings", icon: Settings },
     { name: "Offers", href: "/admin/offers", icon: Receipt },
+    { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
   const filteredNavigation = navigation.filter((item) => {

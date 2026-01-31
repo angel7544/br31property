@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Filter, MoreHorizontal, X, Edit, Trash2, Image as ImageIcon, BedDouble, Home } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import { Room, Property } from "@/types";
 
@@ -32,7 +32,7 @@ export default function RoomsPage() {
   const [file, setFile] = useState<File | null>(null);
   
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchRooms = async (silent = false) => {
     if (!silent) setLoading(true);

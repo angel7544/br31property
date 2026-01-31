@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Image as ImageIcon, Star, Quote } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import Image from "next/image";
 
@@ -47,7 +47,7 @@ export default function TestimonialsPage() {
   const [uploading, setUploading] = useState(false);
   
   const { addToast } = useToast();
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchTestimonials = async () => {
     setLoading(true);
