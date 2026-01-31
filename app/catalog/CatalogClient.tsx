@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { ServiceItem } from "./page";
@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import ImageSlider from "@/components/ui/ImageSlider";
 
-export default function CatalogClient({ initialItems }: { initialItems: ServiceItem[] }) {
+function CatalogClientContent({ initialItems }: { initialItems: ServiceItem[] }) {
   const searchParams = useSearchParams();
   const filterParam = searchParams.get("filter");
   const { currencySymbol } = useSettings();
@@ -143,5 +143,13 @@ export default function CatalogClient({ initialItems }: { initialItems: ServiceI
         </div>
       )}
     </div>
+  );
+}
+
+export default function CatalogClient(props: { initialItems: ServiceItem[] }) {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading catalog...</div>}>
+      <CatalogClientContent {...props} />
+    </Suspense>
   );
 }
