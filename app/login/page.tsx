@@ -34,23 +34,37 @@ function LoginPageContent() {
       }
 
       // Fetch role to store in session
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
       const userRole = profile?.role || 'tenant';
       
       const response = await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: userRole }),
+        body: JSON.stringify({ role: userRole }), // Body is ignored by API but kept for consistency
       });
 
       if (!response.ok) {
          throw new Error("Failed to create session");
       }
+      
+      // Get the actual role returned/confirmed by the server
+      const sessionData = await response.json();
+      const confirmedRole = sessionData.role || userRole;
 
       toast.success("Login Successful!");
       
+      // Determine redirect path
+      let targetPath = redirect;
+      if (!targetPath) {
+        if (confirmedRole === 'admin' || confirmedRole === 'owner' || confirmedRole === 'staff') {
+          targetPath = "/admin";
+        } else {
+          targetPath = "/pgs";
+        }
+      }
+      
       // Force a hard navigation to ensure cookies are applied and middleware runs
-      window.location.href = redirect || "/pgs";
+      window.location.href = targetPath;
       
     } catch (error: any) {
       toast.error(error.message || "An unexpected error occurred");
