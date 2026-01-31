@@ -24,7 +24,9 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
     location: "",
     name: "",
     contact: "",
-    email: ""
+    email: "",
+    price_min: "",
+    price_max: ""
   });
 
   const [mainImage, setMainImage] = useState<string>("");
@@ -138,7 +140,9 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
           email: formData.email,
           image_url: mainImage,
           images: otherImages,
-          amenities: amenities
+          amenities: amenities,
+          price_range_min: formData.price_min ? parseFloat(formData.price_min) : null,
+          price_range_max: formData.price_max ? parseFloat(formData.price_max) : null
         })
         .select()
         .single();

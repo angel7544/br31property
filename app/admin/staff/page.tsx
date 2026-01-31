@@ -36,6 +36,10 @@ export default function StaffAdminPage() {
     image_url: "",
     property_id: "",
     password: "",
+    department: "Front Desk",
+    shift_start: "09:00",
+    shift_end: "18:00",
+    joining_date: new Date().toISOString().split('T')[0],
   });
   const [file, setFile] = useState<File | null>(null);
   const supabase = createClient();
