@@ -40,9 +40,9 @@ Sakura Hotels bridges the gap between robust back-office administration and a se
 ### Backend & Database
 *   **Platform**: [Supabase](https://supabase.com/)
 *   **Database**: PostgreSQL
-*   **Authentication**: Supabase Auth
+*   **Authentication**: Supabase Auth (SSR) + Secure Session Management
 *   **Real-time**: Supabase Realtime (WebSockets)
-*   **Storage**: Cloudinary (Image Hosting)
+*   **Storage**: Cloudinary (Secure Image Hosting)
 
 ## 📂 Project Structure
 

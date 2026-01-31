@@ -1,10 +1,25 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { getUserRoles } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
+    // 1. Verify Authorization
+    const supabaseServer = createServerClient();
+    const { data: { user } } = await supabaseServer.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const roles = await getUserRoles(supabaseServer, user);
+    if (!roles.includes("admin") && !roles.includes("owner")) {
+      return NextResponse.json({ error: "Forbidden: Admin or Owner access required" }, { status: 403 });
+    }
+
     const body = await req.json();
     const { email, password, name, role, phone, hotel_id, image_url } = body;
 
