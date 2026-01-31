@@ -117,6 +117,7 @@ export default function StaffAdminPage() {
           body: JSON.stringify({
             ...formData,
             image_url: uploadedUrl,
+            property_id: formData.property_id || null,
           }),
         });
         const json = await res.json();

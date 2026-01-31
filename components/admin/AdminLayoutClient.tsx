@@ -68,7 +68,12 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Properties", href: "/admin/properties", icon: Building2 },
     { name: "Rooms & Beds", href: "/admin/rooms", icon: BedDouble },
+    { name: "Reservations", href: "/admin/reservations", icon: CalendarCheck },
     { name: "Enquiries", href: "/admin/enquiries", icon: CalendarCheck },
+    { name: "Invoices", href: "/admin/invoices", icon: Receipt },
+    { name: "Maintenance", href: "/admin/maintenance", icon: Settings }, // Using Settings icon temporarily or import Wrench
+    { name: "Inventory", href: "/admin/inventory", icon: Settings }, // Using Settings icon temporarily or import Package
+    { name: "Complaints", href: "/admin/complaints", icon: MessageSquareQuote },
     { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
     { name: "Blogs", href: "/admin/blogs", icon: BookOpen },
     { name: "Staff/Users", href: "/admin/staff", icon: Users2 },

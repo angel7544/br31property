@@ -202,15 +202,20 @@ export default function InvoicesPage() {
                 </div>
                 <form onSubmit={handleCreate} className="space-y-4">
                   <div>
-                    <label htmlFor="guest_name" className="block text-sm font-medium text-gray-700">Guest Name</label>
-                    <input
-                      id="guest_name"
-                      type="text"
-                      required
-                      value={formData.guest_name}
-                      onChange={(e) => setFormData({...formData, guest_name: e.target.value})}
+                    <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">Guest / User</label>
+                    <select
+                      id="user_id"
+                      value={formData.user_id}
+                      onChange={(e) => setFormData({...formData, user_id: e.target.value})}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
+                    >
+                      <option value="">Select a Guest</option>
+                      {users.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.full_name || user.email}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>

@@ -14,7 +14,7 @@ interface Testimonial {
   rooms_rating?: number;
   service_rating?: number;
   location_rating?: number;
-  hotel_highlights?: string;
+  property_highlights?: string;
   walkability?: string;
   food_and_drinks?: string;
   image_url: string | null;
@@ -36,7 +36,7 @@ export default function TestimonialsPage() {
     rooms_rating: 5.0,
     service_rating: 5.0,
     location_rating: 5.0,
-    hotel_highlights: "",
+    property_highlights: "",
     walkability: "",
     food_and_drinks: "",
     status: "Active",
@@ -91,7 +91,7 @@ export default function TestimonialsPage() {
         rooms_rating: testimonial.rooms_rating || 5.0,
         service_rating: testimonial.service_rating || 5.0,
         location_rating: testimonial.location_rating || 5.0,
-        hotel_highlights: testimonial.hotel_highlights || "",
+        property_highlights: testimonial.property_highlights || "",
         walkability: testimonial.walkability || "",
         food_and_drinks: testimonial.food_and_drinks || "",
         status: testimonial.status,
@@ -107,7 +107,7 @@ export default function TestimonialsPage() {
         rooms_rating: 5.0,
         service_rating: 5.0,
         location_rating: 5.0,
-        hotel_highlights: "",
+        property_highlights: "",
         walkability: "",
         food_and_drinks: "",
         status: "Active",
@@ -151,7 +151,7 @@ export default function TestimonialsPage() {
         rooms_rating: formData.rooms_rating,
         service_rating: formData.service_rating,
         location_rating: formData.location_rating,
-        hotel_highlights: formData.hotel_highlights,
+        property_highlights: formData.property_highlights,
         walkability: formData.walkability,
         food_and_drinks: formData.food_and_drinks,
         status: formData.status,
@@ -383,8 +383,8 @@ export default function TestimonialsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Hotel Highlights</label>
                     <input
                       type="text"
-                      value={formData.hotel_highlights}
-                      onChange={(e) => setFormData({...formData, hotel_highlights: e.target.value})}
+                      value={formData.property_highlights}
+                      onChange={(e) => setFormData({...formData, property_highlights: e.target.value})}
                       className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g. Quiet, Great View, Luxury"
                     />

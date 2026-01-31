@@ -37,6 +37,24 @@ FOR DELETE USING (
 );
 
 -- ==========================================
+-- 1.5 ROOMS
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.rooms (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  type TEXT,
+  monthly_rent NUMERIC DEFAULT 0,
+  security_deposit NUMERIC DEFAULT 0,
+  total_beds INTEGER DEFAULT 1,
+  available_beds INTEGER DEFAULT 1,
+  amenities TEXT[],
+  image_url TEXT,
+  status TEXT CHECK (status IN ('Available', 'Full', 'Maintenance')) DEFAULT 'Available',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- ==========================================
 -- 2. OFFERS & TESTIMONIALS RLS FIX
 -- ==========================================
 -- Offers

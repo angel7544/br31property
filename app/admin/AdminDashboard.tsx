@@ -71,7 +71,7 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
       // Recent Reservations list
       const { data: reservations } = await supabase
         .from("reservations")
-        .select("id, customer_name, status, check_in, check_out, rooms(room_number), hotels(name)")
+        .select("id, customer_name, status, check_in, check_out, rooms(name), properties(name)")
         .order("created_at", { ascending: false })
         .limit(5);
       setRecent(reservations || []);
@@ -152,7 +152,7 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{r.customer_name}</p>
-                    <p className="text-sm text-gray-500 truncate">{r.hotels?.name || "Unknown Hotel"} • Room {r.rooms?.room_number || "?"}</p>
+                    <p className="text-sm text-gray-500 truncate">{r.properties?.name || "Unknown Property"} • Room {r.rooms?.name || "?"}</p>
                     <p className="text-xs text-gray-400">{new Date(r.check_in).toLocaleDateString()} - {new Date(r.check_out).toLocaleDateString()}</p>
                   </div>
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -183,7 +183,7 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
               <Calendar className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">New Reservation</span>
             </Link>
-            <Link href="/admin/hotels" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+            <Link href="/admin/properties" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
               <Building className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">Add Property</span>
             </Link>

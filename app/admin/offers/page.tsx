@@ -14,6 +14,7 @@ type Offer = {
   start_date?: string;
   end_date?: string;
   is_active: boolean;
+  is_popup: boolean;
 };
 
 export default function OffersAdminPage() {
@@ -31,7 +32,8 @@ export default function OffersAdminPage() {
     image_url: "",
     start_date: "",
     end_date: "",
-    is_active: true
+    is_active: true,
+    is_popup: false
   });
   const [file, setFile] = useState<File | null>(null);
   const supabase = createClient();
@@ -74,7 +76,8 @@ export default function OffersAdminPage() {
         image_url: uploadedUrl,
         start_date: formData.start_date || null,
         end_date: formData.end_date || null,
-        is_active: formData.is_active
+        is_active: formData.is_active,
+        is_popup: formData.is_popup
     };
 
     if (editingOffer) {
@@ -117,7 +120,8 @@ export default function OffersAdminPage() {
               image_url: offer.image_url || "",
               start_date: offer.start_date ? new Date(offer.start_date).toISOString().split('T')[0] : "",
               end_date: offer.end_date ? new Date(offer.end_date).toISOString().split('T')[0] : "",
-              is_active: offer.is_active
+              is_active: offer.is_active,
+              is_popup: offer.is_popup || false
           });
       } else {
           setEditingOffer(null);
@@ -129,7 +133,8 @@ export default function OffersAdminPage() {
               image_url: "",
               start_date: "",
               end_date: "",
-              is_active: true
+              is_active: true,
+              is_popup: false
           });
       }
       setFile(null);
@@ -260,9 +265,15 @@ export default function OffersAdminPage() {
                         </div>
                     </div>
 
-                    <div className="flex items-center">
-                        <input id="is_active" type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({...formData, is_active: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                        <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center">
+                            <input id="is_active" type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({...formData, is_active: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
+                        </div>
+                        <div className="flex items-center">
+                            <input id="is_popup" type="checkbox" checked={formData.is_popup} onChange={(e) => setFormData({...formData, is_popup: e.target.checked})} className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" />
+                            <label htmlFor="is_popup" className="ml-2 block text-sm text-gray-900">Show as Popup</label>
+                        </div>
                     </div>
 
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-6 -mx-6 -mb-4">
