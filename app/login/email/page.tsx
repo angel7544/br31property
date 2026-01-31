@@ -1,11 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, Mail, CheckSquare, Square, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function EmailLoginForm() {
+function EmailLoginFormContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -105,31 +105,33 @@ export default function EmailLoginForm() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer text-gray-600">
-                  <input type="checkbox" className="rounded border-gray-300 text-orange-500 focus:ring-orange-500" />
-                  Remember me
-                </label>
-                <a href="#" className="text-orange-600 hover:underline font-medium">Forgot Password?</a>
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200"
+                className="w-full bg-orange-500 text-white py-2.5 rounded-lg font-semibold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? "Signing in..." : "Sign In"}
               </button>
             </form>
 
-            <div className="mt-8 text-center text-sm text-gray-500">
-              Don't have an account?{" "}
-              <Link href="/auth/signup" className="text-orange-600 font-medium hover:underline">
-                Sign Up
-              </Link>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500">
+                Don't have an account?{" "}
+                <Link href="/auth/signup" className="text-orange-600 font-semibold hover:underline">
+                  Sign up
+                </Link>
+              </p>
             </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EmailLoginForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailLoginFormContent />
+    </Suspense>
   );
 }
