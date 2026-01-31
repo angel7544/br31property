@@ -164,6 +164,7 @@ export default function Navbar() {
               { label: "PGs / Flats", href: "/pgs" },
               { label: "List Your Property", href: "/list-property" },
               { label: "Blog", href: "/blog" },
+              { label: "About", href: "/about" },
               { label: "Contact", href: "/contact" },
             ].map((link) => (
               <Link

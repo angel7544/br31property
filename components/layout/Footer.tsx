@@ -1,71 +1,117 @@
 "use client";
 import Link from "next/link";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Twitter, Linkedin, Youtube, MessageCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useSettings } from "@/context/SettingsContext";
+import Image from "next/image";
 
 export default function Footer() {
   const pathname = usePathname();
   const { settings } = useSettings();
   
   if (pathname.startsWith("/admin")) return null;
+
   return (
-    <footer className="hidden sm:block bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <img src="/logo.png" alt={`${settings.siteName} logo`} className="h-16 w-auto object-contain" />
-              <h3 className="text-xl font-bold text-yellow-500">{settings.siteName}</h3>
-            </div>
-            <p className="text-gray-400">
-              Experience the finest hospitality with our multi-location premium services. 
-              Lodging, dining, travel, and more.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link href="/catalog" className="text-gray-400 hover:text-white">Our Services</Link></li>
-              <li><Link href="/packages" className="text-gray-400 hover:text-white">Packages</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-white">Blog</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact Us</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <div className="space-y-2 text-gray-400">
+    <>
+      <footer className="hidden sm:block bg-black text-white pt-12 pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Column 1: Logo & About */}
+            <div className="space-y-6">
               <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5" />
-                <span>{settings.contactPhone || "+91 9708403070"}</span>
+                <div className="relative h-12 w-40">
+                    <Image 
+                        src="/logo.png" 
+                        alt="PG Dekho" 
+                        fill
+                        className="object-contain object-left"
+                    />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                <span>{settings.contactEmail || "hotelsakuragntok@gmail.com"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                <span>{settings.address || "Hotel Sakura, Lower M.G.Marg, Nam Nang Rd, Gangtok, Sikkim 737101"}</span>
+              <p className="text-gray-300 text-sm leading-relaxed">
+                PG Dekho is an online platform for PGs accommodations , providing , options for working Professionals and students from room to flats across India.
+              </p>
+              <div className="flex space-x-4">
+                {[Linkedin, Facebook, Instagram, Twitter, Youtube].map((Icon, idx) => (
+                  <Link 
+                    key={idx} 
+                    href="#" 
+                    className="bg-white text-black p-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                  >
+                    <Icon className="h-4 w-4" fill="currentColor" strokeWidth={0} />
+                  </Link>
+                ))}
               </div>
             </div>
-            {/* <div className="mt-6">
-              <Link href="/contact" className="inline-block w-full md:w-auto text-center px-6 py-3 rounded-lg bg-pink-600 hover:bg-pink-700 font-semibold">
-                Contact Us
-              </Link>
-            </div> */}
+
+            {/* Column 2: Company */}
+            <div>
+              <h3 className="text-lg font-semibold mb-6 uppercase tracking-wider">Company</h3>
+              <ul className="space-y-3">
+                {["About Us", "Testimonials", "Terms & Conditions", "Refunds Cancellation Policy", "Privacy Policy"].map((item) => (
+                  <li key={item}>
+                    <Link href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Column 3: Media */}
+            <div>
+              <h3 className="text-lg font-semibold mb-6 uppercase tracking-wider">Media</h3>
+              <ul className="space-y-3">
+                {["FAQs", "Blog", "Contact Us"].map((item) => (
+                  <li key={item}>
+                    <Link href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Column 4: Download App */}
+            <div>
+              <h3 className="text-lg font-semibold mb-6">Download App Now</h3>
+              <div className="flex gap-2 mb-4">
+                <div className="h-10 w-32 bg-gray-800 rounded overflow-hidden relative border border-gray-700">
+                    <div className="flex items-center justify-center h-full text-xs text-gray-400">Google Play</div>
+                </div>
+                <div className="h-10 w-32 bg-gray-800 rounded overflow-hidden relative border border-gray-700">
+                    <div className="flex items-center justify-center h-full text-xs text-gray-400">App Store</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="h-20 w-20 bg-white p-1 rounded">
+                   <div className="h-full w-full bg-gray-200 flex items-center justify-center text-[10px] text-black text-center font-bold">QR CODE</div>
+                </div>
+                <p className="text-sm text-gray-300 max-w-[150px]">
+                  Open camera & scan the Qr code to Download the app
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+            <p>Copyright @ {new Date().getFullYear()} | All Rights Reserved by BR31 PROPERTY MANAGEMENT SYSTEM.</p>
+            <p className="mt-2 md:mt-0">Images are representational purpose only; amenities shown may vary by properties</p>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">&copy; {new Date().getFullYear()} {settings.siteName}. All rights reserved.</p>
-          <div className="flex space-x-3 mt-4 md:mt-0">
-            {[Facebook, Instagram, Twitter].map((Icon, idx) => (
-              <span key={idx} className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors cursor-pointer">
-                <Icon className="h-5 w-5" />
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/919708403070" 
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all hover:scale-110 flex items-center justify-center"
+        aria-label="Contact on WhatsApp"
+      >
+        <MessageCircle className="h-8 w-8" />
+      </a>
+    </>
   );
 }

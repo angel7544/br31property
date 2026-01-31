@@ -5,6 +5,7 @@ import { ArrowRight, Bed, Utensils, Wifi, Shield, Home, Search, Zap, Users } fro
 import { useState, useEffect } from "react";
 import RoomCarousel from "@/components/RoomCarousel";
 import HeroSearch from "@/components/HeroSearch";
+import TestimonialsSection from "@/components/TestimonialsSection";
 
 const heroImages = [
   "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop", // Hostel/PG vibe
@@ -174,6 +175,11 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="bg-white py-16">
+        <TestimonialsSection />
       </section>
     </div>
   );

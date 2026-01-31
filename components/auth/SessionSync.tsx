@@ -3,8 +3,12 @@
 import { useEffect } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { getUserRoles } from "@/lib/auth";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function SessionSync() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const syncSession = async () => {
       const supabase = getSupabaseClient();
@@ -24,6 +28,13 @@ export default function SessionSync() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role }),
           });
+
+          // If we are on the login page and just restored the session, redirect to the intended destination
+          if (pathname === "/login") {
+            const redirect = searchParams.get("redirect") || "/admin";
+            // Force a hard reload to ensure cookies are recognized by the server
+            window.location.href = redirect;
+          }
         }
       }
     };
