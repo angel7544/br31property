@@ -13,7 +13,8 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { getUserRoles } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/client";
+import { getUserRoles, UserRole } from "@/lib/auth";
 import { useSettings } from "@/context/SettingsContext";
 import Image from "next/image";
 import { getSupabaseClient } from "@/lib/supabaseClient";
@@ -28,15 +29,15 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
 
   useEffect(() => {
     const init = async () => {
-      const r = await getUserRoles();
+      const r = await getUserRoles(createClient());
       setRoles(r);
 
       const supabase = getSupabaseClient();
-      const { data: { user: authUser } } = await supabase.auth.getUser();
+      const { data: { user: authUser } } = await (createClient()).auth.getUser();
       
       if (authUser) {
         // Try to fetch staff details by email (since user_id might not be linked in staff table)
-        const { data: staff } = await supabase
+        const { data: staff } = await (createClient())
           .from("staff")
           .select("name, image_url, role")
           .eq("email", authUser.email)

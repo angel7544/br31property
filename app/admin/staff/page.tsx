@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, User } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 
 type Staff = {
@@ -35,7 +35,7 @@ export default function StaffAdminPage() {
     password: "",
   });
   const [file, setFile] = useState<File | null>(null);
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchStaff = async (silent = false) => {
     if (!silent) setLoading(true);

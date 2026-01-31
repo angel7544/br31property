@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, Image as ImageIcon } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/Toast";
 import { Property } from "@/types";
 
@@ -26,7 +26,7 @@ export default function PropertiesPage() {
   const [formData, setFormData] = useState(initialForm);
   const [file, setFile] = useState<File | null>(null);
 
-  const supabase = getSupabaseClient();
+  const supabase = createClient();
 
   const fetchProperties = async (silent = false) => {
     if (!silent) setLoading(true);
