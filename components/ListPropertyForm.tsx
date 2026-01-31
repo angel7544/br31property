@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { CheckSquare, Loader2, Square, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-
+import { getUserRoles } from "@/lib/auth";
 const AMENITIES_LIST = [
   "Wi-Fi", "AC", "Power Backup", "Room Cleaning", "Parking",
   "Security", "Geyser", "Laundry", "TV", "Lift", "Gym", "Food/Mess",
@@ -31,6 +31,15 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
   const [otherImages, setOtherImages] = useState<string[]>([]);
   const [amenities, setAmenities] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [canPost, setCanPost] = useState(false);
+
+  useEffect(() => {
+    getUserRoles().then((roles) => {
+      if (roles.includes("admin") || roles.includes("owner")) {
+        setCanPost(true);
+      }
+    });
+  }, []);
 
   const generateSlug = (name: string) => {
     return name
@@ -95,6 +104,12 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    if (!canPost) {
+      setError("Only Admins and Owners can post properties.");
+      setLoading(false);
+      return;
+    }
+
     setError(null);
 
     if (!mainImage) {

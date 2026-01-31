@@ -15,25 +15,34 @@ export default function SessionSync() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
-        // Check if cookie exists
-        const hasSessionCookie = document.cookie.split(';').some((c) => c.trim().startsWith('sakura_session='));
+        // Always fetch latest role from DB/Auth to ensure cookie is up-to-date
+        const roles = await getUserRoles(supabase, user);
+        const currentRole = roles[0] || "tenant";
+
+        // Check current cookie value
+        const cookieRole = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('sakura_role='))
+          ?.split('=')[1];
         
-        if (!hasSessionCookie) {
-          console.log("Restoring session cookie...");
-          const roles = await getUserRoles(supabase, user);
-          const role = roles[0] || "tenant";
+        // If cookie doesn't exist OR role doesn't match, update it
+        if (!cookieRole || cookieRole !== currentRole) {
+          console.log(`Syncing session: ${cookieRole} -> ${currentRole}`);
           
           await fetch("/api/session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role }),
+            body: JSON.stringify({ role: currentRole }),
           });
 
           // If we are on the login page and just restored the session, redirect to the intended destination
           if (pathname === "/login") {
             const redirect = searchParams.get("redirect") || "/admin";
-            // Force a hard reload to ensure cookies are recognized by the server
             window.location.href = redirect;
+          } else if (cookieRole && cookieRole !== currentRole) {
+             // If role CHANGED while on another page, might want to reload to apply new permissions
+             // e.g. from tenant -> admin
+             window.location.reload();
           }
         }
       }
