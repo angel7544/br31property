@@ -96,6 +96,10 @@ export default function StaffAdminPage() {
           status: formData.status,
           image_url: uploadedUrl,
           property_id: formData.property_id || null,
+          department: formData.department,
+          shift_start: formData.shift_start,
+          shift_end: formData.shift_end,
+          joining_date: formData.joining_date
         })
         .eq("id", editingStaff.id);
 
@@ -157,6 +161,10 @@ export default function StaffAdminPage() {
         image_url: staff.image_url || "",
         property_id: staff.property_id || "",
         password: "", // Password not editable here
+        department: (staff as any).department || "Front Desk",
+        shift_start: (staff as any).shift_start || "09:00",
+        shift_end: (staff as any).shift_end || "18:00",
+        joining_date: (staff as any).joining_date || new Date().toISOString().split('T')[0]
       });
     } else {
       setEditingStaff(null);
@@ -169,6 +177,10 @@ export default function StaffAdminPage() {
         image_url: "",
         property_id: "",
         password: "",
+        department: "Front Desk",
+        shift_start: "09:00",
+        shift_end: "18:00",
+        joining_date: new Date().toISOString().split('T')[0]
       });
     }
     setFile(null);

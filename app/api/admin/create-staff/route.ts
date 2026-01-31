@@ -69,6 +69,10 @@ export async function POST(req: Request) {
         status: "Active",
         property_id: property_id || null,
         image_url: image_url || null,
+        department: body.department,
+        shift_start: body.shift_start,
+        shift_end: body.shift_end,
+        joining_date: body.joining_date
       },
     ]);
 
