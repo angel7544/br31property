@@ -131,7 +131,7 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
           type: type,
           city: formData.location, // Assuming location input is City for MVP
           address: formData.location,
-          status: "Maintenance", // Default to maintenance until approved/completed
+          status: "Active", // Auto-activate for owners/admins
           description: "Newly listed property",
           gender_preference: "Unisex", // Default
           contact_number: formData.contact,

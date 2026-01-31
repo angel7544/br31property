@@ -55,6 +55,18 @@ function LoginPageContent() {
       
       // Determine redirect path
       let targetPath = redirect;
+      
+      // Fix for malformed redirect URLs (e.g., %Fadmin reported by user on mobile)
+      if (targetPath && (targetPath.includes("%F") || targetPath.includes("%25F"))) {
+         if (targetPath.toLowerCase().includes("admin")) {
+            targetPath = "/admin";
+         } else {
+            // Fallback: try to replace %F with /
+            targetPath = targetPath.replace(/%F/gi, "/").replace(/%25F/gi, "/");
+            if (!targetPath.startsWith("/")) targetPath = "/" + targetPath;
+         }
+      }
+
       if (!targetPath) {
         if (confirmedRole === 'admin' || confirmedRole === 'owner' || confirmedRole === 'staff') {
           targetPath = "/admin";

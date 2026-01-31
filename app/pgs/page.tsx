@@ -40,8 +40,7 @@ export default async function PGsPage({ searchParams }: { searchParams: { [key: 
     .from("properties")
     .select(`
       *,
-      rooms (*),
-      images: property_images (url)
+      rooms (*)
     `)
     .eq("status", "Active");
 

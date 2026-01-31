@@ -43,8 +43,19 @@ export default function SessionSync() {
 
           // If we are on the login page and just restored the session, redirect to the intended destination
           if (pathname === "/login") {
-            const redirect = searchParams.get("redirect") || "/admin";
-            window.location.href = redirect;
+            let redirect = searchParams.get("redirect");
+            
+            // Fix for malformed redirect URLs (e.g., %Fadmin reported by user)
+            if (redirect && (redirect.includes("%F") || redirect.includes("%25F"))) {
+              if (redirect.toLowerCase().includes("admin")) {
+                redirect = "/admin";
+              } else {
+                redirect = redirect.replace(/%F/gi, "/").replace(/%25F/gi, "/");
+                if (!redirect.startsWith("/")) redirect = "/" + redirect;
+              }
+            }
+
+            window.location.href = redirect || "/admin";
           } else if (cookieRole && cookieRole !== currentRole) {
              // If role CHANGED while on another page, might want to reload to apply new permissions
              // e.g. from tenant -> admin
