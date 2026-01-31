@@ -10,6 +10,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
+import SessionSync from "@/components/auth/SessionSync";
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
   return (
     <SettingsProvider>
+      <SessionSync />
       <ToastProvider>
         <Toaster position="top-center" richColors />
         {!isAdmin && <Navbar />}
