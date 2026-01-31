@@ -127,7 +127,7 @@ CREATE POLICY "Staff can view themselves" ON public.staff FOR SELECT USING (
 -- ==========================================
 -- 4. CALL REQUESTS / COMPLAINTS (Tickets)
 -- ==========================================
--- Assuming 'complaints' table exists or 'tickets'
+-- Ensure complaints table exists and has correct columns
 CREATE TABLE IF NOT EXISTS public.complaints (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id),
@@ -137,6 +137,17 @@ CREATE TABLE IF NOT EXISTS public.complaints (
     priority TEXT DEFAULT 'Medium',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Align columns with UI (subject, property_id)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'complaints' AND column_name = 'subject') THEN
+        ALTER TABLE public.complaints ADD COLUMN subject TEXT;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'complaints' AND column_name = 'property_id') THEN
+        ALTER TABLE public.complaints ADD COLUMN property_id UUID REFERENCES public.properties(id);
+    END IF;
+END $$;
 
 ALTER TABLE public.complaints ENABLE ROW LEVEL SECURITY;
 
@@ -150,7 +161,12 @@ DROP POLICY IF EXISTS "Staff can view all complaints" ON public.complaints;
 CREATE POLICY "Staff can view all complaints" ON public.complaints FOR SELECT USING (
   EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff')
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  ) OR
+  (
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'admin' OR
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'owner' OR
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'staff'
   )
 );
 
@@ -158,6 +174,11 @@ DROP POLICY IF EXISTS "Staff can update complaints" ON public.complaints;
 CREATE POLICY "Staff can update complaints" ON public.complaints FOR UPDATE USING (
   EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff')
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  ) OR
+  (
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'admin' OR
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'owner' OR
+    (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'staff'
   )
 );

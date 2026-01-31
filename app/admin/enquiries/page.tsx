@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Calendar, Search, CheckCircle, XCircle, Clock, FileText, Plus, X, Phone, Mail, MessageCircle, BedDouble, Home } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 import { Enquiry, Property, Room } from "@/types";
 
 // Extended types for UI
@@ -15,7 +15,6 @@ export default function EnquiriesPage() {
   const [enquiries, setEnquiries] = useState<EnquiryWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const { addToast } = useToast();
   const supabase = createClient();
   
   // Create Enquiry Modal State
@@ -49,7 +48,7 @@ export default function EnquiriesPage() {
 
     if (error) {
       console.error("Error fetching enquiries:", error);
-      addToast("Failed to fetch enquiries", "error");
+      toast.error("Failed to fetch enquiries");
     } else {
       setEnquiries(data as any);
     }
@@ -103,9 +102,9 @@ export default function EnquiriesPage() {
       .eq("id", id);
 
     if (error) {
-      addToast("Failed to update status", "error");
+      toast.error("Failed to update status");
     } else {
-      addToast(`Status updated to ${newStatus}`, "success");
+      toast.success(`Status updated to ${newStatus}`);
       fetchEnquiries();
     }
   };
@@ -113,7 +112,7 @@ export default function EnquiriesPage() {
   const handleCreate = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!createFormData.name || !createFormData.property_id) {
-          addToast("Name and Property are required", "error");
+          toast.error("Name and Property are required");
           return;
       }
 
@@ -129,9 +128,9 @@ export default function EnquiriesPage() {
 
       if (error) {
           console.error(error);
-          addToast("Failed to create enquiry", "error");
+          toast.error("Failed to create enquiry");
       } else {
-          addToast("Enquiry created successfully", "success");
+          toast.success("Enquiry created successfully");
           setIsCreateModalOpen(false);
           setCreateFormData({
             name: "",
@@ -164,12 +163,12 @@ export default function EnquiriesPage() {
 
       if (error) {
           console.error(error);
-          addToast("Failed to assign room", "error");
+          toast.error("Failed to assign room");
       } else {
           // Decrement available beds in the room
           await supabase.rpc('decrement_available_beds', { row_id: room.id });
 
-          addToast(`Assigned Room ${room.name} to ${selectedEnquiry.name}`, "success");
+          toast.success(`Assigned Room ${room.name} to ${selectedEnquiry.name}`);
           setIsAssignModalOpen(false);
           setSelectedEnquiry(null);
           fetchEnquiries();

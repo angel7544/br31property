@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, CheckCircle, Clock, AlertCircle, Filter, Eye } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 import { format } from "date-fns";
 
 type Complaint = {
@@ -18,7 +18,6 @@ type Complaint = {
 export default function ComplaintsPage() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addToast } = useToast();
   const supabase = createClient();
 
   const fetchComplaints = async (silent = false) => {
@@ -53,9 +52,9 @@ export default function ComplaintsPage() {
       .eq("id", id);
 
     if (error) {
-      addToast("Failed to update status", "error");
+      toast.error("Failed to update status");
     } else {
-      addToast("Status updated", "success");
+      toast.success("Status updated");
       fetchComplaints(true);
     }
   };
