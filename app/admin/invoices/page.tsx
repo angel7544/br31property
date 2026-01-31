@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FileText, Download, Plus, Eye, X } from "lucide-react";
 import jsPDF from "jspdf";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 
 type Invoice = {
   id: string;
@@ -17,18 +17,25 @@ type Invoice = {
   created_at: string;
 };
 
+type Profile = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+};
+
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [users, setUsers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [formData, setFormData] = useState({
+    user_id: "",
     guest_name: "",
     amount: 0,
     status: "Pending",
     due_date: new Date().toISOString().split('T')[0],
     description: ""
   });
-  const { addToast } = useToast();
   const supabase = createClient();
 
   const fetchInvoices = async (silent = false) => {
@@ -49,8 +56,22 @@ export default function InvoicesPage() {
     if (!silent) setLoading(false);
   };
 
+  const fetchUsers = async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, full_name, email")
+      .order("full_name", { ascending: true });
+    
+    if (error) {
+      console.error("Error fetching users:", error);
+    } else {
+      setUsers(data || []);
+    }
+  };
+
   useEffect(() => {
     fetchInvoices();
+    fetchUsers();
     const interval = setInterval(() => {
       fetchInvoices(true);
     }, 3000);
@@ -62,6 +83,7 @@ export default function InvoicesPage() {
     
     const { error } = await supabase.from("invoices").insert([
       {
+        user_id: formData.user_id || null,
         // guest_name: formData.guest_name, // Removed in new schema, should link to user_id ideally, but for now we might store description
         amount: formData.amount,
         status: formData.status,
@@ -72,11 +94,12 @@ export default function InvoicesPage() {
 
     if (error) {
       console.error(error);
-      addToast("Failed to create invoice", "error");
+      toast.error("Failed to create invoice");
     } else {
-      addToast("Invoice created successfully", "success");
+      toast.success("Invoice created successfully");
       setShowCreateModal(false);
       setFormData({
+        user_id: "",
         guest_name: "",
         amount: 0,
         status: "Pending",
@@ -128,7 +151,7 @@ export default function InvoicesPage() {
     doc.text("Thank you for staying with Hotel Sakura!", 105, 280, { align: "center" });
 
     doc.save(`Invoice-${invoice.id}.pdf`);
-    addToast("Invoice PDF downloaded", "success");
+    toast.success("Invoice PDF downloaded");
   };
 
   return (
@@ -205,8 +228,8 @@ export default function InvoicesPage() {
                     <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">Guest / User</label>
                     <select
                       id="user_id"
-                      value={formData.user_id}
-                      onChange={(e) => setFormData({...formData, user_id: e.target.value})}
+                      value={formData.guest_name}
+                      onChange={(e) => setFormData({...formData, guest_name: e.target.value})}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     >
                       <option value="">Select a Guest</option>

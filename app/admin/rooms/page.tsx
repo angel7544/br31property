@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Filter, MoreHorizontal, X, Edit, Trash2, Image as ImageIcon, BedDouble, Home } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 import { Room, Property } from "@/types";
 
 type RoomWithProperty = Room & {
@@ -31,7 +31,6 @@ export default function RoomsPage() {
   
   const [file, setFile] = useState<File | null>(null);
   
-  const { addToast } = useToast();
   const supabase = createClient();
 
   const fetchRooms = async (silent = false) => {
@@ -43,7 +42,7 @@ export default function RoomsPage() {
 
     if (error) {
       console.error(error);
-      addToast("Failed to fetch rooms", "error");
+      toast.error("Failed to fetch rooms");
     } else {
       setRooms(data as any);
     }
@@ -122,7 +121,7 @@ export default function RoomsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.property_id) {
-        addToast("Please select a property", "error");
+        toast.error("Please select a property");
         return;
     }
     
@@ -150,7 +149,7 @@ export default function RoomsPage() {
       }
     } catch (error) {
         console.error("Upload error:", error);
-        addToast("Failed to upload image", "error");
+        toast.error("Failed to upload image");
         // Proceed without image update if it fails?
     }
 
@@ -172,18 +171,18 @@ export default function RoomsPage() {
     if (editingRoom) {
       const { error } = await supabase.from("rooms").update(payload).eq("id", editingRoom.id);
       if (error) {
-         addToast("Failed to update room: " + error.message, "error");
+         toast.error("Failed to update room: " + error.message);
       } else {
-         addToast("Room updated successfully", "success");
+         toast.success("Room updated successfully");
          setIsModalOpen(false);
          fetchRooms();
       }
     } else {
       const { error } = await supabase.from("rooms").insert([payload]);
       if (error) {
-         addToast("Failed to create room: " + error.message, "error");
+         toast.error("Failed to create room: " + error.message);
       } else {
-         addToast("Room created successfully", "success");
+         toast.success("Room created successfully");
          setIsModalOpen(false);
          fetchRooms();
       }
@@ -208,9 +207,9 @@ export default function RoomsPage() {
     const { error } = await supabase.from("rooms").delete().eq("id", id);
     
     if (error) {
-      addToast("Failed to delete room: " + error.message, "error");
+      toast.error("Failed to delete room: " + error.message);
     } else {
-      addToast("Room deleted successfully", "success");
+      toast.success("Room deleted successfully");
       fetchRooms(true);
     }
   };
