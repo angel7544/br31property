@@ -19,6 +19,7 @@ type InventoryItem = {
 
 export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([]);
+  const [properties, setProperties] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,6 +32,11 @@ export default function InventoryPage() {
 
   const { addToast } = useToast();
   const supabase = createClient();
+
+  const fetchProperties = async () => {
+    const { data } = await supabase.from("properties").select("id, name");
+    if (data) setProperties(data);
+  };
 
   const fetchItems = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -49,21 +55,30 @@ export default function InventoryPage() {
 
   useEffect(() => {
     fetchItems();
+    fetchProperties();
   }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     const status = formData.quantity === 0 ? "Out of Stock" : formData.quantity <= formData.min_quantity ? "Low Stock" : "In Stock";
     
-    // For now we default to first property if not selected or handle property selection logic
-    // Ideally we fetch properties list. For brevity assuming backend defaults or we add property selector later.
-    // We'll skip property_id if empty and let backend handle or require it.
+    if (!formData.property_id && properties.length > 0) {
+        // Default to first if not selected? Or force selection. 
+        // Let's force selection or use the first one if only one exists.
+        if (properties.length === 1) {
+            formData.property_id = properties[0].id;
+        } else {
+            addToast("Please select a property", "error");
+            return;
+        }
+    }
     
     const payload: any = {
       item_name: formData.item_name,
       quantity: formData.quantity,
       min_quantity: formData.min_quantity,
       unit_price: formData.unit_price,
+      property_id: formData.property_id,
       status,
       last_restocked: new Date().toISOString().split('T')[0]
     };
@@ -155,6 +170,20 @@ export default function InventoryPage() {
           <div className="bg-white rounded-xl max-w-md w-full p-6">
             <h2 className="text-xl font-bold mb-4">Add Inventory Item</h2>
             <form onSubmit={handleAdd} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Property</label>
+                <select
+                  required
+                  className="w-full border rounded-lg p-2"
+                  value={formData.property_id}
+                  onChange={e => setFormData({...formData, property_id: e.target.value})}
+                >
+                  <option value="">Select Property</option>
+                  {properties.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Item Name</label>
                 <input

@@ -12,13 +12,13 @@ type Staff = {
   phone: string;
   status: string;
   image_url?: string;
-  hotel_id?: string;
-  hotels?: { name: string };
+  property_id?: string;
+  properties?: { name: string };
 };
 
 export default function StaffAdminPage() {
   const [staffList, setStaffList] = useState<Staff[]>([]);
-  const [hotels, setHotels] = useState<{ id: string; name: string }[]>([]);
+  const [properties, setProperties] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
@@ -31,7 +31,7 @@ export default function StaffAdminPage() {
     phone: "",
     status: "Active",
     image_url: "",
-    hotel_id: "",
+    property_id: "",
     password: "",
   });
   const [file, setFile] = useState<File | null>(null);
@@ -39,10 +39,10 @@ export default function StaffAdminPage() {
 
   const fetchStaff = async (silent = false) => {
     if (!silent) setLoading(true);
-    // Try to fetch with hotel name if relation exists
+    // Try to fetch with property name if relation exists
     const { data, error } = await supabase
       .from("staff")
-      .select("*, hotels(name)")
+      .select("*, properties(name)")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -56,17 +56,17 @@ export default function StaffAdminPage() {
     if (!silent) setLoading(false);
   };
 
-  const fetchHotels = async () => {
-    const { data } = await supabase.from("hotels").select("id, name");
-    setHotels(data || []);
+  const fetchProperties = async () => {
+    const { data } = await supabase.from("properties").select("id, name");
+    setProperties(data || []);
   };
 
   useEffect(() => {
     fetchStaff();
-    fetchHotels();
+    fetchProperties();
     const interval = setInterval(() => {
       fetchStaff(true);
-      fetchHotels();
+      fetchProperties();
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -96,7 +96,7 @@ export default function StaffAdminPage() {
           phone: formData.phone,
           status: formData.status,
           image_url: uploadedUrl,
-          hotel_id: formData.hotel_id || null,
+          property_id: formData.property_id || null,
         })
         .eq("id", editingStaff.id);
 
@@ -155,7 +155,7 @@ export default function StaffAdminPage() {
         phone: staff.phone,
         status: staff.status,
         image_url: staff.image_url || "",
-        hotel_id: staff.hotel_id || "",
+        property_id: staff.property_id || "",
         password: "", // Password not editable here
       });
     } else {
@@ -167,7 +167,7 @@ export default function StaffAdminPage() {
         phone: "",
         status: "Active",
         image_url: "",
-        hotel_id: "",
+        property_id: "",
         password: "",
       });
     }
@@ -228,7 +228,7 @@ export default function StaffAdminPage() {
                   <div className="mt-2 text-sm text-gray-600">
                      <p className="flex items-center"><span className="font-medium mr-2">Email:</span> {staff.email}</p>
                      <p className="flex items-center"><span className="font-medium mr-2">Phone:</span> {staff.phone}</p>
-                     <p className="flex items-center"><span className="font-medium mr-2">Hotel:</span> {staff.hotels?.name || "All / None"}</p>
+                     <p className="flex items-center"><span className="font-medium mr-2">Property:</span> {staff.properties?.name || "All / None"}</p>
                   </div>
                 </div>
               </div>
@@ -282,13 +282,13 @@ export default function StaffAdminPage() {
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Assign Hotel</label>
                         <select
-                            value={formData.hotel_id}
-                            onChange={(e) => setFormData({ ...formData, hotel_id: e.target.value })}
+                            value={formData.property_id}
+                            onChange={(e) => setFormData({ ...formData, property_id: e.target.value })}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm"
                         >
-                            <option value="">-- No Hotel --</option>
-                            {hotels.map(h => (
-                                <option key={h.id} value={h.id}>{h.name}</option>
+                            <option value="">-- No Property --</option>
+                            {properties.map(p => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
                             ))}
                         </select>
                     </div>
