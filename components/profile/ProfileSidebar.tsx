@@ -118,11 +118,11 @@ export default function ProfileSidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 ${
                 isActive
-                  ? "border-pink-500 text-pink-600 bg-pink-50"
+                  ? "border-blue-500 text-blue-600 bg-blue-50"
                   : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
-              <item.icon className={`w-5 h-5 ${isActive ? "text-pink-600" : "text-gray-400"}`} />
+              <item.icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400"}`} />
               {item.label}
             </Link>
           );

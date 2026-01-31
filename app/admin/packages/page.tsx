@@ -208,7 +208,7 @@ export default function PackagesAdminPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Packages Management</h1>
-        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700">
+        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
           <Plus className="h-4 w-4 mr-2" /> Create Package
         </button>
       </div>
@@ -259,9 +259,9 @@ export default function PackagesAdminPage() {
                              <div><span className="font-medium">Duration:</span> {pkg.number_of_days} Days / {pkg.number_of_nights} Nights</div>
                              <div><span className="font-medium">Capacity:</span> {pkg.room_capacity} Person(s)</div>
                              {pkg.is_corporate && <div className="text-blue-600 text-xs font-semibold">Corporate Event Friendly</div>}
-                             {pkg.is_wedding && <div className="text-pink-600 text-xs font-semibold">Wedding Friendly</div>}
+                             {pkg.is_wedding && <div className="text-blue-600 text-xs font-semibold">Wedding Friendly</div>}
                         </div>
-                        <p className="mt-2 text-lg font-bold text-pink-600">{currencySymbol}{pkg.price}</p>
+                        <p className="mt-2 text-lg font-bold text-blue-600">{currencySymbol}{pkg.price}</p>
                     </div>
                 </div>
             </div>
@@ -282,7 +282,7 @@ export default function PackagesAdminPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                   <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Images (Max 4)</label>
@@ -291,7 +291,7 @@ export default function PackagesAdminPage() {
                        accept="image/*" 
                        multiple
                        onChange={handleFileChange} 
-                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm"
+                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm"
                        disabled={formData.images.length + files.length >= 4}
                     />
 
@@ -329,63 +329,63 @@ export default function PackagesAdminPage() {
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Description</label>
-                   <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Days</label>
-                    <input required type="number" min="1" value={formData.number_of_days} onChange={(e) => setFormData({...formData, number_of_days: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                    <input required type="number" min="1" value={formData.number_of_days} onChange={(e) => setFormData({...formData, number_of_days: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Nights</label>
-                    <input required type="number" min="0" value={formData.number_of_nights} onChange={(e) => setFormData({...formData, number_of_nights: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                    <input required type="number" min="0" value={formData.number_of_nights} onChange={(e) => setFormData({...formData, number_of_nights: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Room Capacity</label>
-                    <input required type="number" min="1" value={formData.room_capacity} onChange={(e) => setFormData({...formData, room_capacity: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                    <input required type="number" min="1" value={formData.room_capacity} onChange={(e) => setFormData({...formData, room_capacity: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Beds</label>
-                    <input required type="number" min="1" value={formData.bed_count} onChange={(e) => setFormData({...formData, bed_count: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                    <input required type="number" min="1" value={formData.bed_count} onChange={(e) => setFormData({...formData, bed_count: parseInt(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                   </div>
                 </div>
 
                 <div className="flex space-x-4">
                    <div className="flex items-center">
-                     <input id="is_corporate" type="checkbox" checked={formData.is_corporate} onChange={(e) => setFormData({...formData, is_corporate: e.target.checked})} className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded" />
+                     <input id="is_corporate" type="checkbox" checked={formData.is_corporate} onChange={(e) => setFormData({...formData, is_corporate: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                      <label htmlFor="is_corporate" className="ml-2 block text-sm text-gray-900">Corporate Event</label>
                    </div>
                    <div className="flex items-center">
-                     <input id="is_wedding" type="checkbox" checked={formData.is_wedding} onChange={(e) => setFormData({...formData, is_wedding: e.target.checked})} className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded" />
+                     <input id="is_wedding" type="checkbox" checked={formData.is_wedding} onChange={(e) => setFormData({...formData, is_wedding: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                      <label htmlFor="is_wedding" className="ml-2 block text-sm text-gray-900">Wedding</label>
                    </div>
                    <div className="flex items-center">
-                     <input id="is_featured" type="checkbox" checked={formData.is_featured} onChange={(e) => setFormData({...formData, is_featured: e.target.checked})} className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded" />
+                     <input id="is_featured" type="checkbox" checked={formData.is_featured} onChange={(e) => setFormData({...formData, is_featured: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                      <label htmlFor="is_featured" className="ml-2 block text-sm text-gray-900">Featured</label>
                    </div>
                 </div>
 
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Included Items (comma separated)</label>
-                   <input type="text" value={formData.items} onChange={(e) => setFormData({...formData, items: e.target.value})} placeholder="Dinner, Spa, Tickets..." className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <input type="text" value={formData.items} onChange={(e) => setFormData({...formData, items: e.target.value})} placeholder="Dinner, Spa, Tickets..." className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Price</label>
-                   <input required type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: Number(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <input required type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: Number(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                  <div>
                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                   <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm">
+                   <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm">
                       <option value="Active">Active</option>
                       <option value="Disabled">Disabled</option>
                    </select>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-6 -mx-6 -mb-4">
-                  <button type="submit" className="inline-flex w-full justify-center rounded-md bg-pink-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 sm:ml-3 sm:w-auto">Save</button>
+                  <button type="submit" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Save</button>
                   <button type="button" onClick={() => setIsModalOpen(false)} className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
                 </div>
               </form>

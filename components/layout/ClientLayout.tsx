@@ -8,7 +8,7 @@ import FloatingCTA from "@/components/layout/FloatingCTA";
 import OfferPopup from "@/components/ui/OfferPopup";
 import { ToastProvider } from "@/components/ui/Toast";
 import { SettingsProvider } from "@/context/SettingsContext";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { Toaster } from "sonner";
 import SessionSync from "@/components/auth/SessionSync";
 
@@ -19,7 +19,9 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
   return (
     <SettingsProvider>
-      <SessionSync />
+      <Suspense fallback={null}>
+        <SessionSync />
+      </Suspense>
       <ToastProvider>
         <Toaster position="top-center" richColors />
         {!isAdmin && <Navbar />}

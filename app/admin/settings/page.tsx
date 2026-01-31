@@ -121,7 +121,7 @@ export default function SettingsPage() {
                   id="siteName"
                   value={settings.siteName}
                   onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
+                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function SettingsPage() {
                  {settings.logoUrl && (
                     <img src={settings.logoUrl} alt="Logo" className="h-12 w-auto" />
                  )}
-                 <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="block w-full text-base sm:text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" />
+                 <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="block w-full text-base sm:text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                </div>
             </div>
 
@@ -147,7 +147,7 @@ export default function SettingsPage() {
                   id="email"
                   value={settings.contactEmail}
                   onChange={(e) => setSettings({ ...settings, contactEmail: e.target.value })}
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
+                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
                 />
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                   id="phone"
                   value={settings.contactPhone}
                   onChange={(e) => setSettings({ ...settings, contactPhone: e.target.value })}
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
+                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function SettingsPage() {
                   id="address"
                   value={settings.address}
                   onChange={(e) => setSettings({ ...settings, address: e.target.value })}
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
+                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
                 />
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function SettingsPage() {
                   name="currency"
                   value={settings.currency}
                   onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-                  className="shadow-sm focus:ring-pink-500 focus:border-pink-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
+                  className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full text-base sm:text-sm border-gray-300 rounded-md py-2 px-3"
                 >
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
@@ -211,7 +211,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
+                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
                 {loading ? "Saving..." : "Save Settings"}
                 {!loading && <Save className="ml-2 -mr-1 h-4 w-4" />}

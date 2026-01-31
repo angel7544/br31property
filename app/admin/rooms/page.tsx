@@ -223,7 +223,7 @@ export default function RoomsPage() {
             <p className="text-sm text-gray-500">Manage rooms, bed capacity, and pricing for your PGs/Flats</p>
         </div>
         <div className="flex space-x-2">
-          <button onClick={() => handleOpenModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700">
+          <button onClick={() => handleOpenModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
             <Plus className="h-4 w-4 mr-2" /> Add Room
           </button>
         </div>
@@ -280,7 +280,7 @@ export default function RoomsPage() {
                              <div className="font-medium">Total Beds: {room.total_beds}</div>
                              <div className="font-medium text-green-600">Available: {room.available_beds}</div>
                         </div>
-                        <p className="mt-3 text-lg font-bold text-pink-600">₹ {room.monthly_rent}<span className="text-xs text-gray-400 font-normal">/month</span></p>
+                        <p className="mt-3 text-lg font-bold text-blue-600">₹ {room.monthly_rent}<span className="text-xs text-gray-400 font-normal">/month</span></p>
                     </div>
                 </div>
             </div>
@@ -450,7 +450,7 @@ export default function RoomsPage() {
                     </button>
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none sm:text-sm"
+                      className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm"
                     >
                       {editingRoom ? "Update Room" : "Create Room"}
                     </button>

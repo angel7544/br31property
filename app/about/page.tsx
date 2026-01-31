@@ -31,8 +31,8 @@ export default function AboutPage() {
               To provide a seamless, transparent, and hassle-free experience for students and professionals looking for comfortable living spaces. We aim to bridge the gap between property owners and tenants through technology and trust.
             </p>
             <div className="flex gap-4">
-              <div className="flex flex-col gap-2 p-4 bg-pink-50 rounded-xl border border-pink-100">
-                <Target className="w-8 h-8 text-pink-600" />
+              <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <Target className="w-8 h-8 text-blue-600" />
                 <span className="font-semibold text-gray-900">Goal Oriented</span>
               </div>
               <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-xl border border-blue-100">
@@ -67,7 +67,7 @@ export default function AboutPage() {
               { label: "Support", value: "24/7" },
             ].map((stat, index) => (
               <div key={index} className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
-                <div className="text-3xl md:text-4xl font-bold text-pink-600 mb-2">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">{stat.value}</div>
                 <div className="text-gray-600 font-medium">{stat.label}</div>
               </div>
             ))}
@@ -92,7 +92,7 @@ export default function AboutPage() {
                 />
              </div>
              <h3 className="text-xl font-bold text-gray-900">Team BR31</h3>
-             <p className="text-pink-600 font-medium mb-4">Property Management Experts</p>
+             <p className="text-blue-600 font-medium mb-4">Property Management Experts</p>
              <p className="text-gray-500 text-sm">
                We are a group of tech enthusiasts and real estate experts working together to solve your accommodation needs.
              </p>

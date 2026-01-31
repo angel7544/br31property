@@ -129,7 +129,7 @@ export default function RoomsClient({ initialItems }: { initialItems: RoomItem[]
                 <div className="p-5 flex flex-col gap-4 bg-white flex-grow justify-between">
                    <div className="flex justify-between items-end">
                       <div>
-                         <h3 className="text-pink-600 font-bold text-xl font-serif">{room.type}</h3>
+                         <h3 className="text-blue-600 font-bold text-xl font-serif">{room.type}</h3>
                          <p className="text-xs text-gray-400 uppercase tracking-widest font-medium mt-1">ROOM {room.room_number}</p>
                       </div>
                       <div className="text-right">
@@ -163,7 +163,7 @@ export default function RoomsClient({ initialItems }: { initialItems: RoomItem[]
                  
                  <div className="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-100">
                     <div className="flex items-center gap-3">
-                       <div className="p-2 bg-pink-50 rounded-full text-pink-600">
+                       <div className="p-2 bg-blue-50 rounded-full text-blue-600">
                          <Users className="h-5 w-5" />
                        </div>
                        <div>
@@ -172,7 +172,7 @@ export default function RoomsClient({ initialItems }: { initialItems: RoomItem[]
                        </div>
                     </div>
                     <div className="flex items-center gap-3">
-                       <div className="p-2 bg-pink-50 rounded-full text-pink-600">
+                       <div className="p-2 bg-blue-50 rounded-full text-blue-600">
                          <Bed className="h-5 w-5" />
                        </div>
                        <div>
@@ -188,7 +188,7 @@ export default function RoomsClient({ initialItems }: { initialItems: RoomItem[]
                       <div className="flex flex-wrap gap-3">
                          {room.amenities.map((amenity, idx) => (
                            <div key={idx} className="flex flex-col items-center gap-2 group/icon cursor-default">
-                              <div className="h-10 w-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 group-hover/icon:bg-pink-50 group-hover/icon:text-pink-600 group-hover/icon:border-pink-100 transition-all">
+                              <div className="h-10 w-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 group-hover/icon:bg-blue-50 group-hover/icon:text-blue-600 group-hover/icon:border-blue-100 transition-all">
                                 {getAmenityIcon(amenity)}
                               </div>
                               {/* Optional tooltip or text if needed, sticking to minimal icons per design, or maybe just text chips if icons are ambiguous. 

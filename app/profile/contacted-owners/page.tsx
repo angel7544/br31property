@@ -90,7 +90,7 @@ export default async function ContactedOwnersPage() {
                   <div className="mt-4 flex justify-end">
                     <Link 
                       href={`/pg/${enquiry.properties.city.toLowerCase()}/${enquiry.properties.slug}`}
-                      className="inline-flex items-center text-sm font-medium text-pink-600 hover:text-pink-700"
+                      className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700"
                     >
                       View Property <ArrowRight className="w-4 h-4 ml-1" />
                     </Link>
@@ -104,7 +104,7 @@ export default async function ContactedOwnersPage() {
         {(!enquiries || enquiries.length === 0) && (
           <div className="text-center py-12">
             <div className="text-gray-400 mb-2">No enquiries found</div>
-            <Link href="/pgs" className="text-pink-600 font-medium hover:underline">
+            <Link href="/pgs" className="text-blue-600 font-medium hover:underline">
               Browse Properties
             </Link>
           </div>

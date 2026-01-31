@@ -89,7 +89,7 @@ export default function InvoicesPage() {
     
     // Header
     doc.setFontSize(22);
-    doc.setTextColor(219, 39, 119); // Pink-600
+    doc.setTextColor(219, 39, 119); // blue-600
     doc.text("Hotel Sakura", 105, 20, { align: "center" });
     
     doc.setFontSize(16);
@@ -138,7 +138,7 @@ export default function InvoicesPage() {
         <h1 className="text-2xl font-bold text-gray-900">Invoices</h1>
         <button 
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="h-4 w-4 mr-2" /> Create Invoice
         </button>
@@ -210,7 +210,7 @@ export default function InvoicesPage() {
                       required
                       value={formData.guest_name}
                       onChange={(e) => setFormData({...formData, guest_name: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -224,7 +224,7 @@ export default function InvoicesPage() {
                         required
                         value={formData.amount}
                         onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value)})}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         />
                     </div>
                     <div>
@@ -233,7 +233,7 @@ export default function InvoicesPage() {
                         id="status"
                         value={formData.status}
                         onChange={(e) => setFormData({...formData, status: e.target.value})}
-                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         >
                             <option value="Pending">Pending</option>
                             <option value="Paid">Paid</option>
@@ -249,7 +249,7 @@ export default function InvoicesPage() {
                       required
                       value={formData.date}
                       onChange={(e) => setFormData({...formData, date: e.target.value})}
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                   <div>
@@ -260,13 +260,13 @@ export default function InvoicesPage() {
                       value={formData.items}
                       onChange={(e) => setFormData({...formData, items: e.target.value})}
                       placeholder="Room 101 - ₹100&#10;Breakfast - ₹20"
-                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                   <div className="mt-5 sm:mt-6">
                     <button
                       type="submit"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:text-sm"
+                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
                     >
                       Create Invoice
                     </button>

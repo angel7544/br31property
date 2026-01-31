@@ -72,7 +72,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="p-2 text-gray-400 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors">
+                <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
                   <Share2 className="w-5 h-5" />
                 </button>
                 <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
@@ -153,11 +153,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           <div className="flex gap-4 mt-auto">
             <Link
               href={`/pg/${property.city.toLowerCase()}/${property.slug}`}
-              className="flex-1 bg-white border border-pink-600 text-pink-600 text-center py-2.5 rounded-lg font-semibold hover:bg-pink-50 transition-colors"
+              className="flex-1 bg-white border border-blue-600 text-blue-600 text-center py-2.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
             >
               View Details
             </Link>
-            <button className="flex-1 bg-pink-600 text-white py-2.5 rounded-lg font-semibold hover:bg-pink-700 transition-colors shadow-sm shadow-pink-200">
+            <button className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200">
               Contact Owner
             </button>
           </div>

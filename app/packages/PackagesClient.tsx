@@ -97,13 +97,13 @@ export default function PackagesClient({ initialItems }: { initialItems: Package
                   <div className="flex flex-wrap gap-4 text-xs font-medium text-gray-500 border-t border-b border-gray-100 py-3 mb-4">
                       {(pkg.number_of_days || pkg.number_of_nights) && (
                         <div className="flex items-center gap-1.5">
-                            <Clock className="h-4 w-4 text-pink-500" />
+                            <Clock className="h-4 w-4 text-blue-500" />
                             <span>{pkg.number_of_days || 1} Days / {pkg.number_of_nights || 1} Nights</span>
                         </div>
                       )}
                       {pkg.room_capacity && (
                         <div className="flex items-center gap-1.5">
-                            <Users className="h-4 w-4 text-pink-500" />
+                            <Users className="h-4 w-4 text-blue-500" />
                             <span>Up to {pkg.room_capacity} Guests</span>
                         </div>
                       )}
@@ -114,7 +114,7 @@ export default function PackagesClient({ initialItems }: { initialItems: Package
                         </div>
                       )}
                       {pkg.is_wedding && (
-                        <div className="flex items-center gap-1.5 text-pink-600 bg-pink-50 px-2 py-0.5 rounded-full">
+                        <div className="flex items-center gap-1.5 text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                             <PartyPopper className="h-3.5 w-3.5" />
                             <span>Wedding</span>
                         </div>
@@ -128,7 +128,7 @@ export default function PackagesClient({ initialItems }: { initialItems: Package
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                        {pkg.items.map((item, idx) => (
                          <div key={idx} className="flex items-center gap-2 text-gray-700">
-                            <div className="h-6 w-6 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 flex-shrink-0">
+                            <div className="h-6 w-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
                               <Check className="h-3.5 w-3.5" />
                             </div>
                             <span className="text-sm font-medium leading-snug">{item}</span>

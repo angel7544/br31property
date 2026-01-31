@@ -56,11 +56,11 @@ export default function CatalogClient({ initialItems }: { initialItems: ServiceI
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h1 className="text-4xl font-serif font-bold text-gray-900">Service Catalog</h1>
         <div className="relative w-full md:w-80 group">
-           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-pink-500 transition-colors" />
+           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
            <input 
              type="text" 
              placeholder="Search services..." 
-             className="w-full pl-12 pr-4 py-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all outline-none text-gray-900 placeholder-gray-400"
+             className="w-full pl-12 pr-4 py-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none text-gray-900 placeholder-gray-400"
              value={searchTerm}
              onChange={(e) => setSearchTerm(e.target.value)}
            />
@@ -76,7 +76,7 @@ export default function CatalogClient({ initialItems }: { initialItems: ServiceI
             className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap capitalize transition-all duration-300 ${
               activeFilter === f 
                 ? "bg-gray-900 text-white shadow-lg shadow-gray-200 scale-105" 
-                : "bg-white text-gray-600 border border-gray-200 hover:border-pink-300 hover:text-pink-600 hover:bg-pink-50"
+                : "bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50"
             }`}
           >
             {f}
@@ -110,7 +110,7 @@ export default function CatalogClient({ initialItems }: { initialItems: ServiceI
               </div>
               <div className="p-4 flex flex-col flex-grow">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-serif font-bold text-lg text-gray-900 leading-tight group-hover:text-pink-600 transition-colors">{item.name}</h3>
+                  <h3 className="font-serif font-bold text-lg text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">{item.name}</h3>
                 </div>
                 
                 <p className="text-gray-600 mb-4 text-xs leading-relaxed line-clamp-3 flex-grow">{item.description}</p>

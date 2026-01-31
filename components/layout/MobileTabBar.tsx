@@ -78,7 +78,7 @@ export default function MobileTabBar() {
                 <button
                   onClick={() => onItemClick(href)}
                   className={`w-full h-full flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
-                    isActive(href) ? "text-pink-600 scale-110" : "text-gray-400 hover:text-gray-600"
+                    isActive(href) ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
                   <Icon className={`h-6 w-6 ${isActive(href) ? "stroke-[2.5px]" : "stroke-2"}`} />
@@ -88,7 +88,7 @@ export default function MobileTabBar() {
                 <Link
                   href={href}
                   className={`w-full h-full flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
-                    isActive(href) ? "text-pink-600 scale-110" : "text-gray-400 hover:text-gray-600"
+                    isActive(href) ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
                   <Icon className={`h-6 w-6 ${isActive(href) ? "stroke-[2.5px]" : "stroke-2"}`} />
@@ -143,11 +143,11 @@ export default function MobileTabBar() {
                   {user ? (
                     <div className="bg-white rounded-xl p-4 shadow-sm">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="h-6 w-6 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
+                        <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
                           {user.email?.[0].toUpperCase() || "U"}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-pink-600 uppercase tracking-wider mb-0.5">Signed in as</p>
+                          <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-0.5">Signed in as</p>
                           <p className="text-sm font-bold text-gray-900 truncate">{user.email}</p>
                         </div>
                       </div>
@@ -170,7 +170,7 @@ export default function MobileTabBar() {
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-                      <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-pink-50 text-pink-600 mb-3">
+                      <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 mb-3">
                         <LogIn className="h-6 w-6" />
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 mb-1">Staff Access</h3>
@@ -178,7 +178,7 @@ export default function MobileTabBar() {
                       <Link
                         href="/login"
                         onClick={() => setIsMoreOpen(false)}
-                        className="flex items-center justify-center w-full py-3 bg-gradient-to-r from-pink-600 to-rose-600 text-white rounded-xl font-semibold shadow-lg shadow-pink-200 hover:shadow-pink-300 transition-all active:scale-[0.98]"
+                        className="flex items-center justify-center w-full py-3 bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all active:scale-[0.98]"
                       >
                         Login to Dashboard
                       </Link>
@@ -194,7 +194,7 @@ export default function MobileTabBar() {
                       <Phone className="h-4 w-4" />
                       <span className="text-sm font-semibold">Call Now</span>
                     </a>
-                    <Link href="/contact" onClick={() => setIsMoreOpen(false)} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-pink-50 text-pink-700 hover:bg-pink-100 transition-colors border border-pink-100">
+                    <Link href="/contact" onClick={() => setIsMoreOpen(false)} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors border border-blue-100">
                       <Mail className="h-4 w-4" />
                       <span className="text-sm font-semibold">Enquire Now</span>
                     </Link>
@@ -214,7 +214,7 @@ export default function MobileTabBar() {
                   <div className="flex justify-center gap-6 mb-6">
                     {[
                       { icon: Facebook, href: "https://facebook.com/br31technologies", color: "text-blue-600 bg-blue-50" },
-                      { icon: Instagram, href: "https://instagram.com/br31tech.live", color: "text-pink-600 bg-pink-50" },
+                      { icon: Instagram, href: "https://instagram.com/br31tech.live", color: "text-blue-600 bg-blue-50" },
                       { icon: XIcon, href: "https://x.com/angelmehul", color: "text-gray-800 bg-gray-100" },
                     ].map((social, i) => (
                       <a 

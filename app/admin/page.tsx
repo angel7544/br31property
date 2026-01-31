@@ -16,7 +16,7 @@ export default function AdminHome() {
     // { name: "Total Revenue", value: "-", icon: DollarSign, color: "bg-green-500" },
     { name: "Active Bookings", value: "-", icon: Calendar, color: "bg-blue-500" },
     { name: "Room Occupancy", value: "-", icon: Bed, color: "bg-indigo-500" },
-    { name: "New Customers", value: "-", icon: Users, color: "bg-pink-500" },
+    { name: "New Customers", value: "-", icon: Users, color: "bg-blue-500" },
   ]);
 
   const [recent, setRecent] = useState<any[]>([]);
@@ -69,7 +69,7 @@ export default function AdminHome() {
         // { name: "Total Revenue", value: `₹${totalRevenue.toFixed(2)}`, icon: IndianRupee, color: "bg-green-500" },
         { name: "Active Bookings", value: String(activeBookings ?? 0), icon: Calendar, color: "bg-blue-500" },
         { name: "Room Occupancy", value: `${occupancy}%`, icon: Bed, color: "bg-indigo-500" },
-        { name: "New Customers", value: String(distinctEmails.size), icon: Users, color: "bg-pink-500" },
+        { name: "New Customers", value: String(distinctEmails.size), icon: Users, color: "bg-blue-500" },
       ]);
 
       // Recent Reservations list
@@ -107,7 +107,7 @@ export default function AdminHome() {
     <div className="rounded-lg border bg-white p-8 text-center">
       <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
       <p className="mt-2 text-gray-600">You do not have permission to view this dashboard.</p>
-      <Link href="/login" className="mt-4 inline-block px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">Go to Login</Link>
+      <Link href="/login" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Go to Login</Link>
     </div>
   );
 
@@ -171,7 +171,7 @@ export default function AdminHome() {
             )}
           </ul>
           <div className="p-4 border-t border-gray-200 bg-gray-50">
-            <Link href="/admin/reservations" className="text-sm font-medium text-pink-600 hover:text-pink-500">View all reservations &rarr;</Link>
+            <Link href="/admin/reservations" className="text-sm font-medium text-blue-600 hover:text-blue-500">View all reservations &rarr;</Link>
           </div>
         </div>
 
@@ -180,19 +180,19 @@ export default function AdminHome() {
             <h3 className="text-lg font-medium leading-6 text-gray-900">Quick Actions</h3>
           </div>
           <div className="p-6 grid grid-cols-2 gap-4">
-            <Link href="/admin/reservations" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pink-500 hover:bg-pink-50 transition-colors">
+            <Link href="/admin/reservations" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
               <Calendar className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">New Reservation</span>
             </Link>
-            <Link href="/admin/hotels" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pink-500 hover:bg-pink-50 transition-colors">
+            <Link href="/admin/hotels" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
               <Building className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">Add Property</span>
             </Link>
-             <Link href="/admin/rooms" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pink-500 hover:bg-pink-50 transition-colors">
+             <Link href="/admin/rooms" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
               <Bed className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">Manage Rooms</span>
             </Link>
-             <Link href="/admin/staff" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-pink-500 hover:bg-pink-50 transition-colors">
+             <Link href="/admin/staff" className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
               <Users className="h-8 w-8 text-gray-400 mb-2" />
               <span className="text-sm font-medium text-gray-900">Add Staff</span>
             </Link>

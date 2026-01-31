@@ -125,7 +125,7 @@ export default function Navbar() {
             <div className="animate-marquee whitespace-nowrap flex items-center gap-12 text-xs font-medium tracking-wide">
                 {[...offers, ...offers, ...offers, ...offers, ...offers, ...offers, ...offers, ...offers, ...offers, ...offers].map((offer, i) => (
                     <span key={i} className="flex items-center gap-2">
-                        <span className="text-pink-400 font-bold">{offer.discount_value}</span>
+                        <span className="text-blue-400 font-bold">{offer.discount_value}</span>
                         <span>{offer.title}</span>
                         {offer.discount_code && (
                             <span className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] font-mono border border-white/20">
@@ -172,8 +172,8 @@ export default function Navbar() {
                 href={link.href}
                 className={`text-sm font-medium transition-colors duration-200 ${
                   pathname === link.href 
-                    ? "text-pink-600" 
-                    : "text-gray-600 hover:text-pink-600"
+                    ? "text-blue-600" 
+                    : "text-gray-600 hover:text-blue-600"
                 }`}
               >
                 {link.label}
@@ -186,7 +186,7 @@ export default function Navbar() {
                   href="/profile" 
                   className="flex items-center gap-2 group"
                 >
-                  <div className="relative h-9 w-9 rounded-full bg-pink-100 flex items-center justify-center border border-pink-200 overflow-hidden group-hover:border-pink-400 transition-colors">
+                  <div className="relative h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200 overflow-hidden group-hover:border-blue-400 transition-colors">
                     {userData?.image ? (
                       <Image 
                         src={userData.image} 
@@ -196,11 +196,11 @@ export default function Navbar() {
                         className="object-cover"
                       />
                     ) : (
-                      <UserIcon className="h-5 w-5 text-pink-600" />
+                      <UserIcon className="h-5 w-5 text-blue-600" />
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-pink-600">
+                    <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
                       {userData?.name?.split(' ')[0] || "Profile"}
                     </span>
                   </div>
@@ -216,7 +216,7 @@ export default function Navbar() {
             ) : (
               <Link 
                 href="/login" 
-                className="text-sm font-medium text-gray-600 hover:text-pink-600 transition-colors pl-4 border-l border-gray-200"
+                className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors pl-4 border-l border-gray-200"
               >
                 Login
               </Link>
@@ -224,7 +224,7 @@ export default function Navbar() {
 
             <Link 
               href="/contact" 
-              className="px-6 py-2.5 bg-pink-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-pink-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+              className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
             >
               Book Now
             </Link>
@@ -240,11 +240,11 @@ export default function Navbar() {
                   <span className="text-sm font-semibold text-gray-900 leading-tight">
                     {userData?.name || "User"}
                   </span>
-                  <span className="text-xs text-pink-600 font-medium">
+                  <span className="text-xs text-blue-600 font-medium">
                     {userData?.role || "Guest"}
                   </span>
                 </div>
-                <div className="relative h-9 w-9 rounded-full bg-pink-100 flex items-center justify-center border border-pink-200 overflow-hidden">
+                <div className="relative h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200 overflow-hidden">
                   {userData?.image ? (
                     <Image 
                       src={userData.image} 
@@ -254,14 +254,14 @@ export default function Navbar() {
                       className="object-cover"
                     />
                   ) : (
-                    <UserIcon className="h-5 w-5 text-pink-600" />
+                    <UserIcon className="h-5 w-5 text-blue-600" />
                   )}
                 </div>
               </Link>
             ) : (
               <Link 
                 href="/contact" 
-                className="px-5 py-2 bg-pink-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-pink-700 transition-colors"
+                className="px-5 py-2 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 transition-colors"
               >
                 Book Now
               </Link>

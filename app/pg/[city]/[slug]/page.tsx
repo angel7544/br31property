@@ -58,9 +58,9 @@ export default async function PropertyPage({ params }: { params: { city: string;
         
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-          <Link href="/" className="hover:text-pink-600">Home</Link>
+          <Link href="/" className="hover:text-blue-600">Home</Link>
           <span>/</span>
-          <Link href="/pgs" className="hover:text-pink-600">PGs in {property.city}</Link>
+          <Link href="/pgs" className="hover:text-blue-600">PGs in {property.city}</Link>
           <span>/</span>
           <span className="text-gray-900 font-medium truncate max-w-[200px]">{property.name}</span>
         </div>
@@ -80,7 +80,7 @@ export default async function PropertyPage({ params }: { params: { city: string;
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-bold uppercase tracking-wide">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wide">
                       {property.type}
                     </span>
                     <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wide">
@@ -91,12 +91,12 @@ export default async function PropertyPage({ params }: { params: { city: string;
                   <div className="flex items-center text-gray-600">
                     <MapPin className="w-5 h-5 mr-1 text-gray-400" />
                     <span>{property.address}, {property.city}, {property.state} {property.zip_code}</span>
-                    <a href="#location" className="text-pink-600 font-medium ml-2 hover:underline text-sm">(View on map)</a>
+                    <a href="#location" className="text-blue-600 font-medium ml-2 hover:underline text-sm">(View on map)</a>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">Starts from</p>
-                  <p className="text-3xl font-bold text-pink-600">
+                  <p className="text-3xl font-bold text-blue-600">
                     {formatCurrency(property.price_range_min || 0)}
                     <span className="text-sm font-normal text-gray-500">/mo</span>
                   </p>
@@ -136,7 +136,7 @@ export default async function PropertyPage({ params }: { params: { city: string;
               <div className="space-y-6">
                 {property.rooms && property.rooms.length > 0 ? (
                   property.rooms.map((room: Room) => (
-                    <div key={room.id} className="border border-gray-200 rounded-xl p-6 hover:border-pink-200 transition-colors">
+                    <div key={room.id} className="border border-gray-200 rounded-xl p-6 hover:border-blue-200 transition-colors">
                       <div className="flex flex-col md:flex-row gap-6">
                         {/* Room Image Placeholder or Real Image */}
                         <div className="w-full md:w-48 h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
@@ -153,7 +153,7 @@ export default async function PropertyPage({ params }: { params: { city: string;
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="text-xl font-bold text-gray-900">{room.name}</h4>
                             <div className="text-right">
-                              <p className="text-xl font-bold text-pink-600">
+                              <p className="text-xl font-bold text-blue-600">
                                 {formatCurrency(room.monthly_rent)}
                                 <span className="text-sm font-normal text-gray-500">/mo</span>
                               </p>
@@ -195,7 +195,7 @@ export default async function PropertyPage({ params }: { params: { city: string;
             {property.rules && (
               <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">House Rules</h3>
-                <div className="prose prose-pink max-w-none text-gray-600 whitespace-pre-wrap">
+                <div className="prose pblue-blue max-w-none text-gray-600 whitespace-pre-wrap">
                   {property.rules}
                 </div>
               </div>
@@ -214,8 +214,8 @@ export default async function PropertyPage({ params }: { params: { city: string;
                    title="Property Location"
                  ></iframe>
                  <div className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg shadow-md text-sm font-semibold text-gray-700">
-                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.city}`)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-pink-600">
-                       <MapPin className="w-4 h-4 text-pink-500" />
+                    <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.city}`)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600">
+                       <MapPin className="w-4 h-4 text-blue-500" />
                        View on Google Maps
                     </a>
                  </div>

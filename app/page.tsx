@@ -48,7 +48,7 @@ export default function HomePage() {
         ))}
         
         <div className="relative z-10 max-w-4xl mx-auto text-center px-6 -mt-20">
-          <p className="text-pink-400 font-bold uppercase tracking-widest mb-4">Rent Smarter, Hassle-Free</p>
+          <p className="text-blue-400 font-bold uppercase tracking-widest mb-4">Rent Smarter, Hassle-Free</p>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 drop-shadow-lg leading-tight">
             Find Your Perfect Accommodation <br/>
             <span className="text-white">Conveniently from Anywhere</span>
@@ -67,7 +67,7 @@ export default function HomePage() {
       {/* Browse by Category */}
       <section className="container mx-auto px-4 pt-16 pb-8">
         <div className="text-center mb-10">
-          <span className="text-pink-600 font-bold text-sm uppercase tracking-wider">Paying Guest</span>
+          <span className="text-blue-600 font-bold text-sm uppercase tracking-wider">Paying Guest</span>
           <h2 className="text-3xl font-bold text-gray-900 mt-2">Find PGs based on your need</h2>
         </div>
 
@@ -134,9 +134,9 @@ export default function HomePage() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <span className="text-pink-600 font-bold text-sm uppercase tracking-wider">Our Services</span>
+            <span className="text-blue-600 font-bold text-sm uppercase tracking-wider">Our Services</span>
             <h2 className="text-4xl font-extrabold text-gray-900 mt-2">Why Choose Us</h2>
-            <div className="w-20 h-1 bg-pink-500 mx-auto mt-6 rounded-full"></div>
+            <div className="w-20 h-1 bg-blue-500 mx-auto mt-6 rounded-full"></div>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -148,8 +148,8 @@ export default function HomePage() {
               { icon: Wifi, title: "High-Speed Wifi", desc: "Work from home ready with unlimited fiber internet access included." },
               { icon: Bed, title: "Fully Furnished", desc: "Move-in ready homes with premium furniture and appliances." },
             ].map((service, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group p-6 rounded-2xl hover:bg-pink-50 transition-colors duration-300">
-                <div className="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:bg-pink-600 group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-pink-200 group-hover:shadow-lg transform group-hover:-translate-y-1">
+              <div key={idx} className="flex flex-col items-center text-center group p-6 rounded-2xl hover:bg-blue-50 transition-colors duration-300">
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-blue-200 group-hover:shadow-lg transform group-hover:-translate-y-1">
                   <service.icon className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3 uppercase tracking-wide">{service.title}</h3>
@@ -162,12 +162,12 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-pink-600/10 rounded-l-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/10 rounded-l-full blur-3xl"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-6">Ready to find your new home?</h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Join thousands of happy tenants who found their perfect stay with PG Dekho.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pgs" className="inline-flex items-center justify-center px-8 py-4 bg-pink-600 text-white font-bold rounded-full hover:bg-pink-700 transition-all shadow-lg hover:shadow-pink-500/30 transform hover:-translate-y-1">
+            <Link href="/pgs" className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
               Browse Listings
             </Link>
             <Link href="/list-property" className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transition-all shadow-lg transform hover:-translate-y-1">

@@ -103,7 +103,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
                 />
               </div>
             ) : null}
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {settings.siteName || "BR31 PROERTYMANAGEMENT SYSTEM"}
             </span>
         </Link>
@@ -113,7 +113,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
                  <p className="text-sm font-semibold text-gray-900">{user?.name || (roles.includes('admin') ? 'Admin' : (roles.includes('owner') ? 'Owner' : 'Staff'))}</p>
                  <p className="text-xs text-gray-500 capitalize">{user?.role || roles.join(', ')}</p>
                </div>
-               <div className="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold overflow-hidden relative border border-pink-200">
+               <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold overflow-hidden relative border border-blue-200">
                  {user?.image ? (
                    <Image src={user.image} alt={user.name} fill className="object-cover" />
                  ) : (
@@ -145,7 +145,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
                           className="object-contain"
                         />
                     ) : (
-                        <div className="h-full w-full bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 font-bold">
+                        <div className="h-full w-full bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
                             {settings.siteName?.charAt(0) || "S"}
                         </div>
                     )}
@@ -154,7 +154,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
               </div>
               
               <div className="flex items-center gap-2">
-                 <div className="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold overflow-hidden relative border border-pink-200">
+                 <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold overflow-hidden relative border border-blue-200">
                    {user?.image ? (
                      <Image src={user.image} alt={user.name} fill className="object-cover" />
                    ) : (

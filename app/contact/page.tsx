@@ -28,19 +28,19 @@ export default function ContactPage() {
             {/* <h3 className="text-lg font-semibold text-gray-900 mb-6">Get in Touch</h3> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-pink-100 rounded-lg text-pink-600 shrink-0">
+                <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0">
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Phone & WhatsApp</p>
-                  <a href={`tel:${settings.contactPhone || "+1 (555) 123-4567"}`} className="text-gray-500 hover:text-pink-600 transition-colors text-sm">
+                  <a href={`tel:${settings.contactPhone || "+1 (555) 123-4567"}`} className="text-gray-500 hover:text-blue-600 transition-colors text-sm">
                     {settings.contactPhone || "+1 (555) 123-4567"}
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-pink-100 rounded-lg text-pink-600 shrink-0">
+                <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
@@ -49,7 +49,7 @@ export default function ContactPage() {
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address || "123 Blossom Ave, Kyoto, Japan")}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-gray-500 hover:text-pink-600 transition-colors text-sm"
+                    className="text-gray-500 hover:text-blue-600 transition-colors text-sm"
                   >
                     {settings.address || "123 Blossom Ave, Kyoto, Japan"}
                   </a>
@@ -57,12 +57,12 @@ export default function ContactPage() {
               </div>
 
               <div className="flex items-start gap-3 sm:col-span-2">
-                <div className="p-2 bg-pink-100 rounded-lg text-pink-600 shrink-0">
+                <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Email</p>
-                  <a href={`mailto:${settings.contactEmail || "bookings@sakurahotels.com"}`} className="text-gray-500 hover:text-pink-600 transition-colors text-sm">
+                  <a href={`mailto:${settings.contactEmail || "bookings@sakurahotels.com"}`} className="text-gray-500 hover:text-blue-600 transition-colors text-sm">
                     {settings.contactEmail || "bookings@sakurahotels.com"}
                   </a>
                 </div>

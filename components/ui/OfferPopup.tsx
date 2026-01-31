@@ -177,7 +177,7 @@ export default function OfferPopup() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
                          <div className="text-white">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="inline-block px-3 py-1 bg-pink-600 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg">
+                                <span className="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg">
                                     Limited Time Offer
                                 </span>
                                 <span className="inline-block px-3 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg border border-white/20">
@@ -189,7 +189,7 @@ export default function OfferPopup() {
                       </div>
                    </div>
                 ) : (
-                   <div className="bg-gradient-to-br from-pink-600 to-purple-700 p-8 text-white text-center">
+                   <div className="bg-gradient-to-br from-blue-600 to-purple-700 p-8 text-white text-center">
                        <div className="flex items-center justify-center gap-2 mb-4">
                            <span className="inline-block px-3 py-1 bg-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full">
                                Special Offer
@@ -207,8 +207,8 @@ export default function OfferPopup() {
                         {offer.description}
                     </p>
                     
-                    <div className="bg-pink-50 rounded-xl p-4 border border-pink-100 mb-6">
-                        <p className="text-sm text-pink-600 font-medium uppercase tracking-wide mb-1">Your Exclusive Deal</p>
+                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-6">
+                        <p className="text-sm text-blue-600 font-medium uppercase tracking-wide mb-1">Your Exclusive Deal</p>
                         <p className="text-3xl font-bold text-gray-900">{offer.discount_value}</p>
                     </div>
 

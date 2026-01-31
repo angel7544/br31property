@@ -146,7 +146,7 @@ export default function ServicesAdminPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Services Management</h1>
-        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700">
+        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
           <Plus className="h-4 w-4 mr-2" /> Add Service
         </button>
       </div>
@@ -189,7 +189,7 @@ export default function ServicesAdminPage() {
                              <h3 className="text-lg font-medium text-gray-900">{service.name}</h3>
                              <span className="text-sm font-medium text-gray-500 capitalize">{service.type}</span>
                         </div>
-                        <p className="mt-2 text-lg font-bold text-pink-600"><BadgeIndianRupee className="inline-block h-5 w-5 mr-1" />{service.price}</p>
+                        <p className="mt-2 text-lg font-bold text-blue-600"><BadgeIndianRupee className="inline-block h-5 w-5 mr-1" />{service.price}</p>
                     </div>
                 </div>
             </div>
@@ -210,11 +210,11 @@ export default function ServicesAdminPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                   <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Description</label>
-                   <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Images (Max 4)</label>
@@ -223,7 +223,7 @@ export default function ServicesAdminPage() {
                        accept="image/*" 
                        multiple
                        onChange={handleFileChange} 
-                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm"
+                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm"
                        disabled={formData.images.length + files.length >= 4}
                     />
                    
@@ -261,7 +261,7 @@ export default function ServicesAdminPage() {
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Type</label>
-                   <select value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm">
+                   <select value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm">
                       <option value="lodging">Lodging</option>
                       <option value="fooding">Fooding</option>
                       <option value="travel">Travel</option>
@@ -272,17 +272,17 @@ export default function ServicesAdminPage() {
                 </div>
                 <div>
                    <label className="block text-sm font-medium text-gray-700">Price</label>
-                   <input required type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: Number(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm" />
+                   <input required type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: Number(e.target.value)})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm" />
                 </div>
                  <div>
                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                   <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 text-base sm:text-sm">
+                   <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm">
                       <option value="Active">Active</option>
                       <option value="Disabled">Disabled</option>
                    </select>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-6 -mx-6 -mb-4">
-                  <button type="submit" className="inline-flex w-full justify-center rounded-md bg-pink-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 sm:ml-3 sm:w-auto">Save</button>
+                  <button type="submit" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Save</button>
                   <button type="button" onClick={() => setIsModalOpen(false)} className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
                 </div>
               </form>

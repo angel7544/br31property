@@ -88,10 +88,10 @@ function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
                       </div>
                     )}
                     {t.service_rating && (
-                      <div className="bg-pink-50 p-3 rounded-2xl text-center border border-pink-100">
-                        <div className="text-pink-600 mb-1 flex justify-center"><ConciergeBell size={18} /></div>
-                        <div className="text-[10px] text-pink-600 font-bold uppercase tracking-wider mb-0.5">Service</div>
-                        <div className="text-pink-700 font-black text-lg">{t.service_rating.toFixed(1)}</div>
+                      <div className="bg-blue-50 p-3 rounded-2xl text-center border border-blue-100">
+                        <div className="text-blue-600 mb-1 flex justify-center"><ConciergeBell size={18} /></div>
+                        <div className="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-0.5">Service</div>
+                        <div className="text-blue-700 font-black text-lg">{t.service_rating.toFixed(1)}</div>
                       </div>
                     )}
                     {t.location_rating && (

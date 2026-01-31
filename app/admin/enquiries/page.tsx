@@ -210,14 +210,14 @@ export default function EnquiriesPage() {
              <input 
                type="text" 
                placeholder="Search guest..." 
-               className="pl-10 pr-4 py-2 border rounded-md focus:ring-pink-500 focus:border-pink-500 w-full"
+               className="pl-10 pr-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 w-full"
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
              />
            </div>
            <button 
              onClick={() => setIsCreateModalOpen(true)}
-             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700"
+             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
            >
              <Plus className="h-4 w-4 mr-2" /> New Enquiry
            </button>
@@ -252,7 +252,7 @@ export default function EnquiriesPage() {
                         </div>
                         {enquiry.rooms ? (
                             <div className="text-right">
-                                <div className="text-sm font-bold text-pink-600">{enquiry.rooms.name}</div>
+                                <div className="text-sm font-bold text-blue-600">{enquiry.rooms.name}</div>
                                 <div className="text-xs text-gray-500">{enquiry.rooms.type}</div>
                             </div>
                         ) : (
@@ -316,7 +316,7 @@ export default function EnquiriesPage() {
                         {(!enquiry.rooms) && enquiry.status !== "Closed" && (
                              <button 
                                 onClick={() => openAssignModal(enquiry)}
-                                className="flex-1 bg-pink-600 text-white text-sm py-2 rounded hover:bg-pink-700 transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 bg-blue-600 text-white text-sm py-2 rounded hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                              >
                                 <BedDouble className="h-4 w-4" />
                                 Assign Room
@@ -393,7 +393,7 @@ export default function EnquiriesPage() {
                         <textarea className="mt-1 block w-full border rounded-md p-2" 
                             value={createFormData.message} onChange={e => setCreateFormData({...createFormData, message: e.target.value})} />
                     </div>
-                    <button type="submit" className="w-full bg-pink-600 text-white py-2 rounded-md hover:bg-pink-700">Create Enquiry</button>
+                    <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">Create Enquiry</button>
                 </form>
             </div>
           </div>
@@ -430,7 +430,7 @@ export default function EnquiriesPage() {
                             </div>
                             <button 
                                 onClick={() => handleAssignRoom(room)}
-                                className="bg-pink-100 text-pink-700 px-3 py-1 rounded text-sm hover:bg-pink-200"
+                                className="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-200"
                             >
                                 Assign
                             </button>

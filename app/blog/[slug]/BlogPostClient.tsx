@@ -107,7 +107,7 @@ export default function BlogPostClient({ initialBlog }: { initialBlog: BlogPost 
 
             <div className="flex flex-wrap gap-2 mb-6">
               {blog.tags && blog.tags.map((tag: string) => (
-                <span key={tag} className="text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-full bg-pink-600 text-white">
+                <span key={tag} className="text-xs font-bold px-3 py-1 uppercase tracking-wider rounded-full bg-blue-600 text-white">
                   {tag}
                 </span>
               ))}
@@ -150,7 +150,7 @@ export default function BlogPostClient({ initialBlog }: { initialBlog: BlogPost 
         <SocialShare url={shareUrl} title={blog.title} />
 
         {/* Content */}
-        <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-pink-600 hover:prose-a:text-pink-700 prose-img:rounded-xl">
+        <div className="prose pblue-lg max-w-none pblue-headings:font-bold pblue-headings:text-gray-900 pblue-p:text-gray-700 pblue-a:text-blue-600 hover:pblue-a:text-blue-700 pblue-img:rounded-xl">
            <div dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br/>') }} />
         </div>
 

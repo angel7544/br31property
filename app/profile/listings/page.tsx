@@ -24,7 +24,7 @@ export default async function MyListingsPage() {
         <h1 className="text-2xl font-bold text-gray-900">My Listings</h1>
         <Link 
           href="/list-property" 
-          className="inline-flex items-center gap-2 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm font-medium"
+          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           List New Property
@@ -63,7 +63,7 @@ export default async function MyListingsPage() {
              <div className="flex flex-col justify-center">
                 <Link 
                    href={`/pg/${property.city.toLowerCase()}/${property.slug}`}
-                   className="text-sm text-pink-600 hover:underline font-medium"
+                   className="text-sm text-blue-600 hover:underline font-medium"
                 >
                    View
                 </Link>
@@ -82,7 +82,7 @@ export default async function MyListingsPage() {
             </p>
             <Link 
               href="/list-property" 
-              className="bg-pink-600 text-white px-8 py-3 rounded-xl hover:bg-pink-700 transition-colors font-semibold shadow-lg shadow-pink-200"
+              className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-lg shadow-blue-200"
             >
               List Your Property
             </Link>

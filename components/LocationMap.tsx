@@ -92,7 +92,7 @@ export default function LocationMap() {
                 href="https://maps.app.goo.gl/9RFtydCm1TzC9QK99" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-xs text-pink-600 font-semibold mt-2 inline-block hover:underline"
+                className="text-xs text-blue-600 font-semibold mt-2 inline-block hover:underline"
               >
                 Open in Google Maps &rarr;
               </a>

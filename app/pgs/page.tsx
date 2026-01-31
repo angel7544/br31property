@@ -3,6 +3,7 @@ import SearchHeader from "@/components/search/SearchHeader";
 import SearchSidebar from "@/components/search/SearchSidebar";
 import PropertyCard from "@/components/search/PropertyCard";
 import { Property, Room } from "@/types";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Search PGs & Flats | PG Dekho",
@@ -87,13 +88,17 @@ export default async function PGsPage({ searchParams }: { searchParams: { [key: 
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
-       <SearchHeader cities={cities} />
+       <Suspense fallback={<div className="h-16 bg-white animate-pulse" />}>
+         <SearchHeader cities={cities} />
+       </Suspense>
        
        <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
              {/* Sidebar */}
              <div className="w-full lg:w-1/4 flex-shrink-0 hidden lg:block">
-                <SearchSidebar />
+                <Suspense fallback={<div className="h-96 bg-white rounded-xl animate-pulse" />}>
+                  <SearchSidebar />
+                </Suspense>
              </div>
 
              {/* Results */}
@@ -106,7 +111,7 @@ export default async function PGsPage({ searchParams }: { searchParams: { [key: 
                    {/* Mobile Filter Toggle (Visible only on mobile) */}
                    <div className="lg:hidden">
                       {/* You could add a Sheet/Modal trigger here for mobile sidebar */}
-                      <span className="text-sm text-pink-600 font-medium">Filters</span>
+                      <span className="text-sm text-blue-600 font-medium">Filters</span>
                    </div>
                 </div>
 

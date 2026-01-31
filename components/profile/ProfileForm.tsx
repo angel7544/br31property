@@ -108,8 +108,8 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-full file:border-0
                 file:text-sm file:font-semibold
-                file:bg-pink-50 file:text-pink-700
-                hover:file:bg-pink-100"
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"
             />
             {uploading && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
           </div>
@@ -124,7 +124,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
                 name="full_name"
                 value={formData.full_name}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="John Doe"
               />
               <User className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -152,7 +152,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="+91 98765 43210"
               />
               <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -167,7 +167,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="New York"
               />
               <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -182,7 +182,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="NY"
               />
               <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -198,7 +198,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="123 Main St, Apt 4B"
             />
             <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -209,7 +209,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
           <button
             type="submit"
             disabled={loading}
-            className="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>

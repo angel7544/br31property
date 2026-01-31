@@ -210,7 +210,7 @@ export default function TestimonialsPage() {
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition flex items-center gap-2"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
         >
           <Plus size={20} />
           Add Testimonial
@@ -219,7 +219,7 @@ export default function TestimonialsPage() {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -275,7 +275,7 @@ export default function TestimonialsPage() {
               )}
 
               <p className="text-gray-600 text-sm line-clamp-4 relative pl-4">
-                <Quote size={12} className="absolute top-0 left-0 text-pink-300 transform -scale-x-100" />
+                <Quote size={12} className="absolute top-0 left-0 text-blue-300 transform -scale-x-100" />
                 {t.message}
               </p>
 
@@ -311,7 +311,7 @@ export default function TestimonialsPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="John Doe"
                   />
                 </div>
@@ -321,7 +321,7 @@ export default function TestimonialsPage() {
                     type="text"
                     value={formData.role}
                     onChange={(e) => setFormData({...formData, role: e.target.value})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="CEO, Tech Corp"
                   />
                 </div>
@@ -334,7 +334,7 @@ export default function TestimonialsPage() {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                  className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Share the experience..."
                 />
               </div>
@@ -349,7 +349,7 @@ export default function TestimonialsPage() {
                     step="0.1"
                     value={formData.rooms_rating}
                     onChange={(e) => setFormData({...formData, rooms_rating: Number(e.target.value)})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -361,7 +361,7 @@ export default function TestimonialsPage() {
                     step="0.1"
                     value={formData.service_rating}
                     onChange={(e) => setFormData({...formData, service_rating: Number(e.target.value)})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -373,7 +373,7 @@ export default function TestimonialsPage() {
                     step="0.1"
                     value={formData.location_rating}
                     onChange={(e) => setFormData({...formData, location_rating: Number(e.target.value)})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -385,7 +385,7 @@ export default function TestimonialsPage() {
                       type="text"
                       value={formData.hotel_highlights}
                       onChange={(e) => setFormData({...formData, hotel_highlights: e.target.value})}
-                      className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                      className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g. Quiet, Great View, Luxury"
                     />
                  </div>
@@ -395,7 +395,7 @@ export default function TestimonialsPage() {
                       type="text"
                       value={formData.walkability}
                       onChange={(e) => setFormData({...formData, walkability: e.target.value})}
-                      className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                      className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g. Near Gandhi Marg"
                     />
                  </div>
@@ -405,7 +405,7 @@ export default function TestimonialsPage() {
                       rows={2}
                       value={formData.food_and_drinks}
                       onChange={(e) => setFormData({...formData, food_and_drinks: e.target.value})}
-                      className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                      className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="e.g. Tea is good, fresh milk available..."
                     />
                  </div>
@@ -417,7 +417,7 @@ export default function TestimonialsPage() {
                   <select
                     value={formData.rating}
                     onChange={(e) => setFormData({...formData, rating: Number(e.target.value)})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   >
                     {[5, 4, 3, 2, 1].map(r => (
                       <option key={r} value={r}>{r} Stars</option>
@@ -429,7 +429,7 @@ export default function TestimonialsPage() {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="w-full rounded-lg border-gray-300 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -454,7 +454,7 @@ export default function TestimonialsPage() {
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                 </div>
               </div>
@@ -470,7 +470,7 @@ export default function TestimonialsPage() {
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="flex-1 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                 >
                   {uploading ? "Saving..." : "Save Testimonial"}
                 </button>

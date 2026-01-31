@@ -140,7 +140,7 @@ export default function OffersAdminPage() {
     <div className="space-y-6">
        <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Offers Management</h1>
-        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700">
+        <button onClick={() => openModal()} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
           <Plus className="h-4 w-4 mr-2" /> Create Offer
         </button>
       </div>
@@ -182,7 +182,7 @@ export default function OffersAdminPage() {
                         <p className="text-sm text-gray-600 mt-1 line-clamp-2">{offer.description}</p>
                         
                         <div className="mt-4 flex justify-between items-center">
-                             <div className="text-sm font-medium text-pink-600 bg-pink-50 px-2 py-1 rounded">
+                             <div className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
                                  {offer.discount_value}
                              </div>
                              {offer.discount_code && (
@@ -222,28 +222,28 @@ export default function OffersAdminPage() {
                  <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Title</label>
-                        <input required type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                        <input required type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                     </div>
                     
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                        <textarea rows={3} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Discount Value</label>
-                            <input required type="text" placeholder="e.g. 20% OFF" value={formData.discount_value} onChange={(e) => setFormData({...formData, discount_value: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                            <input required type="text" placeholder="e.g. 20% OFF" value={formData.discount_value} onChange={(e) => setFormData({...formData, discount_value: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Code (Optional)</label>
-                            <input type="text" placeholder="e.g. SUMMER20" value={formData.discount_code} onChange={(e) => setFormData({...formData, discount_code: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                            <input type="text" placeholder="e.g. SUMMER20" value={formData.discount_code} onChange={(e) => setFormData({...formData, discount_code: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Image</label>
-                        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                          {formData.image_url && (
                             <img src={formData.image_url} alt="Preview" className="mt-2 h-20 w-auto rounded" />
                         )}
@@ -252,21 +252,21 @@ export default function OffersAdminPage() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                            <input type="date" value={formData.start_date} onChange={(e) => setFormData({...formData, start_date: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                            <input type="date" value={formData.start_date} onChange={(e) => setFormData({...formData, start_date: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">End Date</label>
-                            <input type="date" value={formData.end_date} onChange={(e) => setFormData({...formData, end_date: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-pink-500 focus:border-pink-500 sm:text-sm" />
+                            <input type="date" value={formData.end_date} onChange={(e) => setFormData({...formData, end_date: e.target.value})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                         </div>
                     </div>
 
                     <div className="flex items-center">
-                        <input id="is_active" type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({...formData, is_active: e.target.checked})} className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded" />
+                        <input id="is_active" type="checkbox" checked={formData.is_active} onChange={(e) => setFormData({...formData, is_active: e.target.checked})} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                         <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">Active</label>
                     </div>
 
                     <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-6 -mx-6 -mb-4">
-                         <button type="submit" className="inline-flex w-full justify-center rounded-md bg-pink-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-pink-500 sm:ml-3 sm:w-auto">Save</button>
+                         <button type="submit" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">Save</button>
                          <button type="button" onClick={() => setIsModalOpen(false)} className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
                     </div>
                  </form>
