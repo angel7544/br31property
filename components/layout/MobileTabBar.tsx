@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, ConciergeBell, Package, Phone, MoreHorizontal, X, MapPin, Mail, Facebook, Instagram, LogIn, LayoutDashboard, BedDoubleIcon, XIcon, ExternalLink, ChevronRight, AlignVerticalSpaceAround, NotebookIcon, NewspaperIcon } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiArticleBold } from "react-icons/pi";
@@ -19,7 +19,7 @@ export default function MobileTabBar() {
   const router = useRouter();
 
   useEffect(() => {
-    const supabase = getSupabaseClient();
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
@@ -58,7 +58,7 @@ export default function MobileTabBar() {
   };
 
   const handleLogout = async () => {
-    const supabase = getSupabaseClient();
+    const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setIsMoreOpen(false);
@@ -194,10 +194,12 @@ export default function MobileTabBar() {
                       <Phone className="h-4 w-4" />
                       <span className="text-sm font-semibold">Call Now</span>
                     </a>
-                    <Link href="/contact" onClick={() => setIsMoreOpen(false)} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors border border-blue-100">
-                      <Mail className="h-4 w-4" />
-                      <span className="text-sm font-semibold">Enquire Now</span>
-                    </Link>
+                    {user && (
+                      <Link href="/contact" onClick={() => setIsMoreOpen(false)} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors border border-blue-100">
+                        <Mail className="h-4 w-4" />
+                        <span className="text-sm font-semibold">Enquire Now</span>
+                      </Link>
+                    )}
                     <a href="https://maps.google.com/?q=hotel+sakura+ganagtok" target="_blank" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors border border-emerald-100">
                       <MapPin className="h-4 w-4" />
                       <span className="text-sm font-semibold">Locate</span>

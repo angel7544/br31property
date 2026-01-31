@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { User as UserIcon, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { getUserRoles } from "@/lib/auth";
 import { useSettings } from "@/context/SettingsContext";
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [offers, setOffers] = useState<any[]>([]);
 
   useEffect(() => {
-    const supabase = getSupabaseClient();
+    const supabase = createClient();
     
     // Fetch active offers for marquee
     const fetchOffers = async () => {
@@ -108,7 +108,7 @@ export default function Navbar() {
   if (pathname?.startsWith("/admin")) return null;
 
   const handleLogout = async () => {
-    const supabase = getSupabaseClient();
+    const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setUserData(null);
@@ -222,50 +222,45 @@ export default function Navbar() {
               </Link>
             )}
 
-            <Link 
-              href="/contact" 
-              className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-            >
-              Book Now
-            </Link>
+            {user && (
+              <Link 
+                href="/contact" 
+                className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+              >
+                Book Now
+              </Link>
+            )}
           </div>
 
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center md:hidden gap-2">
+            {user && (
+              <Link 
+                href="/contact" 
+                className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-full shadow-md hover:bg-blue-700 transition-colors"
+              >
+                Book
+              </Link>
+            )}
             {user ? (
               <Link 
                 href="/profile"
-                className="flex items-center gap-3"
+                className="flex items-center gap-2"
               >
-                <div className="flex flex-col items-end mr-1">
-                  <span className="text-sm font-semibold text-gray-900 leading-tight">
-                    {userData?.name || "User"}
-                  </span>
-                  <span className="text-xs text-blue-600 font-medium">
-                    {userData?.role || "Guest"}
-                  </span>
-                </div>
-                <div className="relative h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200 overflow-hidden">
+                <div className="relative h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200 overflow-hidden">
                   {userData?.image ? (
                     <Image 
                       src={userData.image} 
                       alt={userData.name} 
                       fill 
-                      sizes="36px"
+                      sizes="32px"
                       className="object-cover"
                     />
                   ) : (
-                    <UserIcon className="h-5 w-5 text-blue-600" />
+                    <UserIcon className="h-4 w-4 text-blue-600" />
                   )}
                 </div>
               </Link>
-            ) : (
-              <Link 
-                href="/contact" 
-                className="px-5 py-2 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 transition-colors"
-              >
-                Book Now
-              </Link>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
