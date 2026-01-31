@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 
 type Staff = {
   id: string;
@@ -22,7 +22,6 @@ export default function StaffAdminPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
-  const { addToast } = useToast();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -102,9 +101,9 @@ export default function StaffAdminPage() {
 
       if (error) {
         console.error(error);
-        addToast("Failed to update staff (DB error)", "error");
+        toast.error("Failed to update staff (DB error)");
       } else {
-        addToast("Staff updated", "success");
+        toast.success("Staff updated");
         setIsModalOpen(false);
         fetchStaff();
       }
@@ -123,14 +122,14 @@ export default function StaffAdminPage() {
         const json = await res.json();
         
         if (!res.ok) {
-          addToast(json.error || "Failed to create staff", "error");
+          toast.error(json.error || "Failed to create staff");
         } else {
-          addToast("Staff created successfully", "success");
+          toast.success("Staff created successfully");
           setIsModalOpen(false);
           fetchStaff();
         }
       } catch (err) {
-        addToast("An error occurred", "error");
+        toast.error("An error occurred");
       }
     }
   };
@@ -139,9 +138,9 @@ export default function StaffAdminPage() {
     if (!confirm("Are you sure? This will not delete the login account, only the staff record.")) return;
     const { error } = await supabase.from("staff").delete().eq("id", id);
     if (error) {
-      addToast("Failed to delete (DB error)", "error");
+      toast.error("Failed to delete (DB error)");
     } else {
-      addToast("Staff deleted", "success");
+      toast.success("Staff deleted");
       fetchStaff();
     }
   };
@@ -281,7 +280,7 @@ export default function StaffAdminPage() {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Assign Hotel</label>
+                        <label className="block text-sm font-medium text-gray-700">Assign Property</label>
                         <select
                             value={formData.property_id}
                             onChange={(e) => setFormData({ ...formData, property_id: e.target.value })}

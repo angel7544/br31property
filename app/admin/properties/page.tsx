@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash, X, Image as ImageIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { useToast } from "@/components/ui/Toast";
+import { toast } from "sonner";
 import { Property } from "@/types";
 
 export default function PropertiesPage() {
@@ -10,7 +10,6 @@ export default function PropertiesPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
-  const { addToast } = useToast();
   
   // Form State
   const initialForm = { 
@@ -33,7 +32,7 @@ export default function PropertiesPage() {
     const { data, error } = await supabase.from("properties").select("*").order("created_at", { ascending: false });
     if (error) {
       console.error(error);
-      addToast("Failed to fetch properties", "error");
+      toast.error("Failed to fetch properties");
     } else {
       setProperties(data as Property[] || []);
     }
@@ -72,7 +71,7 @@ export default function PropertiesPage() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-        addToast("You must be logged in", "error");
+        toast.error("You must be logged in");
         return;
     }
 
@@ -88,9 +87,9 @@ export default function PropertiesPage() {
       const { error } = await supabase.from("properties").update(payload).eq("id", editingProperty.id);
       if (error) {
          console.error(error);
-         addToast("Failed to update property", "error");
+         toast.error("Failed to update property");
       } else {
-         addToast("Property updated successfully", "success");
+         toast.success("Property updated successfully");
          setIsModalOpen(false);
          setEditingProperty(null);
          fetchProperties();
@@ -100,9 +99,9 @@ export default function PropertiesPage() {
       const { error } = await supabase.from("properties").insert([payload]);
       if (error) {
          console.error(error);
-         addToast("Failed to create property", "error");
+         toast.error("Failed to create property");
       } else {
-         addToast("Property created successfully", "success");
+         toast.success("Property created successfully");
          setIsModalOpen(false);
          fetchProperties();
       }
@@ -113,9 +112,9 @@ export default function PropertiesPage() {
     if (!confirm("Are you sure you want to delete this property?")) return;
     const { error } = await supabase.from("properties").delete().eq("id", id);
     if (error) {
-       addToast("Failed to delete property", "error");
+       toast.error("Failed to delete property");
     } else {
-       addToast("Property deleted", "success");
+       toast.success("Property deleted");
        fetchProperties();
     }
   };
