@@ -9,8 +9,8 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 
 const heroImages = [
   "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop", // Hostel/PG vibe
-  "https://images.unsplash.com/photo-1522771753033-6a98d08722aa?q=80&w=2070&auto=format&fit=crop", // Modern Room
-  "https://images.unsplash.com/photo-1596276020587-8044fe049813?q=80&w=2039&auto=format&fit=crop", // Living Space
+  "https://media.istockphoto.com/id/155700839/photo/a-beautiful-home-available-for-rent.jpg?s=612x612&w=0&k=20&c=aPwqJ67O3CGGItsDoI8fuGwAuTR3L3B80tImG2mlQQ8=", // Modern Room
+  "https://thumbs.dreamstime.com/b/modern-living-room-sofa-furniture-indian-type-interior-house-modern-living-room-sofa-furniture-indian-type-104886281.jpg", // Living Space
 ];
 
 export default function HomePage() {
@@ -26,7 +26,7 @@ export default function HomePage() {
   return (
     <div className="space-y-6 pb-4 bg-gray-50 min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gray-900 text-white h-[600px] flex flex-col items-center justify-center">
+      <section className="relative overflow-hidden bg-gray-900 text-white h-[300px] flex flex-col items-center justify-center">
         {/* Carousel Background */}
         {heroImages.map((img, index) => (
           <div 
@@ -37,7 +37,7 @@ export default function HomePage() {
           >
             <Image 
               src={img} 
-              alt={`PG Dekho View ${index + 1}`}
+              alt={`BR31 PMS View ${index + 1}`}
               fill
               priority={index === 0}
               className="object-cover"
@@ -47,7 +47,7 @@ export default function HomePage() {
           </div>
         ))}
         
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-6 -mt-20">
+        <div className="relative z-8 max-w-6xl mx-auto text-center px-6 -mt-20">
           <p className="text-blue-400 font-bold uppercase tracking-widest mb-4">Rent Smarter, Hassle-Free</p>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 drop-shadow-lg leading-tight">
             Find Your Perfect Accommodation <br/>

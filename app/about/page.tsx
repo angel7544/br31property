@@ -31,23 +31,23 @@ export default function AboutPage() {
               To provide a seamless, transparent, and hassle-free experience for students and professionals looking for comfortable living spaces. We aim to bridge the gap between property owners and tenants through technology and trust.
             </p>
             <div className="flex gap-4">
-              <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                <Target className="w-8 h-8 text-blue-600" />
+              <div className="flex flex-col gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                <Target className="w-6 h-6 text-blue-600" />
                 <span className="font-semibold text-gray-900">Goal Oriented</span>
               </div>
-              <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                <ShieldCheck className="w-8 h-8 text-blue-600" />
+              <div className="flex flex-col gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                <ShieldCheck className="w-6 h-6 text-blue-600" />
                 <span className="font-semibold text-gray-900">Secure & Safe</span>
               </div>
-              <div className="flex flex-col gap-2 p-4 bg-green-50 rounded-xl border border-green-100">
-                <Heart className="w-8 h-8 text-green-600" />
+              <div className="flex flex-col gap-2 p-3 bg-green-50 rounded-xl border border-green-100">
+                <Heart className="w-6 h-6 text-green-600" />
                 <span className="font-semibold text-gray-900">Customer First</span>
               </div>
             </div>
           </div>
-          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-xl">
+          <div className="relative h-[240px] rounded-2xl overflow-hidden shadow-xl">
             <Image
-              src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgbW8sYFtbnvc7KlT6Xw_I8h5-P4CczGySDA&s"
               alt="Our Mission"
               fill
               className="object-cover"

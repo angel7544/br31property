@@ -102,24 +102,24 @@ export default function InquiryForm({ propertyId, roomId, propertyName, roomName
   };
 
   if (loadingUser) {
-    return <div className="p-8 text-center text-gray-500">Loading...</div>;
+    return <div className="p-6 text-center text-gray-500">Loading...</div>;
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-8">
-      <h3 className="text-xl font-bold text-gray-900 mb-6">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-8">
+      <h3 className="text-xl font-bold text-gray-900 mb-5">
         {propertyName ? `Enquire about ${propertyName}` : "Send Inquiry / Book Now"}
       </h3>
       
       {!user && (
-        <div className="mb-6 p-4 bg-blue-50 text-blue-800 rounded-lg text-sm">
+        <div className="mb-5 p-4 bg-blue-50 text-blue-800 rounded-lg text-sm">  
            <p className="font-medium mb-1">Guest Inquiry</p>
            <p>You can send an inquiry without logging in. Please provide your mobile number so we can contact you.</p>
         </div>
       )}
 
       {status === "success" ? (
-        <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-6">
+        <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-5">
           <p className="font-medium">Inquiry Submitted!</p>
           <p className="text-sm">We have received your request and shared your details with the owner.</p>
           <button onClick={() => setStatus(null)} className="text-sm underline mt-2">Send another</button>

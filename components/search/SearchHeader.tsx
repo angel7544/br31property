@@ -30,7 +30,7 @@ export default function SearchHeader({ cities }: { cities: string[] }) {
   };
 
   return (
-    <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
+    <div className="bg-white shadow-sm border-b border-gray-200 sticky top-[-64px] z-30">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row gap-4 items-center bg-white p-2 rounded-xl border border-gray-200 shadow-sm">
           

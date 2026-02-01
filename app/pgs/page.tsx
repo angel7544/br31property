@@ -6,7 +6,7 @@ import { Property, Room } from "@/types";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Search PGs & Flats | PG Dekho",
+  title: "Search PGs & Flats | br31pms",
   description: "Find the best PGs and Flats with food, wifi, and amenities.",
 };
 
@@ -86,7 +86,7 @@ export default async function PGsPage({ searchParams }: { searchParams: { [key: 
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-0">
        <Suspense fallback={<div className="h-16 bg-white animate-pulse" />}>
          <SearchHeader cities={cities} />
        </Suspense>
