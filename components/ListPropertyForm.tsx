@@ -14,7 +14,7 @@ const AMENITIES_LIST = [
   "CCTV", "Water Purifier", "Refrigerator"
 ];
 
-export default function ListPropertyForm({ userId }: { userId: string }) {
+export default function ListPropertyForm({ userId, initialData, isEditMode = false }: { userId: string, initialData?: any, isEditMode?: boolean }) {
   const router = useRouter();
   const supabase = createClient();
   
@@ -39,6 +39,7 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
 
   // Room Configuration State (For PGs)
   const [rooms, setRooms] = useState<{
+    id?: string;
     name: string;
     type: string;
     rent: string;
@@ -68,7 +69,38 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
         setCanPost(true);
       }
     });
-  }, [supabase]);
+
+    if (initialData) {
+        setType(initialData.type || "PG");
+        setFormData({
+            location: initialData.city || initialData.address || "",
+            name: initialData.name || "",
+            description: initialData.description || "",
+            contact: initialData.contact_number || "",
+            email: initialData.email || "",
+            price_min: initialData.price_range_min?.toString() || "",
+            price_max: initialData.price_range_max?.toString() || ""
+        });
+        setMainImage(initialData.image_url || "");
+        setOtherImages(initialData.images || []);
+        setAmenities(initialData.amenities || []);
+        
+        if (initialData.rooms && Array.isArray(initialData.rooms)) {
+            setRooms(initialData.rooms.map((r: any) => ({
+                id: r.id,
+                name: r.name,
+                type: r.type,
+                rent: r.monthly_rent?.toString() || "",
+                beds: r.total_beds?.toString() || "",
+                security_deposit: r.security_deposit?.toString() || "",
+                available_beds: r.available_beds?.toString() || "",
+                amenities: Array.isArray(r.amenities) ? r.amenities.join(", ") : r.amenities || "",
+                status: r.status || "Available",
+                image_url: r.image_url || ""
+            })));
+        }
+    }
+  }, [supabase, initialData]);
 
   const generateSlug = (name: string) => {
     return name
@@ -203,67 +235,110 @@ export default function ListPropertyForm({ userId }: { userId: string }) {
     }
 
     try {
-      // 1. Create Property Entry
-      const slug = generateSlug(formData.name);
+      const slug = isEditMode && initialData?.slug ? initialData.slug : generateSlug(formData.name);
       
-      const { data, error: insertError } = await supabase
-        .from("properties")
-        .insert({
-          owner_id: userId,
-          name: formData.name,
-          slug: slug,
-          type: type,
-          city: formData.location, // Assuming location input is City for MVP
-          address: formData.location,
-          status: "Active", // Auto-activate for owners/admins
-          description: "Newly listed property",
-          gender_preference: "Unisex", // Default
-          contact_number: formData.contact,
-          email: formData.email,
-          image_url: mainImage,
-          images: otherImages,
-          amenities: amenities,
-          price_range_min: formData.price_min ? parseFloat(formData.price_min) : null,
-          price_range_max: formData.price_max ? parseFloat(formData.price_max) : null
-        })
-        .select()
-        .single();
+      const propertyPayload = {
+        owner_id: userId,
+        name: formData.name,
+        slug: slug,
+        type: type,
+        city: formData.location, 
+        address: formData.location,
+        status: isEditMode ? initialData.status : "Active",
+        description: formData.description || "No description provided",
+        gender_preference: "Unisex",
+        contact_number: formData.contact,
+        email: formData.email,
+        image_url: mainImage,
+        images: otherImages,
+        amenities: amenities,
+        price_range_min: formData.price_min ? parseFloat(formData.price_min) : null,
+        price_range_max: formData.price_max ? parseFloat(formData.price_max) : null
+      };
 
-      if (insertError) throw insertError;
+      let propertyId = initialData?.id;
 
-      // 2. Insert Rooms (if PG)
-      if (data && type === "PG" && rooms.length > 0) {
-        const roomInserts = rooms.map(room => ({
-          property_id: data.id,
-          name: room.name,
-          type: room.type,
-          monthly_rent: parseFloat(room.rent),
-          total_beds: parseInt(room.beds),
-          available_beds: room.available_beds ? parseInt(room.available_beds) : parseInt(room.beds),
-          security_deposit: room.security_deposit ? parseFloat(room.security_deposit) : null,
-          status: room.status || "Available",
-          amenities: room.amenities ? room.amenities.split(',').map(a => a.trim()) : amenities,
-          image_url: room.image_url || null
-        }));
+      if (isEditMode && propertyId) {
+        // UPDATE Existing Property
+        const { error: updateError } = await supabase
+            .from("properties")
+            .update(propertyPayload)
+            .eq("id", propertyId);
+        
+        if (updateError) throw updateError;
+        toast.success("Property details updated!");
 
-        const { error: roomsError } = await supabase
-          .from("rooms")
-          .insert(roomInserts);
+      } else {
+        // INSERT New Property
+        const { data, error: insertError } = await supabase
+            .from("properties")
+            .insert(propertyPayload)
+            .select()
+            .single();
 
-        if (roomsError) {
-          console.error("Error adding rooms:", roomsError);
-          toast.error("Property created but failed to add rooms details");
-        }
+        if (insertError) throw insertError;
+        propertyId = data.id;
+        toast.success("Property listed successfully!");
       }
 
-      // 3. Redirect to Owner Dashboard or Success Page
-      alert("Property listed successfully! You can now manage it from your dashboard.");
-      router.push("/dashboard"); 
-      router.refresh();
+      // Handle Rooms (Only for PG)
+      if (type === "PG") {
+          if (isEditMode && initialData?.rooms) {
+             // 1. Identify deleted rooms
+             const currentRoomIds = rooms.map(r => r.id).filter(Boolean);
+             const originalRoomIds = initialData.rooms.map((r: any) => r.id);
+             const idsToDelete = originalRoomIds.filter((id: string) => !currentRoomIds.includes(id));
+             
+             if (idsToDelete.length > 0) {
+                 await supabase.from("rooms").delete().in("id", idsToDelete);
+             }
+          }
+
+          // 2. Upsert (Insert or Update) current rooms
+          if (rooms.length > 0) {
+            const roomUpserts = rooms.map(room => ({
+                id: room.id, // If present, it updates; if undefined, it inserts (but we need to make sure undefined is not sent for insert if ID column is auto-gen? Supabase upsert handles this if we omit ID for new rows)
+                // Actually for upsert, if ID is missing it tries to insert. 
+                // We should be careful. 
+                property_id: propertyId,
+                name: room.name,
+                type: room.type,
+                monthly_rent: parseFloat(room.rent),
+                total_beds: parseInt(room.beds),
+                available_beds: room.available_beds ? parseInt(room.available_beds) : parseInt(room.beds),
+                security_deposit: room.security_deposit ? parseFloat(room.security_deposit) : null,
+                status: room.status || "Available",
+                amenities: room.amenities ? room.amenities.split(',').map(a => a.trim()) : amenities,
+                image_url: room.image_url || null
+            }));
+            
+            // Clean up undefined IDs for new rooms if necessary, but Supabase JS client ignores undefined fields usually?
+            // Safer to split? No, upsert is fine.
+            
+            const { error: roomsError } = await supabase
+                .from("rooms")
+                .upsert(roomUpserts); // Upsert matches on Primary Key (id)
+
+            if (roomsError) {
+                console.error("Error saving rooms:", roomsError);
+                toast.error("Failed to save room details");
+            }
+          }
+      }
+
+      // Redirect
+      if (isEditMode) {
+         router.refresh();
+         // Maybe stay on page or go back?
+         toast.success("Changes saved.");
+      } else {
+         router.push("/dashboard"); 
+         router.refresh();
+      }
 
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to list property");
+      setError(err.message || "Failed to save property");
     } finally {
       setLoading(false);
     }

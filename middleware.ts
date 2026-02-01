@@ -1,20 +1,13 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export function middleware(req: Request) {
+export function middleware(req: NextRequest) {
   const url = new URL(req.url);
   const pathname = url.pathname;
 
-  const cookies = (req as any).cookies ?? undefined;
-  // Fallback: parse cookie header manually to support Edge runtime
-  const cookieHeader = (req as any).headers?.get?.("cookie") || "";
-  const parsed: Record<string, string> = {};
-  cookieHeader.split(";").forEach((pair: string) => {
-    const [k, v] = pair.split("=");
-    if (k && v) parsed[k.trim()] = decodeURIComponent(v.trim());
-  });
-
-  const role = cookies?.get?.("sakura_role")?.value || parsed["sakura_role"] || "";
-  const session = cookies?.get?.("sakura_session")?.value || parsed["sakura_session"] || "";
+  // Use NextRequest cookies API which is more robust
+  const role = req.cookies.get("sakura_role")?.value || "";
+  const session = req.cookies.get("sakura_session")?.value || "";
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isProtected = isAdminRoute;
@@ -40,4 +33,3 @@ export function middleware(req: Request) {
 export const config = {
   matcher: ["/admin/:path*", "/login"],
 };
-

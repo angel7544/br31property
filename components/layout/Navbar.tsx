@@ -186,7 +186,11 @@ export default function Navbar() {
             {[
               { label: "Home", href: "/" },
               { label: "PGs / Flats", href: "/pgs" },
-              { label: "List Your Property", href: "/list-property" },
+              // Only show List Your Property to owners, staff, admin (or if we want to recruit, maybe just owners?)
+              // Requirement: "make list your property only shows to owners,staff,admin"
+              ...((roles.includes("owner") || roles.includes("staff") || roles.includes("admin")) 
+                ? [{ label: "List Your Property", href: "/list-property" }] 
+                : []),
               { label: "Blog", href: "/blog" },
               { label: "About", href: "/about" },
               { label: "Contact", href: "/contact" },

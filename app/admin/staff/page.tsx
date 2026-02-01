@@ -93,31 +93,39 @@ export default function StaffAdminPage() {
     } catch {}
 
     if (editingStaff) {
-      // For updates, we use direct DB update (ignoring password)
-      const { error } = await supabase
-        .from("staff")
-        .update({
-          name: formData.name,
-          role: formData.role,
-          email: formData.email,
-          phone: formData.phone,
-          status: formData.status,
-          image_url: uploadedUrl,
-          property_id: formData.property_id || null,
-          department: formData.department,
-          shift_start: formData.shift_start,
-          shift_end: formData.shift_end,
-          joining_date: formData.joining_date
-        })
-        .eq("id", editingStaff.id);
-
-      if (error) {
-        console.error(error);
-        toast.error("Failed to update staff (DB error)");
-      } else {
-        toast.success("Staff updated");
-        setIsModalOpen(false);
-        fetchStaff();
+      // For updates, use the server-side API to bypass RLS and ensure consistency
+      try {
+        const res = await fetch("/api/admin/update-staff", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: editingStaff.id,
+            name: formData.name,
+            role: formData.role,
+            email: formData.email,
+            phone: formData.phone,
+            status: formData.status,
+            image_url: uploadedUrl,
+            property_id: formData.property_id || null,
+            department: formData.department,
+            shift_start: formData.shift_start,
+            shift_end: formData.shift_end,
+            joining_date: formData.joining_date
+          }),
+        });
+        
+        const json = await res.json();
+        
+        if (!res.ok) {
+           toast.error(json.error || "Failed to update staff");
+        } else {
+           toast.success("Staff updated successfully");
+           setIsModalOpen(false);
+           fetchStaff();
+        }
+      } catch (err) {
+        toast.error("An error occurred while updating");
+        console.error(err);
       }
     } else {
       // For creation, use the API to create Auth user + DB record
@@ -292,11 +300,12 @@ export default function StaffAdminPage() {
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-sm"
                         >
+                            <option value="Staff">Staff</option>
                             <option value="Manager">Manager</option>
                             <option value="Receptionist">Receptionist</option>
-                            <option value="Chef">Chef</option>
-                            <option value="Housekeeping">Housekeeping</option>
+                            <option value="Housekeeper">Housekeeper</option>
                             <option value="Security">Security</option>
+                            <option value="Chef">Chef</option>
                         </select>
                     </div>
                     <div>

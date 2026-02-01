@@ -60,12 +60,18 @@ export default async function MyListingsPage() {
                    </span>
                 </div>
              </div>
-             <div className="flex flex-col justify-center">
+             <div className="flex flex-col justify-center gap-2">
                 <Link 
                    href={`/pg/${property.city.toLowerCase()}/${property.slug}`}
-                   className="text-sm text-blue-600 hover:underline font-medium"
+                   className="text-sm text-blue-600 hover:underline font-medium text-center"
                 >
                    View
+                </Link>
+                <Link 
+                   href={`/property/edit/${property.id}`}
+                   className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-50 text-center"
+                >
+                   Edit
                 </Link>
              </div>
           </div>

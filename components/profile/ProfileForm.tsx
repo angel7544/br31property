@@ -90,12 +90,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-        <Link 
-          href="/list-property" 
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-        >
-          List Your Property
-        </Link>
+        {(profile?.role === "owner" || profile?.role === "staff" || profile?.role === "admin") && (
+          <Link 
+            href="/list-property" 
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
+            List Your Property
+          </Link>
+        )}
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">

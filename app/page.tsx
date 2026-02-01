@@ -125,10 +125,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Rooms Carousel */}
+      {/* Featured Rooms Carousel
       <div id="featured-rooms">
         <RoomCarousel />
-      </div>
+      </div> */}
 
       {/* Services Highlights */}
       <section className="bg-white py-16">
@@ -170,9 +170,7 @@ export default function HomePage() {
             <Link href="/pgs" className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-1">
               Browse Listings
             </Link>
-            <Link href="/list-property" className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transition-all shadow-lg transform hover:-translate-y-1">
-              List Your Property
-            </Link>
+            {/* Hidden for general users as per requirement */}
           </div>
         </div>
       </section>

@@ -22,15 +22,41 @@ export async function POST(req: Request) {
   else if (roles.length > 0) role = roles[0];
 
   const res = NextResponse.json({ ok: true, role });
-  res.cookies.set("sakura_role", role, { path: "/", httpOnly: false, sameSite: "lax" });
-  res.cookies.set("sakura_session", "1", { path: "/", httpOnly: false, sameSite: "lax" });
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  res.cookies.set("sakura_role", role, { 
+    path: "/", 
+    httpOnly: false, 
+    sameSite: "lax",
+    secure: isProduction
+  });
+  res.cookies.set("sakura_session", "1", { 
+    path: "/", 
+    httpOnly: false, 
+    sameSite: "lax",
+    secure: isProduction
+  });
   return res;
 }
 
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
-  res.cookies.set("sakura_role", "", { path: "/", httpOnly: false, sameSite: "lax", maxAge: 0 });
-  res.cookies.set("sakura_session", "", { path: "/", httpOnly: false, sameSite: "lax", maxAge: 0 });
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  res.cookies.set("sakura_role", "", { 
+    path: "/", 
+    httpOnly: false, 
+    sameSite: "lax", 
+    maxAge: 0,
+    secure: isProduction
+  });
+  res.cookies.set("sakura_session", "", { 
+    path: "/", 
+    httpOnly: false, 
+    sameSite: "lax", 
+    maxAge: 0,
+    secure: isProduction
+  });
   return res;
 }
 
