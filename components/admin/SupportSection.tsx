@@ -37,8 +37,9 @@ export default function SupportSection({ userEmail }: { userEmail?: string }) {
       const { error } = await supabase.from("complaints").insert({
         user_id: user?.id,
         user_type: ticketForm.userType,
-        issue_type: ticketForm.issueType, // Maps to subject or new column
-        title: `${ticketForm.issueType} - ${ticketForm.userType}`, // Auto-generate title
+        issue_type: ticketForm.issueType,
+        title: `${ticketForm.issueType} - ${ticketForm.userType}`,
+        subject: `${ticketForm.issueType} - ${ticketForm.userType}`, // Sync subject for compatibility
         description: ticketForm.description,
         status: 'Open',
         priority: 'Medium'
