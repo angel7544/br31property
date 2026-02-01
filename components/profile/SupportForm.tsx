@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
 
@@ -11,6 +12,7 @@ export default function SupportForm() {
     issueType: "",
     description: ""
   });
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,12 +22,36 @@ export default function SupportForm() {
     }
 
     setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    toast.success("Ticket raised successfully! We will contact you shortly.");
-    setFormData({ userType: "", issueType: "", description: "" });
-    setLoading(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("You must be logged in to raise a ticket");
+        return;
+      }
+
+      const { error } = await supabase.from("complaints").insert({
+        user_id: user.id,
+        user_type: formData.userType,
+        issue_type: formData.issueType, // Ensure these columns exist in your DB
+        description: formData.description,
+        subject: `${formData.issueType} - ${formData.userType}`, // Auto-generate subject
+        title: `${formData.issueType} Issue`,
+        status: 'New',
+        priority: 'Medium'
+      });
+
+      if (error) throw error;
+      
+      toast.success("Ticket raised successfully! We will contact you shortly.");
+      setFormData({ userType: "", issueType: "", description: "" });
+    } catch (error: any) {
+      console.error("Error creating ticket:", error);
+      toast.error(error.message || "Failed to raise ticket");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -115,6 +115,32 @@ export default function Navbar() {
     router.refresh();
   };
 
+  const handleAdminNavigation = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Optimistic check
+    if (!roles.includes("admin") && !roles.includes("owner") && !roles.includes("staff")) {
+        // Wait, if roles are empty, maybe we should fetch?
+        // But for now, let's just try to verify session.
+    }
+
+    try {
+      const res = await fetch("/api/session", { method: "POST" });
+      if (!res.ok) throw new Error("Session sync failed");
+      
+      const data = await res.json();
+      if (data.role === 'admin' || data.role === 'owner' || data.role === 'staff') {
+         router.push("/admin");
+      } else {
+         // Force reload if we think we have permission but server disagrees
+         window.location.reload();
+      }
+    } catch (e) {
+      console.error(e);
+      router.push("/admin"); // Fallback, let middleware handle it
+    }
+  };
+
   return (
     <>
     {/* Offers Marquee */}
@@ -185,6 +211,7 @@ export default function Navbar() {
             {(roles.includes("admin") || roles.includes("owner") || roles.includes("staff")) && (
               <Link
                 href="/admin"
+                onClick={handleAdminNavigation}
                 className={`text-sm font-medium transition-colors duration-200 ${
                   pathname?.startsWith("/admin") 
                     ? "text-blue-600" 

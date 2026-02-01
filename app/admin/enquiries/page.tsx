@@ -55,7 +55,7 @@ export default function EnquiriesPage() {
 
     if (error) {
       console.error("Error fetching enquiries:", error);
-      toast.error("Failed to fetch enquiries");
+      toast.error(`Failed to fetch enquiries: ${error.message}`);
     } else {
       setEnquiries(data as any);
     }
@@ -75,6 +75,7 @@ export default function EnquiriesPage() {
 
     if (error) {
       console.error("Error fetching complaints:", error);
+      toast.error(`Failed to fetch complaints: ${error.message}`);
     } else {
       setComplaints(data as any || []);
     }
@@ -93,6 +94,7 @@ export default function EnquiriesPage() {
 
     if (error) {
       console.error("Error fetching call requests:", error);
+      toast.error(`Failed to fetch call requests: ${error.message}`);
     } else {
       setCallRequests(data as any || []);
     }

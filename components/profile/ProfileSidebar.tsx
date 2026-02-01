@@ -65,33 +65,39 @@ export default function ProfileSidebar() {
 
   useEffect(() => {
     const checkRole = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        // HARDCODED OVERRIDE for specific emails to ensure access even if DB is lagging
-        if (user.email === 'info@br31tech.live' || user.email === 'angel@br31tech.live') {
-            setIsAdmin(true);
-            // Auto-heal session cookie in background
-            fetch("/api/session", { method: "POST" }); 
-            return;
-        }
+      try {
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError) throw userError;
 
-        // Check metadata first (faster)
-        const metaRoles = (user.app_metadata?.roles as string[]) || [];
-        if (metaRoles.includes('admin') || metaRoles.includes('owner') || metaRoles.includes('staff')) {
-            setIsAdmin(true);
-            return;
-        }
+        if (user) {
+          // HARDCODED OVERRIDE for specific emails to ensure access even if DB is lagging
+          if (user.email === 'info@br31tech.live' || user.email === 'angel@br31tech.live') {
+              setIsAdmin(true);
+              // Auto-heal session cookie in background
+              fetch("/api/session", { method: "POST" }); 
+              return;
+          }
 
-        // Fallback to DB
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .maybeSingle();
-        
-        if (profile?.role === 'admin' || profile?.role === 'owner' || profile?.role === 'staff') {
-          setIsAdmin(true);
+          // Check metadata first (faster)
+          const metaRoles = (user.app_metadata?.roles as string[]) || [];
+          if (metaRoles.includes('admin') || metaRoles.includes('owner') || metaRoles.includes('staff')) {
+              setIsAdmin(true);
+              return;
+          }
+
+          // Fallback to DB
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .maybeSingle();
+          
+          if (profile?.role === 'admin' || profile?.role === 'owner' || profile?.role === 'staff') {
+            setIsAdmin(true);
+          }
         }
+      } catch (error) {
+        console.error("Error checking role:", error);
       }
     };
     checkRole();
@@ -114,9 +120,28 @@ export default function ProfileSidebar() {
   const handleAdminNavigation = async (e: React.MouseEvent) => {
     e.preventDefault();
     toast.info("Verifying admin credentials...");
-    // Force refresh session to ensure cookies are up to date before navigating
-    await fetch("/api/session", { method: "POST" });
-    router.push("/admin");
+    
+    try {
+      // Force refresh session to ensure cookies are up to date before navigating
+      const res = await fetch("/api/session", { method: "POST" });
+      
+      if (!res.ok) {
+        throw new Error("Failed to verify session");
+      }
+
+      const data = await res.json();
+      
+      if (data.role === 'admin' || data.role === 'owner' || data.role === 'staff') {
+         router.push("/admin");
+      } else {
+         toast.error(`Access Denied: Your role is '${data.role}'. Please contact support.`);
+         // Force a reload to try and sync if it's just a glitch
+         setTimeout(() => window.location.reload(), 2000);
+      }
+    } catch (error) {
+      console.error("Admin navigation error:", error);
+      toast.error("Session verification failed. Please try logging in again.");
+    }
   };
 
   return (

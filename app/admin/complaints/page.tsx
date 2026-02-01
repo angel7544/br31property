@@ -32,7 +32,8 @@ export default function ComplaintsPage() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error("Error fetching complaints:", error);
+      toast.error(`Failed to fetch complaints: ${error.message}`);
     } else {
       setComplaints(data as any || []);
     }

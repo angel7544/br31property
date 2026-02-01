@@ -38,6 +38,8 @@ export default async function ProfilePage() {
 
     if (!error && newProfile) {
       profile = newProfile;
+    } else if (error) {
+      console.error("Error creating profile:", error);
     }
   } else {
     // Check if role update is needed for known admins (safety check)
@@ -47,6 +49,21 @@ export default async function ProfilePage() {
         await supabase.from("profiles").update({ role: "owner" }).eq("id", user.id);
         profile.role = "owner";
     }
+  }
+
+  // Fallback if profile is still null (e.g. fetch failed or creation failed)
+  if (!profile) {
+      profile = {
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || user.email?.split("@")[0],
+          role: "tenant", // Default
+          avatar_url: user.user_metadata?.avatar_url,
+          phone: "",
+          address: "",
+          city: "",
+          state: ""
+      };
   }
 
   return <ProfileForm user={user} profile={profile} />;
