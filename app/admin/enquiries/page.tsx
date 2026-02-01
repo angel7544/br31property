@@ -482,7 +482,8 @@ export default function EnquiriesPage() {
                 </div>
             ))}
         </div>
-      )}
+      )
+    )}
       {/* Tickets Tab */}
       {activeTab === "tickets" && (
         complaintsLoading ? (
