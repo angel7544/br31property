@@ -49,11 +49,8 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
 
   // Protect routes
   useEffect(() => {
-    if (roles.length > 0 && !roles.includes("admin") && !roles.includes("owner") && roles.includes("staff")) {
-        const restricted = ["/admin/staff", "/admin/settings", "/admin/properties"];
-        if (restricted.some(r => pathname.startsWith(r))) {
-            router.push("/admin");
-        }
+    if (roles.length > 0 && !roles.includes("admin")) {
+      router.push("/");
     }
   }, [pathname, roles, router]);
 

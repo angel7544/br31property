@@ -80,7 +80,7 @@ export default function ProfileSidebar() {
 
           // Check metadata first (faster)
           const metaRoles = (user.app_metadata?.roles as string[]) || [];
-          if (metaRoles.includes('admin') || metaRoles.includes('owner') || metaRoles.includes('staff')) {
+          if (metaRoles.includes('admin')) {
               setIsAdmin(true);
               return;
           }
@@ -92,7 +92,7 @@ export default function ProfileSidebar() {
             .eq('id', user.id)
             .maybeSingle();
           
-          if (profile?.role === 'admin' || profile?.role === 'owner' || profile?.role === 'staff') {
+          if (profile?.role === 'admin') {
             setIsAdmin(true);
           }
         }
@@ -131,7 +131,7 @@ export default function ProfileSidebar() {
 
       const data = await res.json();
       
-      if (data.role === 'admin' || data.role === 'owner' || data.role === 'staff') {
+      if (data.role === 'admin') {
          router.push("/admin");
       } else {
          toast.error(`Access Denied: Your role is '${data.role}'. Please contact support.`);

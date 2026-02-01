@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import ListPropertyForm from "@/components/ListPropertyForm";
+import { getUserRoles } from "@/lib/auth";
 
 export const metadata = {
   title: "List Your Property | PG Dekho",
@@ -13,6 +14,12 @@ export default async function ListPropertyPage() {
 
   if (!user) {
     redirect("/auth/login?next=/list-property");
+  }
+
+  const roles = await getUserRoles(supabase, user);
+  
+  if (!roles.includes("owner") && !roles.includes("admin")) {
+    redirect("/profile/subscription");
   }
 
   return (
