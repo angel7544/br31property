@@ -24,7 +24,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="space-y-6 pb-4 bg-gray-50 min-h-screen">
+    <div className="space-y-6 pb-5 bg-gray-50 min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gray-900 text-white h-[300px] flex flex-col items-center justify-center">
         {/* Carousel Background */}
@@ -47,13 +47,13 @@ export default function HomePage() {
           </div>
         ))}
         
-        <div className="relative z-8 max-w-6xl mx-auto text-center px-6 -mt-20">
+        <div className="relative z-7 max-w-5xl mx-auto text-center px-6 -mt-20">
           <p className="text-blue-400 font-bold uppercase tracking-widest mb-4">Rent Smarter, Hassle-Free</p>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 drop-shadow-lg leading-tight">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-6 drop-shadow-lg leading-tight">
             Find Your Perfect Accommodation <br/>
             <span className="text-white">Conveniently from Anywhere</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-200 mb-8 drop-shadow-md max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-200 mb-6 drop-shadow-md max-w-1xl mx-auto">
             Discover affordable, fully furnished PGs and Flats with all the amenities you need.
           </p>
         </div>
