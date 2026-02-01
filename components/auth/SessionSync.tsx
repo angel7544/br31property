@@ -14,6 +14,13 @@ export default function SessionSync() {
       const supabase = getSupabaseClient();
       const { data: { user } } = await supabase.auth.getUser();
 
+      if (!user && pathname.startsWith('/admin')) {
+          // If no Supabase session but on admin page, clear cookies and redirect
+          await fetch("/api/session", { method: "DELETE" });
+          window.location.href = "/login";
+          return;
+      }
+
       if (user) {
         // Always fetch latest role from DB/Auth to ensure cookie is up-to-date
         const roles = await getUserRoles(supabase, user);

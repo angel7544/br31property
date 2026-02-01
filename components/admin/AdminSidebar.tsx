@@ -39,8 +39,6 @@ export default function AdminSidebar({ roles, onNavigate }: AdminSidebarProps) {
     { name: "Enquiries", href: "/admin/enquiries", icon: CalendarCheck },
     { name: "Invoices", href: "/admin/invoices", icon: Receipt },
     { name: "Maintenance", href: "/admin/maintenance", icon: Wrench },
-    { name: "Inventory", href: "/admin/inventory", icon: Package },
-    { name: "Complaints", href: "/admin/complaints", icon: AlertTriangle },
     { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
     { name: "Blogs", href: "/admin/blogs", icon: BookOpen },
     { name: "Staff/Users", href: "/admin/staff", icon: Users2 },

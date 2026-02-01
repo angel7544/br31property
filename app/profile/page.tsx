@@ -10,13 +10,14 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
+  // 1. Fetch profile
   let { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .maybeSingle();
 
-  // Auto-heal: Create profile if missing
+  // 2. Auto-heal: Create profile if missing
   if (!profile) {
     // Determine role based on email
     const isAdminEmail = user.email === "info@br31tech.live" || user.email === "angel@br31tech.live";

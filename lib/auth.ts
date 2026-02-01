@@ -16,6 +16,12 @@ export async function getUserRoles(client?: SupabaseClient, currentUser?: User |
 
   const roles: UserRole[] = [];
 
+  // 0. HARDCODED SUPER ADMINS (Safety Hatch)
+  if (user.email === 'info@br31tech.live' || user.email === 'angel@br31tech.live') {
+      roles.push('owner');
+      roles.push('admin');
+  }
+
   // 1. Check profiles table (Priority over metadata for real-time DB updates)
   const { data: profile } = await supabase
     .from("profiles")
