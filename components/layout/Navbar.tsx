@@ -211,8 +211,8 @@ export default function Navbar() {
               );
             })}
 
-            {/* Admin Dashboard Link */}
-            {(roles.includes("admin") || roles.includes("owner") || roles.includes("staff")) && (
+            {/* Admin Dashboard Link - Only for Admin */}
+            {roles.includes("admin") && (
               <Link
                 href="/admin"
                 onClick={handleAdminNavigation}

@@ -68,8 +68,10 @@ function LoginPageContent() {
       }
 
       if (!targetPath) {
-        if (confirmedRole === 'admin' || confirmedRole === 'owner' || confirmedRole === 'staff') {
-          targetPath = "/admin";
+        if (confirmedRole === 'admin') {
+          targetPath = "/profile";
+        } else if (confirmedRole === 'owner' || confirmedRole === 'staff') {
+          targetPath = "/profile";
         } else {
           targetPath = "/pgs";
         }

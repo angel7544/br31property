@@ -4,15 +4,16 @@ import { useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { User, Mail, Lock, Phone, ArrowRight, Loader2 } from "lucide-react";
+import { User, Mail, Lock, Phone, ArrowRight, Loader2, CheckCircle2, X } from "lucide-react";
 
 function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
+  const next = searchParams.get("next") || "/pgs";
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   
   const [formData, setFormData] = useState({
     fullName: "",
@@ -62,14 +63,17 @@ function SignupPageContent() {
          }
          
          // 3. Auto Sign-in Session
-         await fetch("/api/session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role: "tenant" }),
-         });
+         try {
+             await fetch("/api/session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role: "tenant" }),
+             });
+         } catch (sessionErr) {
+             console.error("Session sync failed, likely due to email confirmation required", sessionErr);
+         }
 
-         router.push(next);
-         router.refresh();
+         setShowSuccessPopup(true);
       }
 
     } catch (err: any) {
@@ -80,7 +84,45 @@ function SignupPageContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative animate-in zoom-in-95 duration-200">
+            <button 
+              onClick={() => router.push("/login")}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Account Created Successfully!</h3>
+              
+              <div className="space-y-3 text-gray-600 mb-6">
+                <p>
+                  We've sent a confirmation email to <span className="font-semibold text-gray-900">{formData.email}</span>
+                </p>
+                <p className="text-sm bg-blue-50 text-blue-700 p-3 rounded-lg border border-blue-100">
+                  Please check your <strong>Inbox</strong> or <strong>Spam/Junk</strong> folder and click the verification link to activate your account.
+                </p>
+              </div>
+
+              <button
+                onClick={() => router.push("/login")}
+                className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
