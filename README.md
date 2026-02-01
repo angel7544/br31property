@@ -1,31 +1,44 @@
-# Sakura Hotels Management System
+# BR31 PMS (Property Management System)
 
-A comprehensive, enterprise-grade hotel management platform designed to streamline operations, enhance guest engagement, and maximize revenue. Built with a modern, serverless architecture using Next.js 14 and Supabase.
+A comprehensive, enterprise-grade property management platform designed to streamline operations for Paying Guest (PG) accommodations. Built with a modern, serverless architecture using Next.js 14 and Supabase.
+
+**Status:** 🟢 **Production Ready** (Security Hardened)
 
 ## 🚀 Overview
 
-Sakura Hotels bridges the gap between robust back-office administration and a seamless, interactive guest experience. It features a real-time reservation system, dynamic marketing tools, and a responsive public-facing catalog.
+BR31 PMS bridges the gap between robust back-office administration and a seamless, interactive guest experience. It features a real-time reservation system, dynamic marketing tools, and a responsive public-facing catalog for both Hotels and PGs.
 
 ## ✨ Key Features
 
-### 🏨 Admin Dashboard (Back-Office)
+### 🏨 Admin & Owner Dashboard (Back-Office)
 *   **Dashboard**: Real-time overview of occupancy, revenue, and booking statistics.
-*   **Room Management**: Manage room inventory, status (Available, Occupied, Maintenance), and pricing.
-*   **Reservations**: Complete booking lifecycle management (Pending -> Confirmed -> Checked In -> Checked Out).
-*   **Invoices**: Generate and manage PDF invoices for reservations.
-*   **Offers & Marketing**: Create real-time flash sales and discount codes that appear instantly on the public site.
-*   **Packages**: Manage special packages (Corporate, Wedding, Featured) with custom inclusions.
-*   **Services**: Manage hotel services (Dining, Travel, Sightseeing).
-*   **Staff Management**: Role-Based Access Control (RBAC) for Managers, Receptionists, and Housekeeping.
-*   **Testimonials**: Curate and display guest reviews.
-*   **Settings**: Configure global site settings, contact info, and policies.
+*   **Property Management**: Manage multiple properties, including Hotels and PGs.
+*   **Room & Inventory**: Manage room inventory, status (Available, Occupied, Maintenance), and pricing.
+*   **Reservations**: Complete booking lifecycle management.
+*   **Operations**:
+    *   **Maintenance**: Track and resolve maintenance requests.
+    *   **Complaints**: Manage guest/tenant complaints.
+    *   **Inquiries**: Handle new booking inquiries.
+*   **Financials**:
+    *   **Invoices**: Generate and manage PDF invoices.
+    *   **Subscriptions**: Manage owner subscriptions and payments.
+*   **Marketing**:
+    *   **Offers**: Create real-time flash sales and discount codes.
+    *   **Packages**: Manage special packages.
+    *   **Blogs**: Publish content to engage users.
+    *   **Testimonials**: Curate guest reviews.
+*   **Staff Management**: Role-Based Access Control (RBAC) for Admins, Staff, and Owners.
+*   **Settings**: Configure global site settings and policies.
 
-### 🛎️ Guest Experience (Public Site)
-*   **Interactive Catalog**: Browse Rooms, Packages, and Services with filtering options.
-*   **Real-Time Offers**: Live popups and marquees showing active deals and discount codes.
+### 🛎️ Guest & Tenant Experience (Public Site)
+*   **Interactive Catalog**: Browse Hotels and PGs with advanced filtering (City, Amenities, Price).
 *   **Booking Engine**: Seamless inquiry and reservation request flow.
+*   **User Profile**:
+    *   **Dashboard**: View booking history and status.
+    *   **Wishlist**: Save favorite properties.
+    *   **Support**: Raise support tickets or complaints.
+*   **Real-Time Offers**: Live popups showing active deals.
 *   **Responsive Design**: Optimized for Mobile, Tablet, and Desktop.
-*   **Contact & Inquiries**: Direct communication channels via WhatsApp or Inquiry Forms.
 
 ## 🛠️ Tech Stack
 
@@ -43,6 +56,7 @@ Sakura Hotels bridges the gap between robust back-office administration and a se
 *   **Authentication**: Supabase Auth (SSR) + Secure Session Management
 *   **Real-time**: Supabase Realtime (WebSockets)
 *   **Storage**: Cloudinary (Secure Image Hosting)
+*   **Payments**: Razorpay Integration
 
 ## 📂 Project Structure
 
@@ -50,7 +64,9 @@ Sakura Hotels bridges the gap between robust back-office administration and a se
 ├── app/                  # Next.js App Router
 │   ├── admin/            # Admin Dashboard routes (Protected)
 │   ├── api/              # API Routes (Serverless functions)
-│   ├── catalog/          # Public Room Catalog
+│   ├── catalog/          # Public Room/Property Catalog
+│   ├── pg/               # PG specific routes
+│   ├── profile/          # User Profile routes
 │   ├── components/       # Shared UI Components
 │   ├── context/          # React Context (Settings, Auth)
 │   ├── lib/              # Utilities (Supabase client, Auth helpers)
@@ -61,33 +77,18 @@ Sakura Hotels bridges the gap between robust back-office administration and a se
 │   └── ui/               # Generic UI elements (Buttons, Inputs)
 ├── supabase/             # Database configuration
 │   ├── functions/        # Supabase Edge Functions
-│   └── schema.sql        # Database Schema definitions
+│   └── schema.sql        # Consolidated Database Schema
 └── public/               # Static assets
 ```
 
-## 🗄️ Database Schema
-
-The application uses the following key tables in Supabase:
-
-*   `hotels`: Hotel property details.
-*   `rooms`: Individual room units with pricing and status.
-*   `reservations`: Guest bookings linked to rooms.
-*   `services`: Additional services like Food, Travel.
-*   `packages`: Bundled offers (e.g., Wedding Package).
-*   `offers`: Promotional discount codes and flash sales.
-*   `staff`: Admin users and their roles.
-*   `invoices`: Billing records.
-*   `quotations`: Inquiries from the contact form.
-*   `testimonials`: Guest reviews.
-*   `settings`: Global configuration (Site name, Currency, etc.).
-
 ## 🔐 Security & Roles
 
-*   **Authentication**: Managed via Supabase Auth.
+*   **Authentication**: Managed via Supabase Auth with server-side session verification.
 *   **RBAC (Role-Based Access Control)**:
-    *   **Owner/Manager**: Full access to all modules.
+    *   **Admin**: Full system access.
+    *   **Owner**: Manage their own properties and listings (Requires Subscription).
     *   **Staff**: Restricted access based on assigned duties.
-    *   **Customer**: Public access + personal booking data.
+    *   **User/Tenant**: Public access, booking management, and wishlist.
 *   **RLS (Row Level Security)**: Database policies ensure users can only access data permitted by their role.
 
 ## 📦 Getting Started
@@ -97,13 +98,14 @@ The application uses the following key tables in Supabase:
 *   npm or yarn
 *   A Supabase project
 *   A Cloudinary account
+*   A Razorpay account (for payments)
 
 ### Installation
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/your-org/sakura-hotels.git
-    cd sakura-hotels
+    git clone https://github.com/your-org/br31-pms.git
+    cd br31-pms
     ```
 
 2.  **Install dependencies**:
@@ -124,13 +126,15 @@ The application uses the following key tables in Supabase:
     CLOUDINARY_CLOUD_NAME=your_cloud_name
     CLOUDINARY_API_KEY=your_api_key
     CLOUDINARY_API_SECRET=your_api_secret
+
+    # Razorpay Configuration (For Payments)
+    RAZORPAY_KEY_ID=your_razorpay_key_id
+    RAZORPAY_KEY_SECRET=your_razorpay_key_secret
     ```
 
 4.  **Database Setup**:
     *   Go to your Supabase SQL Editor.
-    *   Run the scripts located in `supabase/schema.sql`.
-    *   Run `supabase/create_offers_table.sql` and `supabase/create_testimonials_table.sql` to ensure all tables are created.
-    *   Run `supabase/enable_realtime.sql` and `supabase/enable_offers_realtime.sql` to enable real-time updates for rooms, reservations, and offers.
+    *   Run the script located in `supabase/schema.sql`. This single file contains the complete schema including tables, RLS policies, and triggers.
 
 5.  **Run Development Server**:
     ```bash
@@ -144,10 +148,8 @@ The easiest way to deploy this Next.js app is to use the [Vercel Platform](https
 
 1.  Push your code to a Git repository (GitHub, GitLab, BitBucket).
 2.  Import your project into Vercel.
-3.  Add the environment variables (Supabase and Cloudinary keys) in the Vercel project settings.
+3.  Add the environment variables (Supabase, Cloudinary, and Razorpay keys) in the Vercel project settings.
 4.  Deploy!
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ## 🤝 Contributing
 
