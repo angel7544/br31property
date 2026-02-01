@@ -402,7 +402,7 @@ export default function EnquiriesPage() {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Home className="h-4 w-4 text-gray-400" />
-                            <span className="truncate">{enquiry.properties?.name || "Unknown Property"}</span>
+                            <span className="truncate">{enquiry.properties?.name || "General Inquiry"}</span>
                         </div>
                          {enquiry.message && (
                             <div className="text-xs text-gray-500 italic bg-gray-50 p-2 rounded line-clamp-3">

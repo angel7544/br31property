@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const menuItems = [
   {
@@ -66,13 +67,29 @@ export default function ProfileSidebar() {
     const checkRole = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // HARDCODED OVERRIDE for specific emails to ensure access even if DB is lagging
+        if (user.email === 'info@br31tech.live' || user.email === 'angel@br31tech.live') {
+            setIsAdmin(true);
+            // Auto-heal session cookie in background
+            fetch("/api/session", { method: "POST" }); 
+            return;
+        }
+
+        // Check metadata first (faster)
+        const metaRoles = (user.app_metadata?.roles as string[]) || [];
+        if (metaRoles.includes('admin') || metaRoles.includes('owner') || metaRoles.includes('staff')) {
+            setIsAdmin(true);
+            return;
+        }
+
+        // Fallback to DB
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
         
-        if (profile?.role === 'admin') {
+        if (profile?.role === 'admin' || profile?.role === 'owner' || profile?.role === 'staff') {
           setIsAdmin(true);
         }
       }
@@ -94,12 +111,21 @@ export default function ProfileSidebar() {
     }
   };
 
+  const handleAdminNavigation = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast.info("Verifying admin credentials...");
+    // Force refresh session to ensure cookies are up to date before navigating
+    await fetch("/api/session", { method: "POST" });
+    router.push("/admin");
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <nav className="flex flex-col py-2">
         {isAdmin && (
           <Link
             href="/admin"
+            onClick={handleAdminNavigation}
             className="flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           >
             <LayoutDashboard className="w-5 h-5 text-gray-400" />

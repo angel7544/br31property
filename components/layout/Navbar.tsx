@@ -181,6 +181,20 @@ export default function Navbar() {
               );
             })}
 
+            {/* Admin Dashboard Link */}
+            {(roles.includes("admin") || roles.includes("owner") || roles.includes("staff")) && (
+              <Link
+                href="/admin"
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  pathname?.startsWith("/admin") 
+                    ? "text-blue-600" 
+                    : "text-gray-600 hover:text-blue-600"
+                }`}
+              >
+                Dashboard
+              </Link>
+            )}
+
             {user ? (
               <div className="flex items-center gap-4 pl-4 border-l border-gray-200">
                 <Link 

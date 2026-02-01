@@ -25,7 +25,9 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
 
   const [recent, setRecent] = useState<any[]>([]);
   
-  const allowed = roles ? (roles.includes("owner") || roles.includes("staff") || roles.includes("admin")) : false;
+  // Allow explicit override for known admin emails
+  const isHardcodedAdmin = userEmail === 'info@br31tech.live' || userEmail === 'angel@br31tech.live';
+  const allowed = roles ? (roles.includes("owner") || roles.includes("staff") || roles.includes("admin") || isHardcodedAdmin) : isHardcodedAdmin;
 
   useEffect(() => {
     const loadData = async () => {

@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, phone, email, moveInDate, message, propertyId, roomId } = body;
+    const { name, phone, email, moveInDate, message, propertyId, roomId, userId } = body;
 
     // Validate required fields
     if (!name || !phone || !moveInDate) {
@@ -24,13 +24,14 @@ export async function POST(req: Request) {
 
     // Insert into enquiries table
     const { data, error } = await supabase.from("enquiries").insert([{
+      user_id: userId || null,
       name: name,
       phone: phone,
       email: email,
       move_in_date: moveInDate,
       message: message,
-      property_id: propertyId,
-      room_id: roomId,
+      property_id: propertyId || null,
+      room_id: roomId || null,
       status: "New",
     }]).select().single();
 

@@ -1,49 +1,61 @@
--- 1. Fix Staff Table Schema
-DO $$
-BEGIN
-    -- Add user_id
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'staff' AND column_name = 'user_id'
-    ) THEN
-        ALTER TABLE public.staff ADD COLUMN user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
-    END IF;
+-- Master Fix for Admin Access and Profiles
 
-    -- Add PMS columns
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'staff' AND column_name = 'shift_start'
-    ) THEN
-        ALTER TABLE public.staff ADD COLUMN shift_start TIME;
-    END IF;
+-- 1. Ensure Profile Exists and is Owner (Upsert)
+INSERT INTO public.profiles (id, email, full_name, role, created_at, updated_at)
+SELECT 
+    id,
+    email,
+    COALESCE(raw_user_meta_data->>'full_name', split_part(email, '@', 1)),
+    'owner', -- FORCE ROLE TO OWNER
+    created_at,
+    created_at
+FROM auth.users
+WHERE email IN ('info@br31tech.live', 'angel@br31tech.live')
+ON CONFLICT (id) DO UPDATE
+SET role = 'owner'; -- FORCE UPDATE EXISTING PROFILE TO OWNER
 
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'staff' AND column_name = 'shift_end'
-    ) THEN
-        ALTER TABLE public.staff ADD COLUMN shift_end TIME;
-    END IF;
-    
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'staff' AND column_name = 'department'
-    ) THEN
-        ALTER TABLE public.staff ADD COLUMN department TEXT;
-    END IF;
+-- 2. Fix RLS for Profiles (Allow Admin/Owner/Staff to view all)
+DROP POLICY IF EXISTS "Staff can view all profiles" ON public.profiles;
+CREATE POLICY "Staff can view all profiles" ON public.profiles FOR SELECT USING (
+  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'admin' OR
+  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'owner' OR
+  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'staff' OR
+  EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  )
+);
 
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_name = 'staff' AND column_name = 'joining_date'
-    ) THEN
-        ALTER TABLE public.staff ADD COLUMN joining_date DATE DEFAULT CURRENT_DATE;
-    END IF;
-END $$;
+-- 3. Ensure User can insert/update their own profile
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- 2. Fix Property Status
--- Ensure all properties are Active so they are visible
-UPDATE public.properties 
-SET status = 'Active' 
-WHERE status IS NULL OR status = 'Maintenance';
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- 3. Verify specific property (for debugging, this just selects it)
-SELECT id, name, slug, status FROM public.properties WHERE slug = 't-vybqx';
+-- 4. Fix Enquiries RLS (Allow Admin/Owner/Staff to view all)
+DROP POLICY IF EXISTS "Admin/Staff can view all enquiries" ON public.enquiries;
+CREATE POLICY "Admin/Staff can view all enquiries" ON public.enquiries FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  )
+);
+
+-- 5. Fix Complaints RLS (Allow Admin/Owner/Staff to view all)
+DROP POLICY IF EXISTS "Admin/Staff can view all complaints" ON public.complaints;
+CREATE POLICY "Admin/Staff can view all complaints" ON public.complaints FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  )
+);
+
+-- 6. Ensure call_requests are viewable
+DROP POLICY IF EXISTS "Admin/Staff can view all call_requests" ON public.call_requests;
+CREATE POLICY "Admin/Staff can view all call_requests" ON public.call_requests FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
+  )
+);

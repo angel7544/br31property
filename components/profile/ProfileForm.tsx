@@ -16,12 +16,12 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: profile?.full_name || "",
+    full_name: profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || "",
     phone: profile?.phone || "",
     address: profile?.address || "",
     city: profile?.city || "",
     state: profile?.state || "",
-    avatar_url: profile?.avatar_url || "",
+    avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || "",
   });
   const [uploading, setUploading] = useState(false);
 
@@ -63,7 +63,9 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({
+        .upsert({
+          id: user.id,
+          email: user.email,
           full_name: formData.full_name,
           phone: formData.phone,
           address: formData.address,
@@ -72,7 +74,7 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
           avatar_url: formData.avatar_url,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", user.id);
+        .select();
 
       if (error) throw error;
       toast.success("Profile updated successfully");
