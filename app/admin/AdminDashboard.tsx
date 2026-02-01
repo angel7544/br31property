@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { DollarSign, Users, Calendar, Bed, Building, BadgeIndianRupee, IndianRupee } from "lucide-react";
+import { DollarSign, Users, Calendar, Bed, Building, BadgeIndianRupee, IndianRupee, ShieldAlert } from "lucide-react";
 
 interface AdminDashboardProps {
   roles: string[];
@@ -98,17 +98,64 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
   }, [allowed]);
 
   if (!allowed) return (
-      <div className="rounded-lg border bg-white p-8 text-center">
-        <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
-        <p className="mt-2 text-gray-600">You do not have permission to view this dashboard.</p>
-        <div className="mt-4 p-4 bg-gray-100 rounded text-left text-sm font-mono">
-            <p>User: {userEmail}</p>
-            <p>Roles: {roles ? roles.join(", ") : "None"}</p>
-            <p>Required: admin, owner, or staff</p>
+    <div className="min-h-[60vh] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-red-50 p-6 flex justify-center border-b border-red-100">
+          <div className="bg-white p-4 rounded-full shadow-sm">
+            <ShieldAlert className="w-12 h-12 text-red-500" />
+          </div>
         </div>
-        <Link href="/login" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Go to Login</Link>
+        
+        <div className="p-8 text-center space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Access Restricted</h2>
+            <p className="mt-2 text-gray-600">
+              You do not have the required permissions to access this dashboard.
+            </p>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-4 text-left border border-gray-100">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Current Session Info</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between py-1 border-b border-gray-200/50">
+                <span className="text-gray-500">Account</span>
+                <span className="font-medium text-gray-900 truncate max-w-[180px]" title={userEmail}>{userEmail || "No email"}</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-gray-500">Your Roles</span>
+                <span className="font-medium text-gray-900">
+                  {roles && roles.length > 0 ? roles.join(", ") : "None"}
+                </span>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-gray-200/50">
+              <p className="text-xs text-gray-500 flex items-center gap-1">
+                <span className="font-medium text-gray-700">Required Role:</span> 
+                <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-medium">admin</span>
+                <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-medium">owner</span>
+                <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-medium">staff</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Link 
+              href="/login" 
+              className="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Log in with Different Account
+            </Link>
+            <Link 
+              href="/" 
+              className="w-full inline-flex items-center justify-center px-4 py-3 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            >
+              Return to Home
+            </Link>
+          </div>
+        </div>
       </div>
-    );
+    </div>
+  );
 
   return (
     <div className="space-y-8">
