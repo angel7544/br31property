@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Heart, Share2, User, Wind, Car, Shirt, CheckCircle2 } from "lucide-react";
+import { MapPin, Share2, User, Wind, Car, Shirt, CheckCircle2 } from "lucide-react";
 import { Property, Room } from "@/types";
+import WishlistButton from "../WishlistButton";
 
 interface PropertyCardProps {
   property: Property & {
     rooms: Room[];
-    images: { url: string }[];
+    images: { url: string }[] | string[];
   };
 }
 
@@ -24,8 +25,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const triplePrice = getPriceForType("Triple");
 
   // Get main image and thumbnails
-  const mainImage = property.images?.[0]?.url || property.image_url || "https://images.unsplash.com/photo-1522771753033-6a98d08722aa?auto=format&fit=crop&q=80";
-  const thumbnails = property.images?.slice(1, 4).map(img => img.url) || [];
+  const getImage = (img: any) => {
+    if (!img) return null;
+    return typeof img === 'string' ? img : img.url;
+  };
+
+  const mainImage = getImage(property.images?.[0]) || property.image_url || "https://images.unsplash.com/photo-1522771753033-6a98d08722aa?auto=format&fit=crop&q=80";
+  
+  const thumbnails = property.images?.slice(1, 4).map(img => getImage(img)).filter(Boolean) as string[] || [];
 
   // Format Currency
   const formatCurrency = (amount: number) => {
@@ -75,9 +82,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
                   <Share2 className="w-5 h-5" />
                 </button>
-                <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
-                  <Heart className="w-5 h-5" />
-                </button>
+                <WishlistButton propertyId={property.id} />
               </div>
             </div>
 
@@ -152,14 +157,19 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           {/* Actions */}
           <div className="flex gap-4 mt-auto">
             <Link
-              href={`/pg/${property.city.toLowerCase()}/${property.slug}`}
-              className="flex-1 bg-white border border-blue-600 text-blue-600 text-center py-2.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              href={property.slug ? `/pg/${property.city?.toLowerCase().replace(/\s+/g, '-') || 'city'}/${property.slug}` : '#'}
+              className={`flex-1 bg-white border border-blue-600 text-blue-600 text-center py-2.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors ${!property.slug ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
             >
               View Details
             </Link>
-            <button className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200">
+            <a 
+              href={`https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name} in ${property.city}.`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 flex items-center justify-center"
+            >
               Contact Owner
-            </button>
+            </a>
           </div>
         </div>
       </div>

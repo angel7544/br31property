@@ -1,18 +1,45 @@
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Heart } from "lucide-react";
+import PropertyCard from "@/components/search/PropertyCard";
 
-export default function WishlistPage() {
-  // Placeholder for wishlist functionality
-  // In a real app, we would fetch this from a 'wishlists' table in Supabase
-  const wishlistItems: any[] = []; 
+export default async function WishlistPage() {
+  const supabase = createClient();
+  
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: wishlistData, error } = await supabase
+    .from("wishlists")
+    .select(`
+      property_id,
+      properties (
+        *,
+        rooms (*)
+      )
+    `)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("Error fetching wishlist:", error);
+  }
+
+  // Extract properties from the nested structure
+  const wishlistProperties = wishlistData?.map((item: any) => item.properties).filter(Boolean) || [];
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Wishlist Properties</h1>
       
-      {wishlistItems.length > 0 ? (
+      {wishlistProperties.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Wishlist items would go here */}
+          {wishlistProperties.map((property: any) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
         </div>
       ) : (
         <div className="text-center py-12 flex flex-col items-center">

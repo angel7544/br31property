@@ -19,6 +19,7 @@ export type Property = {
   zip_code: string | null;
   type: 'PG' | 'Flat';
   gender_preference: 'Male' | 'Female' | 'Unisex' | 'Family';
+  contact_number?: string;
   amenities: string[] | null;
   rules: string | null;
   price_range_min: number | null;

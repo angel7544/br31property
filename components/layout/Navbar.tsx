@@ -105,8 +105,6 @@ export default function Navbar() {
     };
   }, []);
 
-  if (pathname?.startsWith("/admin")) return null;
-
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -166,19 +164,22 @@ export default function Navbar() {
               { label: "Blog", href: "/blog" },
               { label: "About", href: "/about" },
               { label: "Contact", href: "/contact" },
-            ].map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  pathname === link.href 
-                    ? "text-blue-600" 
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            ].map((link) => {
+              const targetHref = link.href === "/list-property" && !user ? "/login" : link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={targetHref}
+                  className={`text-sm font-medium transition-colors duration-200 ${
+                    pathname === link.href 
+                      ? "text-blue-600" 
+                      : "text-gray-600 hover:text-blue-600"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
 
             {user ? (
               <div className="flex items-center gap-4 pl-4 border-l border-gray-200">

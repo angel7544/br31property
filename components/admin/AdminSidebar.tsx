@@ -23,9 +23,10 @@ import { useState } from "react";
 
 interface AdminSidebarProps {
   roles: string[];
+  onNavigate?: () => void;
 }
 
-export default function AdminSidebar({ roles }: AdminSidebarProps) {
+export default function AdminSidebar({ roles, onNavigate }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -80,6 +81,7 @@ export default function AdminSidebar({ roles }: AdminSidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onNavigate}
               className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 ${
                 isActive
                   ? "border-blue-500 text-blue-600 bg-blue-50"

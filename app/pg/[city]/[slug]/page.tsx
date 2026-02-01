@@ -1,9 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Wifi, Bed, Home, CheckCircle2, Shield, Calendar, User, Phone, Mail, ArrowLeft } from "lucide-react";
+import { MapPin, Wifi, Bed, Home, CheckCircle2, Shield, Calendar, User, Phone, Mail, ArrowLeft, Share2 } from "lucide-react";
 import ImageSlider from "@/components/ui/ImageSlider";
 import InquiryForm from "@/components/InquiryForm";
+import WishlistButton from "@/components/WishlistButton";
 import { Room } from "@/types";
 
 // Force dynamic rendering to ensure availability is always up to date
@@ -32,14 +33,14 @@ export default async function PropertyPage({ params }: { params: { city: string;
     .from("properties")
     .select(`
       *,
-      rooms (*),
-      images: property_images (url)
+      rooms (*)
     `)
     .eq("slug", params.slug)
     .eq("status", "Active")
     .single();
 
   if (error || !property) {
+    console.error("Error fetching property:", error);
     notFound();
   }
 
@@ -100,7 +101,15 @@ export default async function PropertyPage({ params }: { params: { city: string;
                       {property.gender_preference}
                     </span>
                   </div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{property.name}</h1>
+                  <div className="flex justify-between items-center mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900">{property.name}</h1>
+                    <div className="flex gap-2">
+                      <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors border border-gray-200">
+                        <Share2 className="w-5 h-5" />
+                      </button>
+                      <WishlistButton propertyId={property.id} className="border border-gray-200" />
+                    </div>
+                  </div>
                   <div className="flex items-center text-gray-600">
                     <MapPin className="w-5 h-5 mr-1 text-gray-400" />
                     <span>{property.address}, {property.city}, {property.state} {property.zip_code}</span>
@@ -192,6 +201,17 @@ export default async function PropertyPage({ params }: { params: { city: string;
                               </span>
                             ))}
                           </div>
+                          
+                          <div className="mt-4 pt-4 border-t border-gray-100">
+                            <a 
+                              href={`https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in room ${room.name} at ${property.name}.`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 text-green-600 font-medium hover:text-green-700 hover:bg-green-50 px-4 py-2 rounded-lg transition-colors border border-green-200"
+                            >
+                              <Phone className="w-4 h-4" /> Contact Owner for this Room
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -259,9 +279,14 @@ export default async function PropertyPage({ params }: { params: { city: string;
                     <p className="font-bold text-gray-900">Property Owner</p>
                   </div>
                 </div>
-                <button className="w-full border border-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center gap-2">
-                  <Phone className="w-4 h-4" /> View Contact
-                </button>
+                <a 
+                  href={`https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name}.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full border border-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center gap-2"
+                >
+                  <Phone className="w-4 h-4" /> View Contact / WhatsApp
+                </a>
               </div>
             </div>
           </div>

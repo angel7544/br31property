@@ -24,10 +24,10 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       </Suspense>
       <ToastProvider>
         <Toaster position="top-center" richColors />
-        {!isAdmin && <Navbar />}
+        <Navbar />
         
         {isAdmin ? (
-          <main className="flex-grow w-full">
+          <main className="flex-grow w-full pt-20">
             {children}
           </main>
         ) : (
