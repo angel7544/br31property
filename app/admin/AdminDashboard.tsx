@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { DollarSign, Users, Calendar, Bed, Building, BadgeIndianRupee, IndianRupee, ShieldAlert } from "lucide-react";
+import SupportSection from "@/components/admin/SupportSection";
 
 interface AdminDashboardProps {
   roles: string[];
@@ -244,6 +245,10 @@ export default function AdminDashboard({ roles, userEmail }: AdminDashboardProps
             </Link>
           </div>
         </div>
+      </div>
+
+      <div className="border-t border-gray-200 pt-8">
+        <SupportSection userEmail={userEmail} />
       </div>
     </div>
   );
