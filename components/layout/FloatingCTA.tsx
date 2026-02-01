@@ -37,7 +37,7 @@ export default function FloatingCTA() {
 
           {/* WhatsApp Button */}
           <a
-            href={`https://wa.me/${phoneNumber}`}
+            href={`https://wa.me/9135893002}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Chat on WhatsApp"
