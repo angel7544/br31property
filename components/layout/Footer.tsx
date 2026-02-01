@@ -22,14 +22,14 @@ export default function Footer() {
                 <div className="relative h-12 w-40">
                     <Image 
                         src="/logo.png" 
-                        alt="PG Dekho" 
+                        alt="BR31 Rentals" 
                         fill
                         className="object-contain object-left"
                     />
                 </div>
               </div>
               <p className="text-gray-300 text-sm leading-relaxed">
-                PG Dekho is an online platform for PGs accommodations , providing , options for working Professionals and students from room to flats across India.
+                BR31 Rentals is an online platform for PGs accommodations , providing , options for working Professionals and students from room to flats across India.
               </p>
               <div className="flex space-x-4">
                 {[Linkedin, Facebook, Instagram, Twitter, Youtube].map((Icon, idx) => (
@@ -48,10 +48,16 @@ export default function Footer() {
             <div>
               <h3 className="text-lg font-semibold mb-6 uppercase tracking-wider">Company</h3>
               <ul className="space-y-3">
-                {["About Us", "Testimonials", "Terms & Conditions", "Refunds Cancellation Policy", "Privacy Policy"].map((item) => (
-                  <li key={item}>
-                    <Link href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                      {item}
+                {[
+                  { name: "About Us", href: "/about" },
+                  { name: "Testimonials", href: "/#testimonials" },
+                  { name: "Terms & Conditions", href: "/terms" },
+                  { name: "Refunds Cancellation Policy", href: "/refund-policy" },
+                  { name: "Privacy Policy", href: "/privacy-policy" }
+                ].map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-gray-300 hover:text-white text-sm transition-colors">
+                      {item.name}
                     </Link>
                   </li>
                 ))}
@@ -62,10 +68,14 @@ export default function Footer() {
             <div>
               <h3 className="text-lg font-semibold mb-6 uppercase tracking-wider">Media</h3>
               <ul className="space-y-3">
-                {["FAQs", "Blog", "Contact Us"].map((item) => (
-                  <li key={item}>
-                    <Link href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                      {item}
+                {[
+                  { name: "FAQs", href: "/contact" },
+                  { name: "Blog", href: "/blog" },
+                  { name: "Contact Us", href: "/contact" }
+                ].map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-gray-300 hover:text-white text-sm transition-colors">
+                      {item.name}
                     </Link>
                   </li>
                 ))}
@@ -96,7 +106,7 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-            <p>Copyright @ {new Date().getFullYear()} | All Rights Reserved by BR31 PROPERTY MANAGEMENT SYSTEM.</p>
+            <p>Copyright @ {new Date().getFullYear()} | All Rights Reserved by BR31 Rentals.</p>
             <p className="mt-2 md:mt-0">Images are representational purpose only; amenities shown may vary by properties</p>
           </div>
         </div>
