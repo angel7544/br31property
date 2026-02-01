@@ -15,8 +15,7 @@ import {
   MessageSquareQuote,
   Wrench,
   Package,
-  AlertTriangle,
-  ClipboardList
+  AlertTriangle
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { useState } from "react";
@@ -35,7 +34,7 @@ export default function AdminSidebar({ roles, onNavigate }: AdminSidebarProps) {
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard, exact: true },
     { name: "Properties", href: "/admin/properties", icon: Building2 },
     { name: "Rooms & Beds", href: "/admin/rooms", icon: BedDouble },
-    { name: "Reservations", href: "/admin/reservations", icon: ClipboardList },
+    { name: "Complaints", href: "/admin/complaints", icon: AlertTriangle },
     { name: "Enquiries", href: "/admin/enquiries", icon: CalendarCheck },
     { name: "Invoices", href: "/admin/invoices", icon: Receipt },
     { name: "Maintenance", href: "/admin/maintenance", icon: Wrench },
