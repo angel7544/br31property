@@ -2,8 +2,11 @@ export type Profile = {
   id: string;
   role: 'admin' | 'owner' | 'tenant';
   full_name: string | null;
+  email?: string | null;
   phone: string | null;
   avatar_url: string | null;
+  city?: string | null;
+  state?: string | null;
   created_at: string;
 };
 

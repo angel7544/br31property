@@ -77,7 +77,7 @@ export default function RoomCarousel() {
           image_url,
           available_beds,
           total_beds,
-          property: properties (
+          property: properties!inner (
             name,
             city,
             slug,
@@ -85,6 +85,7 @@ export default function RoomCarousel() {
           )
         `)
         .eq('status', 'Available')
+        .eq('property.status', 'Active')
         .limit(10);
 
       if (error) throw error;
