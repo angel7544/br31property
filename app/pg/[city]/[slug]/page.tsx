@@ -67,25 +67,25 @@ export default async function PropertyPage({ params }: { params: { city: string;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 pt-24">
-      <div className="container mx-auto px-4 md:px-8">
+    <div className="min-h-screen bg-gray-50 pb-1 pt-1">
+      <div className="container mx-auto px-2 md:px-1">
         
         {/* Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
+        <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
           <Link href="/" className="hover:text-blue-600">Home</Link>
           <span>/</span>
           <Link href="/pgs" className="hover:text-blue-600">PGs in {property.city}</Link>
           <span>/</span>
-          <span className="text-gray-900 font-medium truncate max-w-[200px]">{property.name}</span>
+          <span className="text-gray-900 font-medium truncate max-w-[100px]">{property.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Left Column: Images & Details */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4">
             
             {/* Image Slider */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-sm h-[400px] md:h-[500px]">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm h-[200px] md:h-[300px]">
               <ImageSlider images={imageUrls} alt={property.name} className="h-full w-full" />
             </div>
 

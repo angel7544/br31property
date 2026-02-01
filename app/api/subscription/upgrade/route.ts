@@ -21,7 +21,8 @@ export async function POST(req: Request) {
 
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
     if (!key_secret) {
-        return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+        console.error("Upgrade API: Missing RAZORPAY_KEY_SECRET");
+        return NextResponse.json({ error: "Server configuration error: Missing Razorpay Secret" }, { status: 500 });
     }
 
     // Verify Signature
@@ -37,7 +38,11 @@ export async function POST(req: Request) {
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !serviceRoleKey) {
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+      console.error("Upgrade API: Missing Supabase credentials", { 
+        hasUrl: !!supabaseUrl, 
+        hasServiceKey: !!serviceRoleKey 
+      });
+      return NextResponse.json({ error: "Server configuration error: Missing Supabase Config" }, { status: 500 });
     }
 
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);

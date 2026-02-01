@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash, X, User, Shield, Key, Receipt } from "lucide-react";
+import { Plus, Edit, Trash, X, User, Shield, Key, Receipt, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ type Staff = {
   image_url?: string;
   property_id?: string;
   properties?: { name: string };
+  user_id?: string;
 };
 
 type Profile = {
@@ -51,6 +52,7 @@ export default function StaffAdminPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+  const [convertingUser, setConvertingUser] = useState<Profile | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -174,6 +176,40 @@ export default function StaffAdminPage() {
         toast.error("An error occurred while updating");
         console.error(err);
       }
+    } else if (convertingUser) {
+      try {
+        const res = await fetch("/api/admin/convert-to-staff", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: convertingUser.id,
+            name: formData.name,
+            role: formData.role,
+            email: formData.email,
+            phone: formData.phone,
+            property_id: formData.property_id || null,
+            department: formData.department,
+            shift_start: formData.shift_start,
+            shift_end: formData.shift_end,
+            joining_date: formData.joining_date
+          }),
+        });
+        const json = await res.json();
+        
+        if (!res.ok) {
+          toast.error(json.error || "Failed to convert user to staff");
+        } else {
+          toast.success("User converted to staff successfully");
+          setIsModalOpen(false);
+          fetchStaff();
+          // Refresh the user list too
+          if (activeTab === 'owners') fetchUsers('owner');
+          if (activeTab === 'tenants') fetchUsers('tenant');
+        }
+      } catch (err) {
+        toast.error("An error occurred during conversion");
+        console.error(err);
+      }
     } else {
       try {
         const res = await fetch("/api/admin/create-staff", {
@@ -211,7 +247,29 @@ export default function StaffAdminPage() {
     }
   };
 
+  const openConvertModal = (user: Profile) => {
+    setConvertingUser(user);
+    setEditingStaff(null);
+    setFormData({
+      name: user.full_name || "",
+      role: "Receptionist",
+      email: user.email || "",
+      phone: user.phone || "",
+      status: "Active",
+      image_url: user.avatar_url || "",
+      property_id: "",
+      password: "", // Not needed
+      department: "Front Desk",
+      shift_start: "09:00",
+      shift_end: "18:00",
+      joining_date: new Date().toISOString().split('T')[0]
+    });
+    setFile(null);
+    setIsModalOpen(true);
+  };
+
   const openModal = (staff?: Staff) => {
+    setConvertingUser(null);
     if (staff) {
       setEditingStaff(staff);
       setFormData({
@@ -389,7 +447,7 @@ export default function StaffAdminPage() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end">
+                                            <div className="flex flex-col items-end gap-2">
                                                 {owner.payments && owner.payments.length > 0 ? (
                                                     <div className="flex flex-col items-end gap-1">
                                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -405,6 +463,13 @@ export default function StaffAdminPage() {
                                                         Legacy/Manual
                                                     </span>
                                                 )}
+                                                <button
+                                                  onClick={() => openConvertModal(owner)}
+                                                  className="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                >
+                                                  <UserPlus className="h-3 w-3 mr-1" />
+                                                  Make Staff
+                                                </button>
                                                 <p className="mt-1 text-xs text-gray-400">
                                                     Joined {new Date(owner.created_at).toLocaleDateString()}
                                                 </p>
@@ -442,10 +507,17 @@ export default function StaffAdminPage() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end">
+                                            <div className="flex flex-col items-end gap-2">
                                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                                                     Tenant
                                                 </span>
+                                                <button
+                                                  onClick={() => openConvertModal(tenant)}
+                                                  className="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                >
+                                                  <UserPlus className="h-3 w-3 mr-1" />
+                                                  Make Staff
+                                                </button>
                                                 <p className="mt-1 text-xs text-gray-400">
                                                     Joined {new Date(tenant.created_at).toLocaleDateString()}
                                                 </p>
@@ -475,7 +547,7 @@ export default function StaffAdminPage() {
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">{editingStaff ? "Edit Staff" : "Add Staff"}</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">{editingStaff ? "Edit Staff" : (convertingUser ? "Convert to Staff" : "Add Staff")}</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Name</label>
@@ -530,7 +602,7 @@ export default function StaffAdminPage() {
                   />
                 </div>
                 
-                {!editingStaff && (
+                {!editingStaff && !convertingUser && (
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Password</label>
                         <input

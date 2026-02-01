@@ -37,7 +37,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role");
 
-    if (!role || (role !== 'owner' && role !== 'tenant')) {
+    if (!role || (role !== 'owner' && role !== 'tenant' && role !== 'all')) {
          return NextResponse.json({ error: "Invalid role parameter" }, { status: 400 });
     }
 
@@ -50,8 +50,11 @@ export async function GET(req: Request) {
                 id, amount, status, created_at, payment_id
             )
         `)
-        .eq("role", role)
         .order("created_at", { ascending: false });
+
+    if (role !== 'all') {
+        query = query.eq("role", role);
+    }
 
     const { data, error } = await query;
 
