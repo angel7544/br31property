@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Calendar, Search, CheckCircle, XCircle, Clock, FileText, Plus, X, Phone, Mail, MessageCircle, BedDouble, Home } from "lucide-react";
+import { Calendar, Search, CheckCircle, XCircle, Clock, FileText, Plus, X, Phone, Mail, MessageCircle, BedDouble, Home, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Enquiry, Property, Room } from "@/types";
@@ -13,7 +13,14 @@ type EnquiryWithDetails = Enquiry & {
 
 export default function EnquiriesPage() {
   const [enquiries, setEnquiries] = useState<EnquiryWithDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [complaints, setComplaints] = useState<any[]>([]);
+  const [callRequests, setCallRequests] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"enquiries" | "tickets" | "calls">("enquiries");
+  
+  const [enquiriesLoading, setEnquiriesLoading] = useState(true);
+  const [complaintsLoading, setComplaintsLoading] = useState(false);
+  const [callsLoading, setCallsLoading] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
   const supabase = createClient();
   
@@ -36,7 +43,7 @@ export default function EnquiriesPage() {
   const [assignSearchTerm, setAssignSearchTerm] = useState("");
 
   const fetchEnquiries = async (silent = false) => {
-    if (!silent) setLoading(true);
+    if (!silent) setEnquiriesLoading(true);
     const { data, error } = await supabase
       .from("enquiries")
       .select(`
@@ -52,7 +59,44 @@ export default function EnquiriesPage() {
     } else {
       setEnquiries(data as any);
     }
-    if (!silent) setLoading(false);
+    if (!silent) setEnquiriesLoading(false);
+  };
+
+  const fetchComplaints = async (silent = false) => {
+    if (!silent) setComplaintsLoading(true);
+    const { data, error } = await supabase
+      .from("complaints")
+      .select(`
+        *,
+        profiles (full_name, email, phone),
+        properties (name)
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching complaints:", error);
+    } else {
+      setComplaints(data as any || []);
+    }
+    if (!silent) setComplaintsLoading(false);
+  };
+
+  const fetchCallRequests = async (silent = false) => {
+    if (!silent) setCallsLoading(true);
+    const { data, error } = await supabase
+      .from("call_requests")
+      .select(`
+        *,
+        profiles (full_name, email, phone)
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching call requests:", error);
+    } else {
+      setCallRequests(data as any || []);
+    }
+    if (!silent) setCallsLoading(false);
   };
 
   const fetchProperties = async () => {
@@ -77,6 +121,8 @@ export default function EnquiriesPage() {
 
   useEffect(() => {
     fetchEnquiries();
+    fetchComplaints();
+    fetchCallRequests();
     fetchProperties();
 
     const channel = supabase
@@ -86,6 +132,20 @@ export default function EnquiriesPage() {
         { event: '*', schema: 'public', table: 'enquiries' },
         () => {
           fetchEnquiries(true);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'complaints' },
+        () => {
+          fetchComplaints(true);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'call_requests' },
+        () => {
+          fetchCallRequests(true);
         }
       )
       .subscribe();
@@ -106,6 +166,34 @@ export default function EnquiriesPage() {
     } else {
       toast.success(`Status updated to ${newStatus}`);
       fetchEnquiries();
+    }
+  };
+
+  const handleComplaintStatus = async (id: string, newStatus: string) => {
+    const { error } = await supabase
+      .from("complaints")
+      .update({ status: newStatus })
+      .eq("id", id);
+
+    if (error) {
+      toast.error("Failed to update ticket status");
+    } else {
+      toast.success(`Ticket marked as ${newStatus}`);
+      fetchComplaints();
+    }
+  };
+
+  const handleCallStatus = async (id: string, newStatus: string) => {
+    const { error } = await supabase
+      .from("call_requests")
+      .update({ status: newStatus })
+      .eq("id", id);
+
+    if (error) {
+      toast.error("Failed to update call status");
+    } else {
+      toast.success(`Call request marked as ${newStatus}`);
+      fetchCallRequests();
     }
   };
 
@@ -200,20 +288,22 @@ export default function EnquiriesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h1 className="text-2xl font-bold text-gray-900">Enquiries & Bookings</h1>
-            <p className="text-sm text-gray-500">Manage leads, viewings, and tenant bookings</p>
+            <h1 className="text-2xl font-bold text-gray-900">Enquiries & Support</h1>
+            <p className="text-sm text-gray-500">Manage leads, tickets, and call requests</p>
         </div>
         <div className="flex w-full sm:w-auto gap-2">
-           <div className="relative flex-grow sm:flex-grow-0">
-             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-             <input 
-               type="text" 
-               placeholder="Search guest..." 
-               className="pl-10 pr-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 w-full"
-               value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
-             />
-           </div>
+           {activeTab === "enquiries" && (
+             <div className="relative flex-grow sm:flex-grow-0">
+               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+               <input 
+                 type="text" 
+                 placeholder="Search guest..." 
+                 className="pl-10 pr-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 w-full"
+                 value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+               />
+             </div>
+           )}
            <button 
              onClick={() => setIsCreateModalOpen(true)}
              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -223,16 +313,61 @@ export default function EnquiriesPage() {
         </div>
       </div>
 
-      {loading ? (
-        <div className="p-12 text-center text-gray-500">Loading enquiries...</div>
-      ) : filteredEnquiries.length === 0 ? (
-        <div className="p-12 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
-            No enquiries found.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredEnquiries.map((enquiry) => (
-                <div key={enquiry.id} className="bg-white rounded-lg shadow border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setActiveTab("enquiries")}
+            className={`
+              ${activeTab === "enquiries"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+            `}
+          >
+            <Mail className="w-4 h-4" />
+            Property Leads
+          </button>
+          <button
+            onClick={() => setActiveTab("tickets")}
+            className={`
+              ${activeTab === "tickets"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+            `}
+          >
+            <MessageSquare className="w-4 h-4" />
+            Support Tickets
+          </button>
+          <button
+            onClick={() => setActiveTab("calls")}
+            className={`
+              ${activeTab === "calls"
+                ? "border-blue-500 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2
+            `}
+          >
+            <Phone className="w-4 h-4" />
+            Call Requests
+          </button>
+        </nav>
+      </div>
+
+      {/* Enquiries Tab */}
+      {activeTab === "enquiries" && (
+        enquiriesLoading ? (
+          <div className="p-12 text-center text-gray-500">Loading enquiries...</div>
+        ) : filteredEnquiries.length === 0 ? (
+          <div className="p-12 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
+              No enquiries found.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredEnquiries.map((enquiry) => (
+                  <div key={enquiry.id} className="bg-white rounded-lg shadow border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
+
                     {/* Card Header */}
                     <div className="p-4 border-b border-gray-100 flex justify-between items-start">
                         <div>
@@ -348,6 +483,172 @@ export default function EnquiriesPage() {
             ))}
         </div>
       )}
+      {/* Tickets Tab */}
+      {activeTab === "tickets" && (
+        complaintsLoading ? (
+            <div className="p-12 text-center text-gray-500">Loading tickets...</div>
+        ) : complaints.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
+                No tickets found.
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {complaints.map((ticket) => (
+                    <div key={ticket.id} className="bg-white rounded-lg shadow border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
+                        <div className="p-4 border-b border-gray-100 flex justify-between items-start">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900">{ticket.subject || ticket.title}</h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                        ticket.status === "Closed" ? "bg-gray-100 text-gray-800" :
+                                        ticket.status === "Open" ? "bg-red-100 text-red-800" :
+                                        "bg-yellow-100 text-yellow-800"
+                                    }`}>
+                                        {ticket.status}
+                                    </span>
+                                    <span className="text-xs text-gray-500 font-mono">ID: {ticket.id.substring(0,6)}</span>
+                                </div>
+                            </div>
+                            <span className={`px-2 py-1 text-xs rounded ${
+                                ticket.priority === 'High' ? 'bg-red-50 text-red-600' : 
+                                ticket.priority === 'Medium' ? 'bg-orange-50 text-orange-600' : 
+                                'bg-blue-50 text-blue-600'
+                            }`}>
+                                {ticket.priority} Priority
+                            </span>
+                        </div>
+                        <div className="p-4 flex-grow space-y-3">
+                            <p className="text-sm text-gray-600">{ticket.description}</p>
+                            
+                            <div className="pt-2 border-t border-gray-50 space-y-2">
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Clock className="h-4 w-4 text-gray-400" />
+                                    <span>{new Date(ticket.created_at).toLocaleString()}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Home className="h-4 w-4 text-gray-400" />
+                                    <span>{ticket.properties?.name || "General Issue"}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <div className="flex flex-col">
+                                        <span className="font-medium">{ticket.profiles?.full_name || "Unknown User"}</span>
+                                        <span className="text-xs text-gray-500">{ticket.profiles?.email}</span>
+                                        {ticket.profiles?.phone && <span className="text-xs text-gray-500">{ticket.profiles?.phone}</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-4 border-t border-gray-200 flex gap-2">
+                            {ticket.status !== "Closed" && (
+                                <>
+                                    <button 
+                                        onClick={() => handleComplaintStatus(ticket.id, "In Progress")}
+                                        className="flex-1 bg-white border border-gray-300 text-gray-700 text-sm py-2 rounded hover:bg-gray-50"
+                                    >
+                                        In Progress
+                                    </button>
+                                    <button 
+                                        onClick={() => handleComplaintStatus(ticket.id, "Resolved")}
+                                        className="flex-1 bg-blue-600 text-white text-sm py-2 rounded hover:bg-blue-700"
+                                    >
+                                        Resolve
+                                    </button>
+                                </>
+                            )}
+                            {ticket.status !== "Closed" && (
+                                <button 
+                                    onClick={() => handleComplaintStatus(ticket.id, "Closed")}
+                                    className="px-3 py-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    title="Close Ticket"
+                                >
+                                    <XCircle className="h-5 w-5" />
+                                </button>
+                            )}
+                             {ticket.status === "Closed" && (
+                                <button 
+                                    onClick={() => handleComplaintStatus(ticket.id, "Open")}
+                                    className="flex-1 bg-white border border-gray-300 text-gray-700 text-sm py-2 rounded hover:bg-gray-50"
+                                >
+                                    Re-open
+                                </button>
+                             )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        )
+      )}
+
+      {/* Calls Tab */}
+      {activeTab === "calls" && (
+        callsLoading ? (
+            <div className="p-12 text-center text-gray-500">Loading call requests...</div>
+        ) : callRequests.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
+                No call requests found.
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {callRequests.map((call) => (
+                    <div key={call.id} className="bg-white rounded-lg shadow border border-gray-200 flex flex-col hover:shadow-md transition-shadow">
+                        <div className="p-4 border-b border-gray-100 flex justify-between items-start">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900">{call.phone}</h3>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                        call.status === "Closed" ? "bg-gray-100 text-gray-800" :
+                                        call.status === "Called" ? "bg-green-100 text-green-800" :
+                                        "bg-yellow-100 text-yellow-800"
+                                    }`}>
+                                        {call.status}
+                                    </span>
+                                    <span className="text-xs text-gray-500 font-mono">ID: {call.id.substring(0,6)}</span>
+                                </div>
+                            </div>
+                            <Phone className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <div className="p-4 flex-grow space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <Clock className="h-4 w-4 text-gray-400" />
+                                <span>Preferred Time: {call.preferred_time}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <Calendar className="h-4 w-4 text-gray-400" />
+                                <span>Requested: {new Date(call.created_at).toLocaleString()}</span>
+                            </div>
+                            {call.profiles && (
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <span>User: {call.profiles.full_name} ({call.profiles.email})</span>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 border-t border-gray-200 flex gap-2">
+                             {call.status === "Pending" && (
+                                <a 
+                                    href={`tel:${call.phone}`}
+                                    onClick={() => handleCallStatus(call.id, "Called")}
+                                    className="flex-1 bg-green-600 text-white text-sm py-2 rounded hover:bg-green-700 flex items-center justify-center gap-2"
+                                >
+                                    <Phone className="h-4 w-4" />
+                                    Call Now
+                                </a>
+                             )}
+                             {call.status !== "Closed" && (
+                                <button 
+                                    onClick={() => handleCallStatus(call.id, "Closed")}
+                                    className="flex-1 bg-white border border-gray-300 text-gray-700 text-sm py-2 rounded hover:bg-gray-50"
+                                >
+                                    Close Request
+                                </button>
+                             )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        )
+      )}
 
       {/* Create Modal */}
       {isCreateModalOpen && (
@@ -356,7 +657,7 @@ export default function EnquiriesPage() {
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-bold">New Enquiry</h3>
-                    <button onClick={() => setIsCreateModalOpen(false)}><X className="h-6 w-6 text-gray-400" /></button>
+                    <button onClick={() => setIsCreateModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors"><X className="h-6 w-6" /></button>
                 </div>
                 <form onSubmit={handleCreate} className="space-y-4">
                     <div>
