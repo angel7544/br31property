@@ -1,19 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, MapPin, Home, Users, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function HeroSearch() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"PG" | "Flat">("PG");
   const [city, setCity] = useState("");
+  const [cities, setCities] = useState<string[]>([]);
   const [location, setLocation] = useState("");
   const [gender, setGender] = useState("");
   const [maxPrice, setMaxPrice] = useState(20000);
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.from("properties").select("city").eq("status", "Active");
+      if (data) {
+        const uniqueCities = Array.from(new Set(data.map((p: any) => p.city))).sort();
+        setCities(uniqueCities);
+      }
+    };
+    fetchCities();
+  }, []);
+
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (city) params.append("city", city);
+    if (location) params.append("q", location);
     if (activeTab) params.append("type", activeTab);
     if (gender && activeTab === "PG") params.append("gender", gender);
     if (maxPrice) params.append("maxPrice", maxPrice.toString());
@@ -62,12 +77,9 @@ export default function HeroSearch() {
                 className="w-full bg-transparent outline-none text-gray-700 font-medium appearance-none cursor-pointer"
               >
                 <option value="">Select City</option>
-                <option value="Delhi">Delhi</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Bangalore">Bangalore</option>
-                <option value="Gurgaon">Gurgaon</option>
-                <option value="Noida">Noida</option>
-                <option value="Pune">Pune</option>
+                {cities.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
               </select>
             </div>
           </div>

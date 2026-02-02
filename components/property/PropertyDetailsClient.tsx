@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { 
   MapPin, Bed, CheckCircle2, User, Phone, Share2, 
-  ChevronDown, ChevronUp 
+  ChevronDown, ChevronUp, Mail 
 } from "lucide-react";
 import { motion, AnimatePresence } from 'framer-motion';
 import ImageSlider from "@/components/ui/ImageSlider";
 import InquiryForm from "@/components/InquiryForm";
 import WishlistButton from "@/components/WishlistButton";
 import { Room } from "@/types";
+import { createClient } from "@/lib/supabase/client";
 
 interface PropertyDetailsClientProps {
   property: any; // Using any to avoid strict type issues with the complex property object
@@ -19,6 +20,17 @@ interface PropertyDetailsClientProps {
 
 export default function PropertyDetailsClient({ property, imageUrls }: PropertyDetailsClientProps) {
   const [showAllAmenities, setShowAllAmenities] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [selectedRoom, setSelectedRoom] = useState<{id: string, name: string} | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkAuth();
+  }, [supabase]);
   
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', { 
@@ -187,10 +199,16 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-xl font-bold text-gray-900">{room.name}</h4>
                         <div className="text-right">
-                          <p className="text-xl font-bold text-blue-600">
-                            {formatCurrency(room.monthly_rent)}
-                            <span className="text-sm font-normal text-gray-500">/mo</span>
-                          </p>
+                          {property.type !== 'Flat' ? (
+                            <p className="text-xl font-bold text-blue-600">
+                              {formatCurrency(room.monthly_rent)}
+                              <span className="text-sm font-normal text-gray-500">/mo</span>
+                            </p>
+                          ) : (
+                            <p className="text-lg font-bold text-green-600">
+                              Included
+                            </p>
+                          )}
                         </div>
                       </div>
                       
@@ -288,10 +306,14 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
         transition={{ delay: 0.3, duration: 0.5 }}
       >
         <div className="sticky top-24 space-y-6">
-          <InquiryForm 
-            propertyId={property.id} 
-            propertyName={property.name} 
-          />
+          <div id="inquiry-form">
+            <InquiryForm 
+              propertyId={property.id} 
+              propertyName={property.name} 
+              roomId={selectedRoom?.id}
+              roomName={selectedRoom?.name}
+            />
+          </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center gap-4 mb-4">
@@ -304,7 +326,10 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
               </div>
             </div>
             <a 
-              href={`https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name}.`)}`}
+              href={user 
+                ? `https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name}.`)}`
+                : `https://wa.me/9135893002?text=${encodeURIComponent(`Hi, I'm interested in property ${property.name}.`)}`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="w-full border border-gray-200 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-50 transition-colors flex justify-center items-center gap-2"

@@ -163,7 +163,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               View Details
             </Link>
             <a 
-              href={`https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name} in ${property.city}.`)}`}
+              href={User 
+                ? `https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name} in ${property.city}.`)}`
+                : `https://wa.me/9135893002?text=${encodeURIComponent(`Hi, I'm interested in property ${property.name} in ${property.city}.`)}`
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 flex items-center justify-center"

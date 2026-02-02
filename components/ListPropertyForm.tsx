@@ -650,10 +650,22 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
                   onChange={(e) => setCurrentRoom({...currentRoom, type: e.target.value})}
                   className="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm bg-white"
                 >
-                  <option>Single Room</option>
-                  <option>Double Sharing</option>
-                  <option>Triple Sharing</option>
-                  <option>Four Sharing</option>
+                  <optgroup label="Sharing (PG)">
+                    <option>Single Room</option>
+                    <option>Double Sharing</option>
+                    <option>Triple Sharing</option>
+                    <option>Four Sharing</option>
+                  </optgroup>
+                  <optgroup label="Flat Areas">
+                    <option>Bedroom</option>
+                    <option>Master Bedroom</option>
+                    <option>Guest Room</option>
+                    <option>Hall</option>
+                    <option>Dining Area</option>
+                    <option>Kitchen</option>
+                    <option>Study Room</option>
+                    <option>Balcony</option>
+                  </optgroup>
                 </select>
               </div>
               <div>
