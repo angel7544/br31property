@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import RoomCarousel from "@/components/RoomCarousel";
 import HeroSearch from "@/components/HeroSearch";
 import TestimonialsSection from "@/components/TestimonialsSection";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const heroImages = [
   "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop", // Hostel/PG vibe
@@ -14,12 +14,12 @@ const heroImages = [
   "https://thumbs.dreamstime.com/b/modern-living-room-sofa-furniture-indian-type-interior-house-modern-living-room-sofa-furniture-indian-type-104886281.jpg", // Living Space
 ];
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
