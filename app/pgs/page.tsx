@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import SearchHeader from "@/components/search/SearchHeader";
 import SearchSidebar from "@/components/search/SearchSidebar";
-import PropertyCard from "@/components/search/PropertyCard";
+import AnimatedPropertyGrid from "@/components/search/AnimatedPropertyGrid";
 import { Property, Room } from "@/types";
 import { Suspense } from "react";
 
@@ -114,18 +114,7 @@ export default async function PGsPage({ searchParams }: { searchParams: { [key: 
                    </div>
                 </div>
 
-                <div className="space-y-6">
-                   {filteredProperties.map((property) => (
-                      <PropertyCard key={property.id} property={property} />
-                   ))}
-                   
-                   {filteredProperties.length === 0 && (
-                      <div className="text-center py-20 bg-white rounded-xl border border-gray-100">
-                         <h3 className="text-lg font-medium text-gray-900">No properties found</h3>
-                         <p className="text-gray-500 mt-2">Try adjusting your filters to find what you're looking for.</p>
-                      </div>
-                   )}
-                </div>
+                <AnimatedPropertyGrid properties={filteredProperties} />
              </div>
           </div>
        </div>

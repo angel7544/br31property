@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: { city: string; slu
   if (!property) return { title: "Property Not Found" };
 
   return {
-    title: `${property.name} in ${property.city} | PG Dekho`,
+    title: `${property.name} in ${property.city} | BR31 Rentals`,
     description: property.description || `Book ${property.name} in ${property.city}. Affordable and comfortable stays.`,
   };
 }

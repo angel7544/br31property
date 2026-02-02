@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const blog = await getBlog(params.slug);
   if (!blog) return {};
   
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hotelsakura.in';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://br31rentals.in';
   const postUrl = `${siteUrl}/blog/${params.slug}`;
 
   return {
-    title: `${blog.seo_title || blog.title} | Hotel Sakura Blog`,
+    title: `${blog.seo_title || blog.title} | BR31 Rentals Blog`,
     description: blog.seo_description || blog.excerpt,
     alternates: {
       canonical: postUrl,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       title: blog.title,
       description: blog.excerpt,
       url: postUrl,
-      siteName: 'Hotel Sakura',
+      siteName: 'BR31 Rentals',
       images: blog.cover_image ? [
         {
           url: blog.cover_image,

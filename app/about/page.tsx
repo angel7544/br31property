@@ -1,5 +1,27 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Users, Target, ShieldCheck, Heart } from "lucide-react";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
 
 export default function AboutPage() {
   return (
@@ -14,18 +36,28 @@ export default function AboutPage() {
             className="object-cover"
           />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        >
           <h1 className="text-4xl md:text-5xl font-bold mb-6">About BR31 PROPERTY MANAGEMENT SYSTEM</h1>
           <p className="text-xl max-w-3xl mx-auto text-gray-300">
             Revolutionizing the way you find and book PG accommodations and flats across India.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       {/* Mission & Vision */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
               To provide a seamless, transparent, and hassle-free experience for students and professionals looking for comfortable living spaces. We aim to bridge the gap between property owners and tenants through technology and trust.
@@ -44,45 +76,70 @@ export default function AboutPage() {
                 <span className="font-semibold text-gray-900">Customer First</span>
               </div>
             </div>
-          </div>
-          <div className="relative h-[240px] rounded-2xl overflow-hidden shadow-xl">
+          </motion.div>
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="relative h-[240px] rounded-2xl overflow-hidden shadow-xl"
+          >
             <Image
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgbW8sYFtbnvc7KlT6Xw_I8h5-P4CczGySDA&s"
               alt="Our Mission"
               fill
               className="object-cover"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+          >
             {[
               { label: "Happy Tenants", value: "10,000+" },
               { label: "Verified Properties", value: "500+" },
               { label: "Cities Covered", value: "20+" },
               { label: "Support", value: "24/7" },
             ].map((stat, index) => (
-              <div key={index} className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+              <motion.div key={index} variants={fadeInUp} className="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
                 <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">{stat.value}</div>
                 <div className="text-gray-600 font-medium">{stat.label}</div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Team Section */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Who We Are</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-12">
-          A dedicated team of professionals passionate about making your stay comfortable and memorable.
-        </p>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Who We Are</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-12">
+            A dedicated team of professionals passionate about making your stay comfortable and memorable.
+          </p>
+        </motion.div>
         <div className="flex justify-center">
-           <div className="bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full border border-gray-100">
+           <motion.div 
+             initial="hidden"
+             whileInView="visible"
+             viewport={{ once: true }}
+             variants={fadeInUp}
+             className="bg-white p-8 rounded-2xl shadow-lg max-w-sm w-full border border-gray-100"
+           >
              <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden relative">
                 <Image 
                     src="/logo.png"
@@ -96,7 +153,7 @@ export default function AboutPage() {
              <p className="text-gray-500 text-sm">
                We are a group of tech enthusiasts and real estate experts working together to solve your accommodation needs.
              </p>
-           </div>
+           </motion.div>
         </div>
       </section>
     </div>

@@ -84,7 +84,7 @@ function SignupPageContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div className="flex items-center justify-center bg-gray-50 py-8 px-2 sm:px-3 lg:px-4 relative">
       {/* Success Popup */}
       {showSuccessPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
@@ -129,7 +129,7 @@ function SignupPageContent() {
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Join PG Dekho to find your perfect stay or list your property.
+            Join BR31 Rentals to find your perfect stay or list your property.
           </p>
         </div>
         

@@ -55,9 +55,9 @@ function EmailLoginFormContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 relative overflow-hidden">
+    <div className="flex flex-col justify-center items-center bg-gray-50 relative overflow-hidden pt-0">
       
-      <div className="z-10 w-full max-w-md px-4">
+      <div className="z-5 w-full max-w-md px-4">
         <Link href="/login" className="flex items-center text-gray-500 hover:text-orange-500 mb-4 transition-colors">
            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Phone Login
         </Link>

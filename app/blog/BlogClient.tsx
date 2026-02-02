@@ -2,10 +2,30 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, Variants } from "framer-motion";
 import { Calendar, User, ArrowRight, ImageIcon } from "lucide-react";
 import ImageSlider from "@/components/ui/ImageSlider";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import type { BlogItem } from "./page";
+
+const fadeInUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  }
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function BlogClient({ initialItems }: { initialItems: BlogItem[] }) {
   const [blogs, setBlogs] = useState<BlogItem[]>(initialItems);
@@ -63,20 +83,31 @@ export default function BlogClient({ initialItems }: { initialItems: BlogItem[] 
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=60')] bg-cover bg-center" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
-        <div className="relative container mx-auto text-center max-w-2xl z-10">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="relative container mx-auto text-center max-w-2xl z-10"
+        >
           <h1 className="text-3xl md:text-2xl font-bold mb-6 tracking-tight">
-            Sakura <span className="text-primary">Journal</span>
+            BR31 Rentals <span className="text-primary">Journal</span>
           </h1>
           <p className="text-xl text-gray-300 leading-relaxed max-w-xl mx-auto">
-            Explore our latest stories, travel guides, and behind-the-scenes moments from Hotel Sakura.
+            Explore our latest stories, travel guides, and behind-the-scenes moments from BR31 Rentals.
           </p>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="container mx-auto px-4 py-16 -mt-10 relative z-20">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+        className="container mx-auto px-4 py-16 -mt-10 relative z-20"
+      >
         {blogs.length > 0 ? (
           <>
-            <div className="mb-16">
+            <motion.div variants={fadeInUp} className="mb-16">
               <div className="group relative block bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
                 <div className="grid md:grid-cols-2 gap-0">
                   <div className="relative h-64 md:h-auto overflow-hidden bg-gray-200">
@@ -135,7 +166,7 @@ export default function BlogClient({ initialItems }: { initialItems: BlogItem[] 
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {remainingBlogs.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -145,9 +176,9 @@ export default function BlogClient({ initialItems }: { initialItems: BlogItem[] 
                   const galleryCount = galleryImages.length;
                   const displayImage = blog.cover_image || (hasGallery ? galleryImages[0] : null);
                   return (
+                    <motion.div key={blog.id} variants={fadeInUp} className="h-full">
                     <Link
                       href={`/blog/${blog.slug}`}
-                      key={blog.id}
                       className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden border border-gray-100"
                     >
                       <div className="relative aspect-[3/2] overflow-hidden bg-gray-200">
@@ -189,21 +220,22 @@ export default function BlogClient({ initialItems }: { initialItems: BlogItem[] 
                         </div>
                       </div>
                     </Link>
+                    </motion.div>
                   );
                 })}
               </div>
             )}
           </>
         ) : (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
+          <motion.div variants={fadeInUp} className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">📝</span>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No stories yet</h3>
             <p className="text-gray-500">Check back soon for updates from Hotel Sakura.</p>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import ListPropertyForm from "@/components/ListPropertyForm";
 import { getUserRoles } from "@/lib/auth";
 
 export const metadata = {
-  title: "List Your Property | PG Dekho",
+  title: "List Your Property | BR31 Rentals",
   description: "Rent your PG or Flats with us. Join our growing network of property owners.",
 };
 

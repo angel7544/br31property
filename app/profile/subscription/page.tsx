@@ -85,9 +85,9 @@ export default function SubscriptionPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "PG Dekho",
+        name: "BR31 Rentals",
         description: "Owner Plan Upgrade",
-        image: "https://your-logo-url.com/logo.png", // Optional
+        image: "https://br31tech.live/logo.png", // Optional
         order_id: orderData.id,
         handler: async function (response: any) {
             try {

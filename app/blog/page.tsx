@@ -5,8 +5,8 @@ import BlogClient from "./BlogClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Blog | Hotel Sakura",
-  description: "Latest news, updates, and travel tips from Hotel Sakura.",
+  title: "Blog | BR31 Rentals",
+  description: "Latest news, updates, and travel tips from BR31 Rentals.",
 };
 
 export type BlogItem = {

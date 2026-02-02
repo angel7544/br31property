@@ -1,29 +1,54 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import InquiryForm from "@/components/InquiryForm";
 import { useSettings } from "@/context/SettingsContext";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
 
 export default function ContactPage() {
   const { settings } = useSettings();
 
   return (
-    <div className="max-w-5xl mx-auto px-2 py-2 space-y-12">
-      <div className="text-center max-w-1xl mx-auto">
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer}
+      className="max-w-5xl mx-auto px-2 py-2 space-y-12"
+    >
+      <motion.div variants={fadeInUp} className="text-center max-w-1xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-3">Contact & Inquiry</h1>
         <p className="text-gray-500">
           Have questions or ready to book? Fill out the form below or reach us directly.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-start">
         {/* Left Column: Inquiry Form */}
-        <div>
+        <motion.div variants={fadeInUp}>
           <InquiryForm />
-        </div>
+        </motion.div>
 
         {/* Right Column: Contact Info & Map */}
-        <div className="space-y-6">
+        <motion.div variants={fadeInUp} className="space-y-6">
           <div>
             {/* <h3 className="text-lg font-semibold text-gray-900 mb-6">Get in Touch</h3> */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
@@ -94,8 +119,8 @@ export default function ContactPage() {
                ></iframe>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
