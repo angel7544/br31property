@@ -69,18 +69,21 @@ export default function HeroSearch() {
           {/* City Selection */}
           <div className="relative group">
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">City</label>
-            <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 group-focus-within:bg-white group-focus-within:border-blue-500 transition-colors">
-              <MapPin className="w-5 h-5 text-blue-500 mr-3" />
+            <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 group-focus-within:bg-white group-focus-within:border-blue-500 transition-colors relative">
+              <MapPin className="w-5 h-5 text-blue-500 mr-3 z-10" />
               <select 
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-transparent outline-none text-gray-700 font-medium appearance-none cursor-pointer"
+                className="w-full bg-transparent outline-none text-gray-700 font-medium appearance-none cursor-pointer relative z-20"
               >
                 <option value="">Select City</option>
                 {cities.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
+                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              </div>
             </div>
           </div>
 

@@ -163,7 +163,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               View Details
             </Link>
             <a 
-              href={User 
+              href={property.contact_number 
                 ? `https://wa.me/${property.contact_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(`Hi, I'm interested in your property ${property.name} in ${property.city}.`)}`
                 : `https://wa.me/9135893002?text=${encodeURIComponent(`Hi, I'm interested in property ${property.name} in ${property.city}.`)}`
               }

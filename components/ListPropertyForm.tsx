@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { CheckSquare, Loader2, Square, Upload, X, Home, MapPin, DollarSign, FileText, Phone, Mail, Image as ImageIcon, BedDouble, Shield, CheckCircle2 } from "lucide-react";
+import { CheckSquare, Loader2, Square, Upload, X, Home, MapPin, DollarSign, FileText, Phone, Mail, Image as ImageIcon, BedDouble, Shield, CheckCircle2, Users } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { getUserRoles } from "@/lib/auth";
@@ -23,12 +23,22 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
   const [type, setType] = useState<"PG" | "Flat">("PG");
   const [formData, setFormData] = useState({
     location: "",
+    address: "",
     name: "",
     description: "",
     contact: "",
     email: "",
     price_min: "",
-    price_max: ""
+    price_max: "",
+    gender: "Unisex",
+    notice_period: "",
+    electricity_charges: "",
+    maintenance_charges: "",
+    furnishing: "",
+    security_deposit: "",
+    lock_in_period: "",
+    agreement_duration: "",
+    available_from: ""
   });
 
   const [mainImage, setMainImage] = useState<string>("");
@@ -73,13 +83,23 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
     if (initialData) {
         setType(initialData.type || "PG");
         setFormData({
-            location: initialData.city || initialData.address || "",
+            location: initialData.city || "",
+            address: initialData.address || "",
             name: initialData.name || "",
             description: initialData.description || "",
             contact: initialData.contact_number || "",
             email: initialData.email || "",
             price_min: initialData.price_range_min?.toString() || "",
-            price_max: initialData.price_range_max?.toString() || ""
+            price_max: initialData.price_range_max?.toString() || "",
+            gender: initialData.gender_preference || "Unisex",
+            notice_period: "", 
+            electricity_charges: "",
+            maintenance_charges: "",
+            furnishing: "",
+            security_deposit: "",
+            lock_in_period: "",
+            agreement_duration: "",
+            available_from: ""
         });
         setMainImage(initialData.image_url || "");
         setOtherImages(initialData.images || []);
@@ -237,21 +257,39 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
     try {
       const slug = isEditMode && initialData?.slug ? initialData.slug : generateSlug(formData.name);
       
+      // Construct rules string
+      const rulesList = [
+         formData.security_deposit ? `Security Deposit: ${formData.security_deposit}` : null,
+         formData.notice_period ? `Notice Period: ${formData.notice_period}` : null,
+         formData.lock_in_period ? `Lock-in Period: ${formData.lock_in_period}` : null,
+         formData.agreement_duration ? `Agreement Duration: ${formData.agreement_duration}` : null,
+         formData.electricity_charges ? `Electricity Charges: ${formData.electricity_charges}` : null,
+         formData.maintenance_charges ? `Maintenance Charges: ${formData.maintenance_charges}` : null,
+         formData.available_from ? `Available From: ${formData.available_from}` : null,
+         initialData?.rules
+      ].filter(Boolean).join('\n');
+
+      // Append furnishing to description if present
+      const finalDescription = formData.furnishing 
+         ? `${formData.description}\n\nFurnishing: ${formData.furnishing}`
+         : formData.description;
+
       const propertyPayload = {
         owner_id: userId,
         name: formData.name,
         slug: slug,
         type: type,
         city: formData.location, 
-        address: formData.location,
+        address: formData.address || formData.location,
         status: isEditMode ? initialData.status : "Active",
-        description: formData.description || "No description provided",
-        gender_preference: "Unisex",
+        description: finalDescription || "No description provided",
+        gender_preference: formData.gender,
         contact_number: formData.contact,
         email: formData.email,
         image_url: mainImage,
         images: otherImages,
         amenities: amenities,
+        rules: rulesList || null,
         price_range_min: formData.price_min ? parseFloat(formData.price_min) : null,
         price_range_max: formData.price_max ? parseFloat(formData.price_max) : null
       };
@@ -411,19 +449,50 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
               </div>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Location / City *</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Koramangala, Bangalore"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">City *</label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Bangalore"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+                </div>
               </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Gender Preference *</label>
+                <div className="relative">
+                  <Users className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <select
+                    value={formData.gender}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
+                  >
+                    <option value="Unisex">Co-Living / Unisex</option>
+                    <option value="Male">Boys Only</option>
+                    <option value="Female">Girls Only</option>
+                    <option value="Family">Family</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Address *</label>
+              <textarea
+                rows={2}
+                required
+                placeholder="House No, Street, Landmark..."
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400 resize-none"
+              />
             </div>
 
             <div>
@@ -464,6 +533,99 @@ export default function ListPropertyForm({ userId, initialData, isEditMode = fal
                   />
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Rental Terms Section */}
+          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm space-y-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-blue-500" />
+              Rental Terms
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Furnishing Status *</label>
+                  <select
+                    value={formData.furnishing}
+                    onChange={(e) => setFormData({ ...formData, furnishing: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all bg-white"
+                  >
+                    <option value="">Select</option>
+                    <option value="Fully Furnished">Fully Furnished</option>
+                    <option value="Semi Furnished">Semi Furnished</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                  </select>
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Security Deposit</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 2 Months Rent"
+                    value={formData.security_deposit}
+                    onChange={(e) => setFormData({ ...formData, security_deposit: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Notice Period</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 1 Month"
+                    value={formData.notice_period}
+                    onChange={(e) => setFormData({ ...formData, notice_period: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Lock-in Period</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 6 Months"
+                    value={formData.lock_in_period}
+                    onChange={(e) => setFormData({ ...formData, lock_in_period: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Agreement Duration</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 11 Months"
+                    value={formData.agreement_duration}
+                    onChange={(e) => setFormData({ ...formData, agreement_duration: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Available From</label>
+                  <input
+                    type="date"
+                    value={formData.available_from}
+                    onChange={(e) => setFormData({ ...formData, available_from: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Electricity Charges</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹8/unit or Included"
+                    value={formData.electricity_charges}
+                    onChange={(e) => setFormData({ ...formData, electricity_charges: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Maintenance</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. ₹1000/mo or Included"
+                    value={formData.maintenance_charges}
+                    onChange={(e) => setFormData({ ...formData, maintenance_charges: e.target.value })}
+                    className="w-full px-3 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                  />
+               </div>
             </div>
           </div>
         </div>
