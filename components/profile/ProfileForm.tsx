@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { User, Mail, Phone, MapPin, Link } from "lucide-react";
+import { User, Mail, Phone, MapPin, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface ProfileFormProps {
   user: any;
@@ -87,7 +89,12 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8"
+    >
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
         {(profile?.role === "owner" || profile?.role === "staff" || profile?.role === "admin") && (
@@ -101,7 +108,12 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-        <div className="flex items-center gap-6 mb-6">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="flex items-center gap-6 mb-6"
+        >
           <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
             {formData.avatar_url ? (
               <img src={formData.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -125,10 +137,15 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
             />
             {uploading && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
           </div>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="space-y-2"
+          >
             <label className="text-sm font-medium text-gray-700">Full Name</label>
             <div className="relative">
               <input
@@ -141,9 +158,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
               <User className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="space-y-2"
+          >
             <label className="text-sm font-medium text-gray-700">Email Address</label>
             <div className="relative">
               <input
@@ -154,9 +176,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
               <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="space-y-2"
+          >
             <label className="text-sm font-medium text-gray-700">Phone Number</label>
             <div className="relative">
               <input
@@ -169,9 +196,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
               <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="space-y-2"
+          >
             <label className="text-sm font-medium text-gray-700">City</label>
             <div className="relative">
               <input
@@ -184,9 +216,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
               <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="space-y-2"
+          >
             <label className="text-sm font-medium text-gray-700">State</label>
             <div className="relative">
               <input
@@ -199,10 +236,15 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
               />
               <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="space-y-2">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="space-y-2"
+        >
           <label className="text-sm font-medium text-gray-700">Address</label>
           <div className="relative">
             <input
@@ -215,9 +257,14 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
             />
             <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flex justify-end pt-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.5 }}
+          className="flex justify-end pt-4"
+        >
           <button
             type="submit"
             disabled={loading}
@@ -225,8 +272,8 @@ export default function ProfileForm({ user, profile }: ProfileFormProps) {
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
-        </div>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }

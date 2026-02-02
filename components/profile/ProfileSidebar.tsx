@@ -16,6 +16,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 const menuItems = [
   {
@@ -144,18 +145,45 @@ export default function ProfileSidebar() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0 }
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <nav className="flex flex-col py-2">
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+    >
+      <motion.nav 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-col py-2"
+      >
         {isAdmin && (
-          <Link
-            href="/admin"
-            onClick={handleAdminNavigation}
-            className="flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-          >
-            <LayoutDashboard className="w-5 h-5 text-gray-400" />
-            Admin Dashboard
-          </Link>
+          <motion.div variants={itemVariants}>
+            <Link
+              href="/admin"
+              onClick={handleAdminNavigation}
+              className="flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+            >
+              <LayoutDashboard className="w-5 h-5 text-gray-400" />
+              Admin Dashboard
+            </Link>
+          </motion.div>
         )}
         
         {menuItems.map((item) => {
@@ -164,22 +192,23 @@ export default function ProfileSidebar() {
             : pathname.startsWith(item.href);
             
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 ${
-                isActive
-                  ? "border-blue-500 text-blue-600 bg-blue-50"
-                  : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-              }`}
-            >
-              <item.icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400"}`} />
-              {item.label}
-            </Link>
+            <motion.div key={item.href} variants={itemVariants}>
+              <Link
+                href={item.href}
+                className={`flex items-center gap-3 px-6 py-4 text-sm font-medium transition-colors border-l-4 ${
+                  isActive
+                    ? "border-blue-500 text-blue-600 bg-blue-50"
+                    : "border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+              >
+                <item.icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400"}`} />
+                {item.label}
+              </Link>
+            </motion.div>
           );
         })}
         
-        <div className="border-t border-gray-100 my-2 pt-2">
+        <motion.div variants={itemVariants} className="border-t border-gray-100 my-2 pt-2">
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
@@ -188,8 +217,8 @@ export default function ProfileSidebar() {
             <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-600" />
             {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
-        </div>
-      </nav>
-    </div>
+        </motion.div>
+      </motion.nav>
+    </motion.div>
   );
 }

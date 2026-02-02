@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, Search, Heart, Star, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 function LoginPageContent() {
   const [role, setRole] = useState<"user" | "agent">("user");
@@ -88,13 +89,23 @@ function LoginPageContent() {
 
   return (
     <div className=" flex items-center justify-center bg-gray-50 p-2 pt-0">
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-5xl w-full flex flex-col md:flex-row min-h-[400px]">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-5xl w-full flex flex-col md:flex-row min-h-[400px]"
+      >
         
         {/* Left Side - Login Form */}
         <div className="w-full md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">Welcome Back</h2>
-          
-          <div className="bg-gray-50 p-1 rounded-lg flex mb-8 shadow-inner">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">Welcome Back</h2>
+            
+            <div className="bg-gray-50 p-1 rounded-lg flex mb-8 shadow-inner">
             <button
               onClick={() => setRole("user")}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
@@ -185,15 +196,21 @@ function LoginPageContent() {
                </span>
             </div>
           </form>
+          </motion.div>
         </div>
 
         {/* Right Side - Benefits */}
         <div className="w-full md:w-1/2 p-8 md:p-12 bg-slate-900 text-white flex flex-col justify-center">
-          <h3 className="text-2xl font-bold mb-8 leading-tight">
-            What You Can Do with Your Account
-          </h3>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <h3 className="text-2xl font-bold mb-8 leading-tight">
+              What You Can Do with Your Account
+            </h3>
 
-          <ul className="space-y-6">
+            <ul className="space-y-6">
             <li className="flex items-start gap-4">
               <div className="mt-1 bg-white/10 p-2 rounded-full">
                  <Search className="w-5 h-5 text-indigo-400" />
@@ -242,9 +259,9 @@ function LoginPageContent() {
               </div>
             </li>
           </ul>
+          </motion.div>
         </div>
-
-      </div>
+      </motion.div>
     </div>
   );
 }
