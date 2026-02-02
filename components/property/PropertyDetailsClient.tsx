@@ -13,6 +13,60 @@ import WishlistButton from "@/components/WishlistButton";
 import { Room } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
+const CollapsibleContent = ({ content, isList = false }: { content: string, isList?: boolean }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  if (!content) return null;
+
+  const contentItems = isList ? content.split('\n').filter(Boolean) : [];
+  const shouldCollapse = isList ? contentItems.length > 4 : content.length > 300;
+
+  return (
+    <div className="relative">
+      <div 
+        className={`relative transition-all duration-300 ease-in-out overflow-hidden ${
+          !isExpanded && shouldCollapse ? 'max-h-32' : 'max-h-none'
+        }`}
+      >
+        {isList ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             {contentItems.map((item, idx) => {
+               const [label, value] = item.includes(':') ? item.split(':') : [item, ''];
+               return (
+                 <div key={idx} className="bg-gray-50 px-4 py-3 rounded-lg border border-gray-100 flex justify-between items-center group hover:border-blue-100 transition-colors">
+                    <span className="text-gray-600 font-medium text-sm">{label.trim()}</span>
+                    {value && <span className="text-gray-900 font-bold text-sm">{value.trim()}</span>}
+                 </div>
+               );
+             })}
+          </div>
+        ) : (
+          <div className="text-gray-600 leading-relaxed whitespace-pre-wrap text-[15px]">
+            {content}
+          </div>
+        )}
+        
+        {!isExpanded && shouldCollapse && (
+          <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white via-white/90 to-transparent" />
+        )}
+      </div>
+      
+      {shouldCollapse && (
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-4 flex items-center gap-1.5 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors group mx-auto md:mx-0"
+        >
+          {isExpanded ? (
+            <>Read Less <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" /></>
+          ) : (
+            <>Read More <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" /></>
+          )}
+        </button>
+      )}
+    </div>
+  );
+};
+
 interface PropertyDetailsClientProps {
   property: any; // Using any to avoid strict type issues with the complex property object
   imageUrls: string[];
@@ -123,15 +177,6 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
             </div>
           </div>
 
-          <hr className="my-6 border-gray-100" />
-
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 mb-3">About this property</h3>
-            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
-              {property.description || "No description available for this property."}
-            </p>
-          </div>
-
           <div className="mt-8">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Amenities</h3>
             <motion.div layout className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -170,6 +215,15 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
                <p className="text-gray-500">No specific amenities listed.</p>
             )}
           </div>
+        </motion.div>
+
+        {/* About Property */}
+        <motion.div 
+          variants={fadeInUp}
+          className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100"
+        >
+          <h3 className="text-lg font-bold text-gray-900 mb-4">About this property</h3>
+          <CollapsibleContent content={property.description || "No description available for this property."} />
         </motion.div>
 
         {/* Rooms Section */}
@@ -261,9 +315,7 @@ export default function PropertyDetailsClient({ property, imageUrls }: PropertyD
             className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100"
           >
             <h3 className="text-lg font-bold text-gray-900 mb-4">House Rules</h3>
-            <div className="prose pblue-blue max-w-none text-gray-600 whitespace-pre-wrap">
-              {property.rules}
-            </div>
+            <CollapsibleContent content={property.rules} isList={true} />
           </motion.div>
         )}
 
