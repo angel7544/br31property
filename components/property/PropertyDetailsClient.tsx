@@ -22,44 +22,44 @@ const CollapsibleContent = ({ content, isList = false }: { content: string, isLi
   const shouldCollapse = isList ? contentItems.length > 4 : content.length > 300;
 
   return (
-    <div className="relative">
-      <div 
-        className={`relative transition-all duration-300 ease-in-out overflow-hidden ${
-          !isExpanded && shouldCollapse ? 'max-h-32' : 'max-h-none'
-        }`}
+    <div className="relative group/collapsible">
+      <motion.div 
+        initial={false}
+        animate={{ height: !isExpanded && shouldCollapse ? (isList ? 180 : 100) : "auto" }}
+        className="relative overflow-hidden"
       >
         {isList ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-2">
              {contentItems.map((item, idx) => {
                const [label, value] = item.includes(':') ? item.split(':') : [item, ''];
                return (
-                 <div key={idx} className="bg-gray-50 px-4 py-3 rounded-lg border border-gray-100 flex justify-between items-center group hover:border-blue-100 transition-colors">
-                    <span className="text-gray-600 font-medium text-sm">{label.trim()}</span>
-                    {value && <span className="text-gray-900 font-bold text-sm">{value.trim()}</span>}
+                 <div key={idx} className="bg-gray-50/80 px-4 py-3 rounded-xl border border-gray-100 flex justify-between items-center hover:bg-blue-50/50 hover:border-blue-100 transition-all duration-200">
+                    <span className="text-gray-700 font-medium text-sm">{label.trim()}</span>
+                    {value && <span className="text-gray-900 font-bold text-sm ml-2">{value.trim()}</span>}
                  </div>
                );
              })}
           </div>
         ) : (
-          <div className="text-gray-600 leading-relaxed whitespace-pre-wrap text-[15px]">
+          <div className="text-gray-600 leading-7 whitespace-pre-wrap text-[15px] text-justify">
             {content}
           </div>
         )}
         
         {!isExpanded && shouldCollapse && (
-          <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white via-white/90 to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white via-white/95 to-transparent flex items-end justify-center pb-2" />
         )}
-      </div>
+      </motion.div>
       
       {shouldCollapse && (
         <button 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-4 flex items-center gap-1.5 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors group mx-auto md:mx-0"
+          className="mt-2 flex items-center justify-center w-full md:w-auto gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 hover:bg-blue-50 py-2 px-4 rounded-lg transition-all mx-auto md:mx-0"
         >
           {isExpanded ? (
-            <>Read Less <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" /></>
+            <>Show Less <ChevronUp className="w-4 h-4" /></>
           ) : (
-            <>Read More <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" /></>
+            <>Read More <ChevronDown className="w-4 h-4" /></>
           )}
         </button>
       )}

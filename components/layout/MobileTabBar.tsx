@@ -70,33 +70,46 @@ export default function MobileTabBar() {
 
   return (
     <>
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 pb-safe">
-        <ul className="grid grid-cols-5 h-16">
-          {items.map(({ href, label, icon: Icon }) => (
-            <li key={href} className="flex justify-center items-center">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-100 shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)] z-40 pb-safe">
+        <ul className="grid grid-cols-5 h-20 items-center px-2">
+          {items.map(({ href, label, icon: Icon }) => {
+            const active = isActive(href);
+            return (
+            <li key={href} className="flex justify-center items-center h-full relative group">
+              {active && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute -top-3 w-12 h-1 bg-blue-600 rounded-b-lg shadow-blue-200 shadow-md"
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
               {href === "#more" ? (
                 <button
                   onClick={() => onItemClick(href)}
-                  className={`w-full h-full flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
-                    isActive(href) ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
+                  className={`w-full h-full flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
+                    active ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  <Icon className={`h-6 w-6 ${isActive(href) ? "stroke-[2.5px]" : "stroke-2"}`} />
-                  <span className="text-[10px] font-medium">{label}</span>
+                  <div className={`p-1.5 rounded-xl transition-all duration-300 ${active ? "bg-blue-50 transform -translate-y-1" : ""}`}>
+                    <Icon className={`h-6 w-6 ${active ? "stroke-[2.5px] fill-blue-600/10" : "stroke-2"}`} />
+                  </div>
+                  <span className={`text-[10px] font-semibold transition-all duration-300 ${active ? "opacity-100 translate-y-0" : "opacity-80 group-hover:opacity-100"}`}>{label}</span>
                 </button>
               ) : (
                 <Link
                   href={href}
-                  className={`w-full h-full flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
-                    isActive(href) ? "text-blue-600 scale-110" : "text-gray-400 hover:text-gray-600"
+                  className={`w-full h-full flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
+                    active ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  <Icon className={`h-6 w-6 ${isActive(href) ? "stroke-[2.5px]" : "stroke-2"}`} />
-                  <span className="text-[10px] font-medium">{label}</span>
+                  <div className={`p-1.5 rounded-xl transition-all duration-300 ${active ? "bg-blue-50 transform -translate-y-1" : ""}`}>
+                    <Icon className={`h-6 w-6 ${active ? "stroke-[2.5px] fill-blue-600/10" : "stroke-2"}`} />
+                  </div>
+                  <span className={`text-[10px] font-semibold transition-all duration-300 ${active ? "opacity-100 translate-y-0" : "opacity-80 group-hover:opacity-100"}`}>{label}</span>
                 </Link>
               )}
             </li>
-          ))}
+          )})}
         </ul>
       </nav>
 
