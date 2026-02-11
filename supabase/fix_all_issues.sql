@@ -1,61 +1,93 @@
--- Master Fix for Admin Access and Profiles
+-- =================================================================
+-- COMPREHENSIVE FIX FOR PROFILE, STORAGE, AND PERMISSIONS
+-- Run this in Supabase SQL Editor
+-- =================================================================
 
--- 1. Ensure Profile Exists and is Owner (Upsert)
-INSERT INTO public.profiles (id, email, full_name, role, created_at, updated_at)
+-- 1. FIX MISSING PROFILES (Resolves "new row for relation" error)
+--    This backfills profiles for any users in auth.users who don't have a profile.
+INSERT INTO public.profiles (id, email, full_name, role)
 SELECT 
-    id,
-    email,
-    COALESCE(raw_user_meta_data->>'full_name', split_part(email, '@', 1)),
-    'owner', -- FORCE ROLE TO OWNER
-    created_at,
-    created_at
+  id, 
+  email, 
+  COALESCE(raw_user_meta_data->>'full_name', 'User'), 
+  COALESCE(raw_user_meta_data->>'role', 'tenant')
 FROM auth.users
-WHERE email IN ('info@br31tech.live', 'angel@br31tech.live')
-ON CONFLICT (id) DO UPDATE
-SET role = 'owner'; -- FORCE UPDATE EXISTING PROFILE TO OWNER
+ON CONFLICT (id) DO NOTHING;
 
--- 2. Fix RLS for Profiles (Allow Admin/Owner/Staff to view all)
-DROP POLICY IF EXISTS "Staff can view all profiles" ON public.profiles;
-CREATE POLICY "Staff can view all profiles" ON public.profiles FOR SELECT USING (
-  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'admin' OR
-  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'owner' OR
-  (auth.jwt() -> 'app_metadata' -> 'roles')::jsonb ? 'staff' OR
-  EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
-  )
-);
+-- 2. ENSURE TRIGGER IS CORRECT
+--    This ensures future signups automatically create a profile.
+CREATE OR REPLACE FUNCTION public.handle_new_user() 
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name, email, role, phone)
+  VALUES (
+    new.id, 
+    new.raw_user_meta_data->>'full_name', 
+    new.email, 
+    COALESCE(new.raw_user_meta_data->>'role', 'tenant'),
+    new.raw_user_meta_data->>'phone'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 3. Ensure User can insert/update their own profile
-DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
-CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+-- Drop and recreate trigger to be sure
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
-DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
-CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+-- 3. FIX STORAGE BUCKETS (Resolves Avatar and Property Image upload failures)
+--    Creates buckets if they don't exist and sets public access.
 
--- 4. Fix Enquiries RLS (Allow Admin/Owner/Staff to view all)
-DROP POLICY IF EXISTS "Admin/Staff can view all enquiries" ON public.enquiries;
-CREATE POLICY "Admin/Staff can view all enquiries" ON public.enquiries FOR SELECT USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
-  )
-);
+-- Avatars Bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- 5. Fix Complaints RLS (Allow Admin/Owner/Staff to view all)
-DROP POLICY IF EXISTS "Admin/Staff can view all complaints" ON public.complaints;
-CREATE POLICY "Admin/Staff can view all complaints" ON public.complaints FOR SELECT USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
-  )
-);
+-- Property Images Bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('property-images', 'property-images', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- 6. Ensure call_requests are viewable
-DROP POLICY IF EXISTS "Admin/Staff can view all call_requests" ON public.call_requests;
-CREATE POLICY "Admin/Staff can view all call_requests" ON public.call_requests FOR SELECT USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'owner', 'staff', 'manager')
-  )
-);
+-- 4. FIX STORAGE POLICIES
+--    Ensures users can upload and view images.
+
+-- Policy: Public can view avatars
+DROP POLICY IF EXISTS "Public can view avatars" ON storage.objects;
+CREATE POLICY "Public can view avatars" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
+
+-- Policy: Authenticated users can upload their own avatar
+DROP POLICY IF EXISTS "Users can upload their own avatar" ON storage.objects;
+CREATE POLICY "Users can upload their own avatar" ON storage.objects FOR INSERT TO authenticated 
+WITH CHECK (bucket_id = 'avatars' AND auth.uid() = (storage.foldername(name))[1]::uuid);
+-- Note: The above path check assumes folder structure user_id/filename. 
+-- If the app uploads to root or random names, use a simpler policy:
+DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON storage.objects;
+CREATE POLICY "Authenticated users can upload avatars" ON storage.objects FOR INSERT TO authenticated 
+WITH CHECK (bucket_id = 'avatars');
+
+-- Policy: Users can update their own avatar
+DROP POLICY IF EXISTS "Users can update their own avatar" ON storage.objects;
+CREATE POLICY "Users can update their own avatar" ON storage.objects FOR UPDATE TO authenticated 
+USING (bucket_id = 'avatars' AND owner = auth.uid());
+
+-- Policy: Public can view property images
+DROP POLICY IF EXISTS "Public Access property-images" ON storage.objects;
+CREATE POLICY "Public Access property-images" ON storage.objects FOR SELECT USING (bucket_id = 'property-images');
+
+-- Policy: Authenticated users can upload property images
+DROP POLICY IF EXISTS "Authenticated users can upload property images" ON storage.objects;
+CREATE POLICY "Authenticated users can upload property images" ON storage.objects FOR INSERT TO authenticated 
+WITH CHECK (bucket_id = 'property-images');
+
+-- 5. FIX PROPERTIES RLS (Ensure listing works)
+--    Allow authenticated users to insert properties.
+DROP POLICY IF EXISTS "Authenticated users can create properties" ON public.properties;
+CREATE POLICY "Authenticated users can create properties" ON public.properties FOR INSERT TO authenticated 
+WITH CHECK (true);
+
+--    Allow users to update their own properties.
+DROP POLICY IF EXISTS "Users can update their own properties" ON public.properties;
+CREATE POLICY "Users can update their own properties" ON public.properties FOR UPDATE TO authenticated 
+USING (owner_id = auth.uid());

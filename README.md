@@ -6,7 +6,7 @@ A comprehensive, enterprise-grade property management platform designed to strea
 
 ## 🚀 Overview
 
-BR31 PMS bridges the gap between robust back-office administration and a seamless, interactive guest experience. It features a real-time reservation system, dynamic marketing tools, and a responsive public-facing catalog for both Hotels and PGs.
+BR31 PMS bridges the gap between robust back-office administration and a seamless, interactive guest experience. It features a real-time reservation system, dynamic marketing tools, a responsive public-facing catalog for both Hotels and PGs, and a dedicated mobile app for on-the-go access.
 
 ## ✨ Key Features
 
@@ -44,6 +44,7 @@ BR31 PMS bridges the gap between robust back-office administration and a seamles
 
 ### Frontend
 *   **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+*   **Mobile**: [React Native](https://reactnative.dev/) / [Expo](https://expo.dev/)
 *   **Language**: [TypeScript](https://www.typescriptlang.org/)
 *   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 *   **Icons**: [Lucide React](https://lucide.dev/), [React Icons](https://react-icons.github.io/react-icons/)
@@ -61,6 +62,7 @@ BR31 PMS bridges the gap between robust back-office administration and a seamles
 ## 📂 Project Structure
 
 ```bash
+├── android-app/          # React Native / Expo Android App
 ├── app/                  # Next.js App Router
 │   ├── admin/            # Admin Dashboard routes (Protected)
 │   ├── api/              # API Routes (Serverless functions)

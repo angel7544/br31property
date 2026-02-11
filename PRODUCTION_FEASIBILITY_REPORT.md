@@ -5,7 +5,7 @@
 
 ## 1. Executive Summary
 
-The application is a hotel management system built with a modern tech stack (Next.js 14, Supabase, Tailwind). Critical security vulnerabilities have been **resolved**. The authentication system verifies user sessions server-side, and API endpoints are protected. The application builds successfully without errors.
+The application is a hotel management system built with a modern tech stack (Next.js 14, Supabase, Tailwind) and a companion Android App (React Native/Expo). Critical security vulnerabilities have been **resolved**. The authentication system verifies user sessions server-side, and API endpoints are protected. The application builds successfully without errors.
 
 **Recommendation:** The application is safe for deployment. Ensure standard production practices (environment variable management, SSL) are followed on the hosting platform.
 
@@ -40,6 +40,7 @@ The application is a hotel management system built with a modern tech stack (Nex
 | Component | Technology | Assessment |
 | :--- | :--- | :--- |
 | **Frontend** | Next.js 14 (App Router), React 18 | ✅ **Excellent**: Modern, performance-oriented structure. |
+| **Mobile App** | React Native, Expo | ✅ **Excellent**: Cross-platform ready, efficient development. |
 | **Styling** | Tailwind CSS, Framer Motion | ✅ **Excellent**: Clean, maintainable UI code. |
 | **Language** | TypeScript | ✅ **Good**: Build passes successfully. |
 | **Database** | Supabase (PostgreSQL) | ✅ **Excellent**: Schema is well-normalized with proper constraints. |

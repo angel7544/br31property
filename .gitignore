@@ -17,6 +17,15 @@
 .DS_Store
 *.pem
 
+# IDEs
+.idea/
+.vscode/
+
+# Mobile Build Outputs
+*.apk
+*.aab
+*.ipa
+
 # debug
 npm-debug.log*
 yarn-debug.log*
