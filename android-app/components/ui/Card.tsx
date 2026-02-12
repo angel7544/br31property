@@ -1,15 +1,21 @@
-import { View, Text, ViewProps, TextProps } from 'react-native';
+import { View, Text, ViewProps, TextProps, StyleSheet } from 'react-native';
 import { cn } from '../../lib/utils';
+import { BlurView } from 'expo-blur';
 
-export function Card({ className, ...props }: ViewProps) {
+export function Card({ className, children, ...props }: ViewProps) {
   return (
     <View
       className={cn(
-        'rounded-lg border border-slate-200 bg-white shadow-sm elevation-1',
+        'rounded-xl border border-white/40 overflow-hidden shadow-sm elevation-1',
         className
       )}
       {...props}
-    />
+    >
+      <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
+      <View style={{ backgroundColor: 'rgba(255,255,255,0.6)' }}>
+        {children}
+      </View>
+    </View>
   );
 }
 

@@ -1,7 +1,9 @@
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, TextInput, Alert, Linking, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase';
+import { BlurView } from 'expo-blur';
 import { 
   ArrowLeft,
   MapPin, 
@@ -21,7 +23,12 @@ import {
   Mail, 
   Calendar, 
   MessageCircle,
-  FileQuestion
+  FileQuestion,
+  FileText,
+  IndianRupee,
+  Share2,
+  Clock,
+  Wrench
 } from 'lucide-react-native';
 import { Button } from '../../../components/ui/Button';
 
@@ -38,12 +45,26 @@ const getAmenityIcon = (name: string) => {
   return <CheckCircle size={20} color="#4B5563" />;
 };
 
+const getRuleIcon = (label: string) => {
+    const l = label.toLowerCase();
+    if (l.includes('security') || l.includes('deposit')) return <IndianRupee size={20} color="#4B5563" />;
+    if (l.includes('notice')) return <FileText size={20} color="#4B5563" />;
+    if (l.includes('lock') || l.includes('agreement')) return <Clock size={20} color="#4B5563" />;
+    if (l.includes('electricity') || l.includes('power')) return <Zap size={20} color="#4B5563" />;
+    if (l.includes('maintenance')) return <Wrench size={20} color="#4B5563" />;
+    if (l.includes('available')) return <Calendar size={20} color="#4B5563" />;
+    return <CheckCircle size={20} color="#4B5563" />;
+};
+
 export default function PropertyDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [property, setProperty] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showAllAmenities, setShowAllAmenities] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [inquiry, setInquiry] = useState({
     name: '',
     phone: '',
@@ -54,19 +75,41 @@ export default function PropertyDetails() {
   const [sendingInquiry, setSendingInquiry] = useState(false);
 
   useEffect(() => {
+    fetchUser();
     fetchProperty();
   }, [id]);
+
+  async function fetchUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    if (user) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+        setUserProfile(data);
+    }
+  }
 
   async function fetchProperty() {
     try {
       const { data, error } = await supabase
         .from('properties')
-        .select('*') // Removed join to prevent errors if relation is missing
+        .select('*')
         .eq('id', id)
         .single();
 
       if (error) throw error;
-      setProperty(data);
+      
+      // Fetch owner profile if needed
+      let ownerProfile = null;
+      if (data && data.user_id) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user_id)
+            .single();
+          ownerProfile = profileData;
+      }
+      
+      setProperty({ ...data, profiles: ownerProfile });
       if (data) {
         setInquiry(prev => ({
             ...prev,
@@ -82,16 +125,22 @@ export default function PropertyDetails() {
   }
 
   const handleSendInquiry = async () => {
-    if (!inquiry.name || !inquiry.phone) {
+    const name = userProfile?.full_name || inquiry.name;
+    const phone = userProfile?.phone || inquiry.phone;
+
+    if (!name || !phone) {
       Alert.alert('Required', 'Please provide Name and Phone number');
       return;
     }
     setSendingInquiry(true);
-    // Simulate API call
+    
+    // TODO: Implement actual inquiry storage in database
     setTimeout(() => {
         setSendingInquiry(false);
         Alert.alert('Success', 'Your inquiry has been sent to the owner!');
-        setInquiry({ name: '', phone: '', email: '', date: '', message: '' });
+        if (!user) {
+            setInquiry({ name: '', phone: '', email: '', date: '', message: '' });
+        }
     }, 1500);
   };
 
@@ -103,6 +152,33 @@ export default function PropertyDetails() {
         android: `geo:0,0?q=${query}`
     });
     Linking.openURL(url || '');
+  };
+
+  const handleContact = (type: 'call' | 'sms' | 'whatsapp' | 'email') => {
+      // Use property-specific contact info first, then fall back to owner profile
+      const phone = property.contact_number || property.profiles?.phone;
+      const email = property.email || property.profiles?.email;
+
+      if (!phone && type !== 'email') {
+          Alert.alert('Info', 'Owner phone number not available');
+          return;
+      }
+
+      switch(type) {
+          case 'call':
+              Linking.openURL(`tel:${phone}`);
+              break;
+          case 'sms':
+              Linking.openURL(`sms:${phone}`);
+              break;
+          case 'whatsapp':
+              Linking.openURL(`whatsapp://send?phone=${phone}`);
+              break;
+          case 'email':
+              if (email) Linking.openURL(`mailto:${email}`);
+              else Alert.alert('Info', 'Owner email not available');
+              break;
+      }
   };
 
   if (loading) {
@@ -137,8 +213,8 @@ export default function PropertyDetails() {
 
   return (
     <>
-      <Stack.Screen options={{ title: property.name }} />
-      <ScrollView style={styles.container}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
         
         {/* Header Image */}
         <View style={styles.imageContainer}>
@@ -147,24 +223,40 @@ export default function PropertyDetails() {
               style={styles.image}
               resizeMode="cover"
             />
-            <TouchableOpacity 
-              style={styles.backButton} 
-              onPress={() => router.back()}
-              activeOpacity={0.8}
-            >
-              <View style={styles.backButtonBlur}>
-                <ArrowLeft size={24} color="#fff" />
-              </View>
-            </TouchableOpacity>
+            
+            {/* Header Actions - Glassmorphism */}
+            <View style={[styles.headerActions, { top: insets.top + 10 }]}>
+                <TouchableOpacity 
+                  onPress={() => router.back()}
+                  activeOpacity={0.8}
+                  style={styles.iconButtonWrapper}
+                >
+                  <BlurView intensity={50} tint="dark" style={styles.iconButtonBlur}>
+                    <ArrowLeft size={24} color="#fff" />
+                  </BlurView>
+                </TouchableOpacity>
 
-            <View style={styles.priceTag}>
-                <Text style={styles.priceText}>Starts from ₹{property.price_range_min || property.min_price || property.price_range?.split('-')[0] || 'N/A'}/mo</Text>
+                <TouchableOpacity 
+                  activeOpacity={0.8}
+                  style={styles.iconButtonWrapper}
+                >
+                  <BlurView intensity={50} tint="dark" style={styles.iconButtonBlur}>
+                    <Share2 size={20} color="#fff" />
+                  </BlurView>
+                </TouchableOpacity>
+            </View>
+
+            {/* Price Tag - Glassmorphism */}
+            <View style={styles.priceTagWrapper}>
+                <BlurView intensity={40} tint="dark" style={styles.priceTagBlur}>
+                    <Text style={styles.priceText}>Starts from ₹{property.price_range_min || property.min_price || property.price_range?.split('-')[0] || 'N/A'}/mo</Text>
+                </BlurView>
             </View>
         </View>
 
         <View style={styles.content}>
-          {/* Title Section */}
-          <View style={styles.headerSection}>
+          {/* Title Card */}
+          <View style={styles.card}>
             <View style={styles.tagsRow}>
                 <View style={styles.tag}>
                     <Text style={styles.tagText}>{property.type || 'PG'}</Text>
@@ -184,10 +276,8 @@ export default function PropertyDetails() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.divider} />
-
-          {/* Amenities */}
-          <View style={styles.section}>
+          {/* Amenities Card */}
+          <View style={styles.card}>
             <Text style={styles.sectionTitle}>Amenities</Text>
             <View style={styles.amenitiesGrid}>
                 {amenitiesToShow?.map((amenity: string, idx: number) => (
@@ -212,19 +302,15 @@ export default function PropertyDetails() {
             )}
           </View>
 
-          <View style={styles.divider} />
-
-          {/* About */}
-          <View style={styles.section}>
+          {/* About Card */}
+          <View style={styles.card}>
             <Text style={styles.sectionTitle}>About this property</Text>
             <Text style={styles.description}>{property.description || 'No description provided.'}</Text>
           </View>
 
-          <View style={styles.divider} />
-
-          {/* Available Rooms */}
+          {/* Available Rooms Card */}
           {property.rooms && property.rooms.length > 0 && (
-              <View style={styles.section}>
+              <View style={styles.card}>
                 <Text style={styles.sectionTitle}>Available Rooms</Text>
                 {property.rooms.map((room: any, idx: number) => (
                     <View key={idx} style={styles.roomCard}>
@@ -256,88 +342,201 @@ export default function PropertyDetails() {
               </View>
           )}
 
-          {/* Inquiry Form */}
-          <View style={[styles.section, styles.inquirySection]}>
-             <Text style={styles.sectionTitle}>Guest Inquiry</Text>
-             <Text style={styles.inquirySubtitle}>You can send an inquiry without logging in. Please provide your mobile number so we can contact you.</Text>
-             
-             <View style={styles.formGroup}>
-                <Text style={styles.label}>Full Name</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Enter your name"
-                    value={inquiry.name}
-                    onChangeText={t => setInquiry({...inquiry, name: t})}
-                />
-             </View>
-
-             <View style={styles.formGroup}>
-                <Text style={styles.label}>Phone / Mobile No *</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Required for contact"
-                    keyboardType="phone-pad"
-                    value={inquiry.phone}
-                    onChangeText={t => setInquiry({...inquiry, phone: t})}
-                />
-             </View>
-
-             <View style={styles.formGroup}>
-                <Text style={styles.label}>Email</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Email address"
-                    keyboardType="email-address"
-                    value={inquiry.email}
-                    onChangeText={t => setInquiry({...inquiry, email: t})}
-                />
-             </View>
-
-             <View style={styles.formGroup}>
-                <Text style={styles.label}>Expected Move-in Date</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="dd-mm-yyyy"
-                    value={inquiry.date}
-                    onChangeText={t => setInquiry({...inquiry, date: t})}
-                />
-             </View>
-
-             <View style={styles.formGroup}>
-                <Text style={styles.label}>Message</Text>
-                <TextInput 
-                    style={[styles.input, styles.textArea]} 
-                    placeholder="Your message..."
-                    multiline
-                    numberOfLines={3}
-                    value={inquiry.message}
-                    onChangeText={t => setInquiry({...inquiry, message: t})}
-                />
-             </View>
-
-             <Text style={styles.secureNote}>Your details are shared securely only with the property owner.</Text>
-             
-             <Button onPress={handleSendInquiry} disabled={sendingInquiry}>
-                {sendingInquiry ? <ActivityIndicator color="#fff" /> : 'Send Inquiry'}
-             </Button>
+          {/* Pricing & Terms Card */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Pricing & Terms</Text>
+            <View style={styles.pricingGrid}>
+            {property.rules ? (
+                property.rules.split('\n').map((rule: string, idx: number) => {
+                    if (rule.includes(':')) {
+                        const parts = rule.split(':');
+                        const label = parts[0]?.trim();
+                        const value = parts.slice(1).join(':').trim();
+                        if (!label) return null;
+                        return (
+                            <View key={idx} style={styles.pricingItem}>
+                                {getRuleIcon(label)}
+                                <View>
+                                    <Text style={styles.pricingLabel}>{label}</Text>
+                                    <Text style={styles.pricingValue}>{value}</Text>
+                                </View>
+                            </View>
+                        );
+                    } else {
+                        return (
+                            <View key={idx} style={styles.pricingItem}>
+                                <CheckCircle size={20} color="#4B5563" />
+                                <Text style={[styles.pricingValue, { flex: 1, marginLeft: 8 }]}>{rule}</Text>
+                            </View>
+                        );
+                    }
+                })
+            ) : (
+                <>
+                    <View style={styles.pricingItem}>
+                        <IndianRupee size={20} color="#4B5563" />
+                        <View>
+                            <Text style={styles.pricingLabel}>Security Deposit</Text>
+                            <Text style={styles.pricingValue}>{property.security_deposit ? `₹${property.security_deposit}` : 'Contact Owner'}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.pricingItem}>
+                        <FileText size={20} color="#4B5563" />
+                        <View>
+                            <Text style={styles.pricingLabel}>Notice Period</Text>
+                            <Text style={styles.pricingValue}>{property.notice_period || 'Contact Owner'}</Text>
+                        </View>
+                    </View>
+                </>
+            )}
+            </View>
           </View>
 
-          {/* Managed By */}
-          <View style={styles.managedBySection}>
-            <Text style={styles.managedByText}>Managed by</Text>
-            <View style={styles.ownerRow}>
-                <View style={styles.ownerAvatar}>
-                    <Users size={24} color="#fff" />
-                </View>
-                <View>
+          {/* Managed By Card */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Managed by</Text>
+            <View style={styles.ownerProfileRow}>
+                <Image 
+                    source={{ uri: property.profiles?.avatar_url || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop' }} 
+                    style={styles.ownerAvatar} 
+                />
+                <View style={styles.ownerInfo}>
                     <Text style={styles.ownerName}>{property.profiles?.full_name || 'Property Owner'}</Text>
                     <Text style={styles.ownerRole}>Host</Text>
                 </View>
             </View>
-            <Button variant="outline" style={styles.whatsappBtn}>
-                <MessageCircle size={18} color="#25D366" style={{ marginRight: 8 }} />
-                View Contact / WhatsApp
-            </Button>
+
+            <View style={styles.contactGrid}>
+                <TouchableOpacity style={styles.contactItem} onPress={() => handleContact('call')}>
+                    <View style={[styles.contactIconCtx, { backgroundColor: '#EEF2FF' }]}>
+                        <Phone size={20} color="#4F46E5" />
+                    </View>
+                    <Text style={styles.contactLabel}>Call</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.contactItem} onPress={() => handleContact('sms')}>
+                    <View style={[styles.contactIconCtx, { backgroundColor: '#F0FDF4' }]}>
+                        <MessageCircle size={20} color="#16A34A" />
+                    </View>
+                    <Text style={styles.contactLabel}>Message</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.contactItem} onPress={() => handleContact('whatsapp')}>
+                    <View style={[styles.contactIconCtx, { backgroundColor: '#DCFCE7' }]}>
+                        <MessageCircle size={20} color="#25D366" />
+                    </View>
+                    <Text style={styles.contactLabel}>WhatsApp</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.contactItem} onPress={() => handleContact('email')}>
+                    <View style={[styles.contactIconCtx, { backgroundColor: '#FEF2F2' }]}>
+                        <Mail size={20} color="#DC2626" />
+                    </View>
+                    <Text style={styles.contactLabel}>Email</Text>
+                </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Inquiry Form Card */}
+          <View style={[styles.card, styles.inquirySection]}>
+             <Text style={styles.sectionTitle}>{user ? 'Contact Owner' : 'Guest Inquiry'}</Text>
+             
+             {user ? (
+                 <View>
+                     <Text style={styles.inquirySubtitle}>
+                         You are logged in as <Text style={{fontWeight: 'bold'}}>{userProfile?.full_name || user.email}</Text>. 
+                         Your contact details will be shared with the owner.
+                     </Text>
+                     <View style={styles.loggedInInfo}>
+                         <View style={styles.infoRow}>
+                             <Phone size={16} color="#4B5563" />
+                             <Text style={styles.infoText}>{userProfile?.phone || 'No phone number linked'}</Text>
+                         </View>
+                         <View style={styles.infoRow}>
+                             <Mail size={16} color="#4B5563" />
+                             <Text style={styles.infoText}>{user.email}</Text>
+                         </View>
+                     </View>
+                     
+                     <Text style={[styles.label, {marginTop: 16}]}>Message</Text>
+                     <TextInput 
+                        style={[styles.input, styles.textArea]} 
+                        placeholder="Your message..."
+                        multiline
+                        numberOfLines={3}
+                        value={inquiry.message}
+                        onChangeText={t => setInquiry({...inquiry, message: t})}
+                    />
+                    
+                    <Button onPress={handleSendInquiry} disabled={sendingInquiry} style={{marginTop: 16}}>
+                        {sendingInquiry ? <ActivityIndicator color="#fff" /> : 'Send Interest'}
+                    </Button>
+                 </View>
+             ) : (
+                 <View>
+                     <Text style={styles.inquirySubtitle}>You can send an inquiry without logging in. Please provide your mobile number so we can contact you.</Text>
+                     
+                     <View style={styles.formGroup}>
+                        <Text style={styles.label}>Full Name</Text>
+                        <TextInput 
+                            style={styles.input} 
+                            placeholder="Enter your name"
+                            value={inquiry.name}
+                            onChangeText={t => setInquiry({...inquiry, name: t})}
+                        />
+                     </View>
+
+                     <View style={styles.formGroup}>
+                        <Text style={styles.label}>Phone / Mobile No *</Text>
+                        <TextInput 
+                            style={styles.input} 
+                            placeholder="Required for contact"
+                            keyboardType="phone-pad"
+                            value={inquiry.phone}
+                            onChangeText={t => setInquiry({...inquiry, phone: t})}
+                        />
+                     </View>
+
+                     <View style={styles.formGroup}>
+                        <Text style={styles.label}>Email</Text>
+                        <TextInput 
+                            style={styles.input} 
+                            placeholder="Email address"
+                            keyboardType="email-address"
+                            value={inquiry.email}
+                            onChangeText={t => setInquiry({...inquiry, email: t})}
+                        />
+                     </View>
+
+                     <View style={styles.formGroup}>
+                        <Text style={styles.label}>Expected Move-in Date</Text>
+                        <TextInput 
+                            style={styles.input} 
+                            placeholder="dd-mm-yyyy"
+                            value={inquiry.date}
+                            onChangeText={t => setInquiry({...inquiry, date: t})}
+                        />
+                     </View>
+
+                     <View style={styles.formGroup}>
+                        <Text style={styles.label}>Message</Text>
+                        <TextInput 
+                            style={[styles.input, styles.textArea]} 
+                            placeholder="Your message..."
+                            multiline
+                            numberOfLines={3}
+                            value={inquiry.message}
+                            onChangeText={t => setInquiry({...inquiry, message: t})}
+                        />
+                     </View>
+
+                     <Text style={styles.secureNote}>Your details are shared securely only with the property owner.</Text>
+                     
+                     <Button onPress={handleSendInquiry} disabled={sendingInquiry}>
+                        {sendingInquiry ? <ActivityIndicator color="#fff" /> : 'Send Inquiry'}
+                     </Button>
+                 </View>
+             )}
           </View>
 
         </View>
@@ -376,43 +575,62 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   imageContainer: {
     position: 'relative',
-    height: 250,
+    height: 300,
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  backButton: {
+  headerActions: {
     position: 'absolute',
-    top: 40, // Adjust for status bar if needed, or use SafeAreaView
     left: 16,
+    right: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     zIndex: 10,
   },
-  backButtonBlur: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    padding: 8,
+  iconButtonWrapper: {
     borderRadius: 20,
+    overflow: 'hidden',
   },
-  priceTag: {
+  iconButtonBlur: {
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  priceTagWrapper: {
     position: 'absolute',
-    bottom: 16,
-    left: 16,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+    bottom: 20,
+    left: 20,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  priceTagBlur: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   priceText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   content: {
     padding: 16,
+    marginTop: -20, // Overlap image slightly
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   headerSection: {
     marginBottom: 16,
@@ -420,18 +638,18 @@ const styles = StyleSheet.create({
   tagsRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   tag: {
-    backgroundColor: '#E5E7EB',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 6,
   },
   tagText: {
     fontSize: 12,
     color: '#374151',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   genderTag: {
     backgroundColor: '#EEF2FF',
@@ -446,7 +664,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#111827',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   locationRow: {
     flexDirection: 'row',
@@ -464,19 +682,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#E5E7EB',
-    marginVertical: 20,
-  },
-  section: {
-    marginBottom: 4,
-  },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#111827',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   amenitiesGrid: {
     flexDirection: 'row',
@@ -484,45 +694,49 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   amenityItem: {
-    width: '30%',
+    width: '48%', // Approx 2 columns
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   amenityIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#F3F4F6',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginRight: 8,
   },
   amenityName: {
-    fontSize: 12,
-    color: '#4B5563',
-    textAlign: 'center',
+    fontSize: 14,
+    color: '#374151',
+    flex: 1,
   },
   showMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 12,
     paddingVertical: 8,
-    marginTop: 8,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
   },
   showMoreText: {
     color: '#2563EB',
+    fontSize: 14,
     fontWeight: '500',
     marginRight: 4,
   },
   description: {
-    fontSize: 14,
+    fontSize: 15,
+    lineHeight: 24,
     color: '#4B5563',
-    lineHeight: 22,
   },
   roomCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F9FAFB',
+    padding: 12,
     borderRadius: 12,
-    padding: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -531,22 +745,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   roomName: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#111827',
   },
   roomPrice: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2563EB',
+    color: '#2563eb',
   },
   roomDetails: {
     flexDirection: 'row',
     gap: 16,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   roomDetailItem: {
     flexDirection: 'row',
@@ -555,91 +769,136 @@ const styles = StyleSheet.create({
   },
   roomDetailText: {
     fontSize: 13,
-    color: '#4B5563',
+    color: '#6B7280',
   },
   contactRoomBtn: {
     width: '100%',
   },
-  inquirySection: {
-    backgroundColor: '#fff',
+  rulesContainer: {
+    backgroundColor: '#F9FAFB',
     padding: 16,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    marginTop: 8,
+  },
+  rulesText: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 22,
+  },
+  pricingGrid: {
+    gap: 16,
+  },
+  pricingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  pricingLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 2,
+  },
+  pricingValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  inquirySection: {
+    // Special styling for inquiry card if needed
   },
   inquirySubtitle: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#6B7280',
     marginBottom: 16,
+    lineHeight: 20,
+  },
+  loggedInInfo: {
+    backgroundColor: '#F3F4F6',
+    padding: 12,
+    borderRadius: 8,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#374151',
   },
   formGroup: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     color: '#374151',
     marginBottom: 6,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 14,
-    color: '#111827',
     backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 15,
+    color: '#111827',
   },
   textArea: {
-    height: 80,
+    height: 100,
     textAlignVertical: 'top',
   },
   secureNote: {
-    fontSize: 11,
-    color: '#9CA3AF',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  managedBySection: {
-    marginTop: 24,
-    marginBottom: 40,
-    backgroundColor: '#EFF6FF',
-    padding: 16,
-    borderRadius: 12,
-  },
-  managedByText: {
     fontSize: 12,
-    color: '#6B7280',
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    fontWeight: '600',
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 16,
   },
-  ownerRow: {
+  ownerProfileRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   ownerAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#BFDBFE',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
+  },
+  ownerInfo: {
+    flex: 1,
   },
   ownerName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
-    color: '#1E40AF',
+    color: '#111827',
+    marginBottom: 4,
   },
   ownerRole: {
     fontSize: 13,
-    color: '#60A5FA',
+    color: '#6B7280',
   },
-  whatsappBtn: {
-    backgroundColor: '#fff',
-    borderColor: '#25D366',
-  }
+  contactGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  contactItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  contactIconCtx: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  contactLabel: {
+    fontSize: 12,
+    color: '#4B5563',
+    fontWeight: '500',
+  },
 });

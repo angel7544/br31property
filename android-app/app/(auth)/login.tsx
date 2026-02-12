@@ -22,15 +22,15 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<'tenant' | 'agent'>('tenant'); // tenant/owner vs agent/staff
   
-  // Animation values
-  const logoTranslateY = useSharedValue(0);
+  // Animation values - simplified for smoother experience
+  const logoScale = useSharedValue(1);
 
   useEffect(() => {
-    // Floating logo animation
-    logoTranslateY.value = withRepeat(
+    // Subtle breathing effect for logo
+    logoScale.value = withRepeat(
       withSequence(
-        withTiming(-10, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0, { duration: 2000, easing: Easing.inOut(Easing.ease) })
+        withTiming(1.05, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 3000, easing: Easing.inOut(Easing.ease) })
       ),
       -1,
       true
@@ -39,7 +39,7 @@ export default function Login() {
 
   const logoAnimatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: logoTranslateY.value }],
+      transform: [{ scale: logoScale.value }],
     };
   });
 
@@ -71,7 +71,7 @@ export default function Login() {
         >
           {/* Logo */}
           <Animated.View 
-            entering={FadeInDown.duration(1000).springify()}
+            entering={FadeInDown.duration(600).springify()}
             style={[styles.logoContainer, logoAnimatedStyle]}
           >
             <Image 
@@ -82,7 +82,7 @@ export default function Login() {
           </Animated.View>
 
           <Animated.Text 
-            entering={FadeInDown.delay(200).duration(1000).springify()}
+            entering={FadeInDown.delay(100).duration(600).springify()}
             style={styles.welcomeText}
           >
             Welcome Back
@@ -90,7 +90,7 @@ export default function Login() {
 
           {/* User Type Toggle */}
           <Animated.View 
-            entering={FadeInDown.delay(300).duration(1000).springify()}
+            entering={FadeInDown.delay(200).duration(600).springify()}
             style={styles.toggleContainer}
           >
             <TouchableOpacity 
@@ -108,7 +108,7 @@ export default function Login() {
           </Animated.View>
 
           <Animated.View 
-            entering={FadeInDown.delay(400).duration(1000).springify()}
+            entering={FadeInDown.delay(300).duration(600).springify()}
             style={styles.formContainer}
           >
             <View style={styles.inputGroup}>

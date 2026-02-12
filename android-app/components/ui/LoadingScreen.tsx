@@ -22,21 +22,14 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ visible = true }) 
   const rotate = useSharedValue(0);
 
   useEffect(() => {
-    // Pulse animation
+    // Simplified pulse animation - removed conflicting rotation
     scale.value = withRepeat(
       withSequence(
-        withTiming(1.2, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
-        withTiming(1, { duration: 3000, easing: Easing.inOut(Easing.ease) })
+        withTiming(1.1, { duration: 2000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 2000, easing: Easing.inOut(Easing.ease) })
       ),
       -1,
       true
-    );
-
-    // Rotation animation
-    rotate.value = withRepeat(
-      withTiming(360, { duration: 3000, easing: Easing.linear }),
-      -1,
-      false
     );
   }, []);
 
@@ -50,7 +43,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ visible = true }) 
 
   const animatedContainerStyle = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(visible ? 1 : 0, { duration: 1000 }),
+      opacity: withTiming(visible ? 1 : 0, { duration: 300 }),
     };
   });
 

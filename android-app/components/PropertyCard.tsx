@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, FlatList, 
 import { router } from 'expo-router';
 import { MapPin, Heart } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
+import { BlurView } from 'expo-blur';
 import { supabase } from '../lib/supabase';
 
 interface PropertyCardProps {
@@ -119,22 +120,24 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 </View>
             )}
 
-            {/* Type Badge */}
-            <View style={styles.typeBadge}>
+            {/* Type Badge - Glassmorphism */}
+            <BlurView intensity={30} tint="dark" style={styles.typeBadge}>
                  <Text style={styles.typeText}>{property.type || 'PG'}</Text>
-            </View>
+            </BlurView>
 
-            {/* Wishlist Button */}
+            {/* Wishlist Button - Glassmorphism */}
             <TouchableOpacity 
-              style={styles.wishlistButton} 
               onPress={toggleWishlist}
               activeOpacity={0.8}
+              style={styles.wishlistWrapper}
             >
-              <Heart 
-                size={20} 
-                color={isWishlisted ? "#ef4444" : "#1f2937"} 
-                fill={isWishlisted ? "#ef4444" : "rgba(0,0,0,0.3)"} 
-              />
+              <BlurView intensity={40} tint="light" style={styles.wishlistBlur}>
+                <Heart 
+                  size={20} 
+                  color={isWishlisted ? "#ef4444" : "#1f2937"} 
+                  fill={isWishlisted ? "#ef4444" : "rgba(0,0,0,0)"} 
+                />
+              </BlurView>
             </TouchableOpacity>
           </View>
           
@@ -195,28 +198,27 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     left: 12,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   typeText: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '600',
   },
-  wishlistButton: {
+  wishlistWrapper: {
     position: 'absolute',
     top: 12,
     right: 12,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    padding: 8,
     borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    overflow: 'hidden',
+  },
+  wishlistBlur: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pagination: {
     position: 'absolute',

@@ -1,14 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
-import { View, FlatList, ActivityIndicator, Text, TouchableOpacity, StyleSheet, StatusBar, TextInput, Modal, RefreshControl } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, FlatList, ActivityIndicator, Text, TouchableOpacity, StyleSheet, TextInput, Modal, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../../lib/supabase';
-import { router } from 'expo-router';
-import { Search, Filter, MapPin, X, Check, SlidersHorizontal } from 'lucide-react-native';
+import { Search, MapPin, X, Check, SlidersHorizontal } from 'lucide-react-native';
 import PropertyCard from '../../components/PropertyCard';
 import { AnimatedHeaderBackground } from '../../components/ui/AnimatedHeaderBackground';
+import { StatusBar } from 'expo-status-bar';
 
 export default function PGs() {
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
@@ -17,9 +17,9 @@ export default function PGs() {
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>('All Cities');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState({
-    priceMin: '',
-    priceMax: '',
+  const [filters, setFilters] = useState<{ priceMin: number; priceMax: number; gender: string }>({
+    priceMin: 0,
+    priceMax: 25000, // Set a reasonable default max price to prevent slider conflicts
     gender: ''
   });
   
@@ -66,8 +66,7 @@ export default function PGs() {
         .eq('status', 'Active')
         .order('created_at', { ascending: false });
 
-      // STRICTLY FILTER FOR PGs/HOSTELS since this is the "PGs" tab
-      query = query.in('type', ['PG', 'pg', 'Pg', 'Hostel', 'hostel', 'Co-living']);
+      query = query.in('type', ['PG', 'pg', 'Pg', 'Hostel', 'hostel', 'Co-living', 'Flat', 'flat', 'Apartment', 'apartment']);
 
       // Filter by City
       if (selectedCity && selectedCity !== 'All Cities') {
@@ -84,8 +83,11 @@ export default function PGs() {
       if (filters.gender && filters.gender !== 'Any') {
         query = query.eq('gender_preference', filters.gender);
       }
-      if (filters.priceMax) {
-        query = query.lte('price_range_max', parseInt(filters.priceMax));
+      if (filters.priceMin && Number(filters.priceMin) > 0) {
+        query = query.gte('price_range_min', Number(filters.priceMin));
+      }
+      if (filters.priceMax && Number(filters.priceMax) > 0) {
+        query = query.lte('price_range_max', Number(filters.priceMax));
       }
 
       const { data, error } = await query;
@@ -104,11 +106,6 @@ export default function PGs() {
     setRefreshing(true);
     fetchCities();
     fetchProperties();
-  };
-
-  const applyFilters = (newFilters: any) => {
-    setFilters(newFilters);
-    setShowFilterModal(false);
   };
 
   return (
@@ -148,10 +145,10 @@ export default function PGs() {
                 )}
             </View>
             <TouchableOpacity 
-                style={[styles.filterButton, (filters.gender || filters.priceMax) ? styles.filterButtonActive : null]}
+                style={[styles.filterButton, (filters.gender || filters.priceMax > 0 || filters.priceMin > 0) ? styles.filterButtonActive : null]}
                 onPress={() => setShowFilterModal(true)}
             >
-                <SlidersHorizontal size={20} color={(filters.gender || filters.priceMax) ? "#fff" : "#2563eb"} />
+                <SlidersHorizontal size={20} color={(filters.gender || filters.priceMax > 0 || filters.priceMin > 0) ? "#fff" : "#2563eb"} />
             </TouchableOpacity>
         </View>
       </View>
@@ -178,7 +175,7 @@ export default function PGs() {
                         onPress={() => {
                             setSearchQuery('');
                             setSelectedCity('All Cities');
-                            setFilters({ priceMin: '', priceMax: '', gender: '' });
+                            setFilters({ priceMin: 0, priceMax: 25000, gender: '' });
                         }}
                     >
                         <Text style={styles.clearButtonText}>Clear All Filters</Text>
@@ -246,17 +243,35 @@ export default function PGs() {
                 </View>
 
                 <View style={styles.filterSection}>
-                    <Text style={styles.filterLabel}>Max Price (₹)</Text>
-                    <View style={styles.chipRow}>
-                        {['5000', '10000', '15000', '20000'].map((p) => (
-                            <TouchableOpacity 
-                                key={p}
-                                style={[styles.chip, filters.priceMax === p && styles.chipActive]}
-                                onPress={() => setFilters({...filters, priceMax: filters.priceMax === p ? '' : p})}
-                            >
-                                <Text style={[styles.chipText, filters.priceMax === p && styles.chipTextActive]}>₹{p}</Text>
-                            </TouchableOpacity>
-                        ))}
+                    <Text style={styles.filterLabel}>Price Range (₹)</Text>
+                    <View style={styles.priceInputsRow}>
+                        <View style={styles.priceInputContainer}>
+                            <Text style={styles.priceInputLabel}>Min</Text>
+                            <TextInput
+                                style={styles.priceInput}
+                                value={String(filters.priceMin)}
+                                onChangeText={(text) => {
+                                    const val = parseInt(text) || 0;
+                                    setFilters({ ...filters, priceMin: val });
+                                }}
+                                keyboardType="numeric"
+                                placeholder="0"
+                            />
+                        </View>
+                        <Text style={styles.priceSeparator}>-</Text>
+                        <View style={styles.priceInputContainer}>
+                            <Text style={styles.priceInputLabel}>Max</Text>
+                            <TextInput
+                                style={styles.priceInput}
+                                value={String(filters.priceMax)}
+                                onChangeText={(text) => {
+                                    const val = parseInt(text) || 0;
+                                    setFilters({ ...filters, priceMax: val });
+                                }}
+                                keyboardType="numeric"
+                                placeholder="Max"
+                            />
+                        </View>
                     </View>
                 </View>
 
@@ -436,6 +451,11 @@ const styles = StyleSheet.create({
     color: '#64748b',
     marginBottom: 12,
   },
+  rangeText: {
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 8,
+  },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -460,6 +480,36 @@ const styles = StyleSheet.create({
   chipTextActive: {
     color: '#2563eb',
     fontWeight: '600',
+  },
+  priceInputsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+  },
+  priceInputContainer: {
+    flex: 1,
+  },
+  priceInputLabel: {
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 4,
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: '#0f172a',
+    backgroundColor: '#fff',
+  },
+  priceSeparator: {
+    fontSize: 20,
+    color: '#94a3b8',
+    fontWeight: '500',
+    marginTop: 16, 
   },
   applyButton: {
     backgroundColor: '#2563eb',

@@ -188,6 +188,16 @@ export default function EditProperty() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      const rulesList = [
+        formData.deposit ? `Security Deposit: ${formData.deposit}` : null,
+        formData.noticePeriod ? `Notice Period: ${formData.noticePeriod}` : null,
+        formData.lockInPeriod ? `Lock-in Period: ${formData.lockInPeriod}` : null,
+        formData.agreementDuration ? `Agreement Duration: ${formData.agreementDuration}` : null,
+        formData.electricityCharges ? `Electricity Charges: ${formData.electricityCharges}` : null,
+        formData.maintenance ? `Maintenance Charges: ${formData.maintenance}` : null,
+        formData.availableFrom ? `Available From: ${formData.availableFrom}` : null,
+      ].filter(Boolean).join('\n');
+
       const updates = {
         name: formData.name,
         address: formData.address,
@@ -202,6 +212,7 @@ export default function EditProperty() {
         contact_number: formData.phone,
         email: formData.email,
         gender_preference: formData.gender,
+        rules: rulesList,
         // updated_at: new Date(), // Supabase handles this usually or we can send it
       };
 
@@ -243,9 +254,11 @@ export default function EditProperty() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f8fafc', paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
+      <Stack.Screen options={{ headerShown: false }} />
+      
       {/* Custom Header */}
-      <View style={styles.headerBar}>
+      <View style={[styles.headerBar, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
             <ArrowLeft size={24} color="#1e293b" />
         </TouchableOpacity>
@@ -253,8 +266,7 @@ export default function EditProperty() {
         <View style={styles.headerBtn} />
       </View>
 
-      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
-        <Stack.Screen options={{ headerShown: false }} />
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: insets.bottom + 40, paddingTop: 16 }}>
         
         <View style={styles.form}>
         
@@ -460,6 +472,52 @@ export default function EditProperty() {
            
            <View style={styles.row}>
              <View style={[styles.inputGroup, styles.halfWidth]}>
+                <Text style={styles.label}>Lock-in Period</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.lockInPeriod}
+                  onChangeText={(t) => setFormData({...formData, lockInPeriod: t})}
+                  placeholder="e.g. 6 Months"
+                  placeholderTextColor="#94a3b8"
+                />
+             </View>
+             <View style={[styles.inputGroup, styles.halfWidth]}>
+                <Text style={styles.label}>Agreement Duration</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.agreementDuration}
+                  onChangeText={(t) => setFormData({...formData, agreementDuration: t})}
+                  placeholder="e.g. 11 Months"
+                  placeholderTextColor="#94a3b8"
+                />
+             </View>
+           </View>
+
+           <View style={styles.row}>
+             <View style={[styles.inputGroup, styles.halfWidth]}>
+                <Text style={styles.label}>Electricity Charges</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.electricityCharges}
+                  onChangeText={(t) => setFormData({...formData, electricityCharges: t})}
+                  placeholder="e.g. ₹8/unit"
+                  placeholderTextColor="#94a3b8"
+                />
+             </View>
+             <View style={[styles.inputGroup, styles.halfWidth]}>
+                <Text style={styles.label}>Maintenance</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.maintenance}
+                  onChangeText={(t) => setFormData({...formData, maintenance: t})}
+                  placeholder="e.g. Included"
+                  placeholderTextColor="#94a3b8"
+                />
+             </View>
+           </View>
+
+           <View style={styles.row}>
+             <View style={[styles.inputGroup, styles.halfWidth]}>
                 <Text style={styles.label}>Available From</Text>
                 <TextInput
                   style={styles.input}
@@ -600,7 +658,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 12,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',

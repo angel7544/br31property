@@ -24,9 +24,9 @@ export default function RootLayout() {
           await NavigationBar.setButtonStyleAsync('dark'); // Dark icons for light background
         }
         
-        // Artificial delay for the splash screen animation to be visible
+        // Reduced delay for faster app startup
         // In a real app, you might load fonts or make API calls here
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
       } catch (e) {
         console.warn(e);
@@ -36,12 +36,10 @@ export default function RootLayout() {
         // Hide the native splash screen immediately
         await SplashScreen.hideAsync();
         
-        // Keep our custom splash screen for a bit longer if needed, 
-        // or let it fade out via its own internal logic if we passed a prop,
-        // but here we'll just toggle the state after a brief moment to ensure smooth transition
+        // Quick fade out of custom loading screen
         setTimeout(() => {
             setShowSplash(false);
-        }, 500);
+        }, 200);
       }
     }
 
