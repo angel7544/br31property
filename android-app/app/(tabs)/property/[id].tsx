@@ -1,6 +1,6 @@
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, TextInput, Alert, Linking, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, TextInput, Alert, Linking, Platform, FlatList, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase';
 import { BlurView } from 'expo-blur';
@@ -28,9 +28,13 @@ import {
   IndianRupee,
   Share2,
   Clock,
-  Wrench
+  Wrench,
+  User
 } from 'lucide-react-native';
 import { Button } from '../../../components/ui/Button';
+
+const { width } = Dimensions.get('window');
+const IMG_HEIGHT = 300;
 
 // Helper to map amenity name to icon
 const getAmenityIcon = (name: string) => {
@@ -73,6 +77,7 @@ export default function PropertyDetails() {
     message: ''
   });
   const [sendingInquiry, setSendingInquiry] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     fetchUser();
@@ -207,22 +212,59 @@ export default function PropertyDetails() {
     );
   }
 
-  const amenitiesToShow = showAllAmenities 
-    ? property.amenities 
-    : property.amenities?.slice(0, 6);
+  const onScroll = (event: any) => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const index = event.nativeEvent.contentOffset.x / slideSize;
+    const roundIndex = Math.round(index);
+    setActiveSlide(roundIndex);
+  };
+
+  const propertyImages = property.images && property.images.length > 0 
+    ? property.images 
+    : ['https://via.placeholder.com/400x300?text=No+Image'];
+
+  const ownerImage = property.profiles?.avatar_url;
+  const ownerName = property.profiles?.full_name || 'Property Owner';
+  const ownerInitials = ownerName.split(' ').map((n:any) => n[0]).join('').substring(0, 2).toUpperCase();
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
         
-        {/* Header Image */}
+        {/* Header Image Carousel */}
         <View style={styles.imageContainer}>
-             <Image
-              source={{ uri: property.images?.[0] || 'https://via.placeholder.com/400x250' }}
-              style={styles.image}
-              resizeMode="cover"
-            />
+             <FlatList
+                data={propertyImages}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={onScroll}
+                scrollEventThrottle={16} // 60fps
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                    <Image
+                        source={{ uri: item }}
+                        style={{ width: width, height: IMG_HEIGHT }}
+                        resizeMode="cover"
+                    />
+                )}
+             />
+             
+             {/* Pagination Dots */}
+             {propertyImages.length > 1 && (
+                 <View style={styles.paginationContainer}>
+                     {propertyImages.map((_: any, i: number) => (
+                         <View
+                             key={i}
+                             style={[
+                                 styles.paginationDot,
+                                 i === activeSlide ? styles.paginationDotActive : styles.paginationDotInactive
+                             ]}
+                         />
+                     ))}
+                 </View>
+             )}
             
             {/* Header Actions - Glassmorphism */}
             <View style={[styles.headerActions, { top: insets.top + 10 }]}>
@@ -280,7 +322,7 @@ export default function PropertyDetails() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Amenities</Text>
             <View style={styles.amenitiesGrid}>
-                {amenitiesToShow?.map((amenity: string, idx: number) => (
+                {property.amenities && property.amenities.slice(0, showAllAmenities ? undefined : 6).map((amenity: string, idx: number) => (
                     <View key={idx} style={styles.amenityItem}>
                         <View style={styles.amenityIcon}>
                             {getAmenityIcon(amenity)}
@@ -396,12 +438,18 @@ export default function PropertyDetails() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Managed by</Text>
             <View style={styles.ownerProfileRow}>
-                <Image 
-                    source={{ uri: property.profiles?.avatar_url || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop' }} 
-                    style={styles.ownerAvatar} 
-                />
+                {ownerImage ? (
+                    <Image 
+                        source={{ uri: ownerImage }} 
+                        style={styles.ownerAvatar} 
+                    />
+                ) : (
+                    <View style={[styles.ownerAvatar, styles.ownerAvatarFallback]}>
+                        <Text style={styles.ownerInitialsText}>{ownerInitials}</Text>
+                    </View>
+                )}
                 <View style={styles.ownerInfo}>
-                    <Text style={styles.ownerName}>{property.profiles?.full_name || 'Property Owner'}</Text>
+                    <Text style={styles.ownerName}>{ownerName}</Text>
                     <Text style={styles.ownerRole}>Host</Text>
                 </View>
             </View>
@@ -578,12 +626,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   imageContainer: {
+    height: IMG_HEIGHT,
+    width: '100%',
     position: 'relative',
-    height: 300,
   },
   image: {
     width: '100%',
     height: '100%',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    gap: 8,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+  },
+  paginationDotActive: {
+    backgroundColor: '#fff',
+    width: 24,
+  },
+  paginationDotInactive: {
+    backgroundColor: 'rgba(255,255,255,0.5)',
   },
   headerActions: {
     position: 'absolute',
@@ -865,6 +934,16 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     marginRight: 16,
+  },
+  ownerAvatarFallback: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2563EB',
+  },
+  ownerInitialsText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   ownerInfo: {
     flex: 1,

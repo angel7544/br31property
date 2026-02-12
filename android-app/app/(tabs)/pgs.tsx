@@ -19,7 +19,7 @@ export default function PGs() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<{ priceMin: number; priceMax: number; gender: string }>({
     priceMin: 0,
-    priceMax: 25000, // Set a reasonable default max price to prevent slider conflicts
+    priceMax: 2500000, // Set a reasonable default max price to prevent slider conflicts
     gender: ''
   });
   
@@ -175,7 +175,7 @@ export default function PGs() {
                         onPress={() => {
                             setSearchQuery('');
                             setSelectedCity('All Cities');
-                            setFilters({ priceMin: 0, priceMax: 25000, gender: '' });
+                            setFilters({ priceMin: 0, priceMax: 2500000, gender: '' });
                         }}
                     >
                         <Text style={styles.clearButtonText}>Clear All Filters</Text>
